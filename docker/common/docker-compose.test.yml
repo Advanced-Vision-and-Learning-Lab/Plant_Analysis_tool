@@ -1,0 +1,128 @@
+volumes:
+  coverage_reports: {} # Volume to store coverage reports for all services
+
+services:
+  test-runner-frontend-api:
+    build:
+      context: ../../
+      dockerfile: docker/frontend-api/Dockerfile.api
+    env_file:
+      - .env.test
+    environment:
+      ENVIRONMENT: test
+      PYTHONPATH: /app/src:/app
+      BACKEND_API_URL: ${BACKEND_API_URL:-http://backend-api:8000}
+    volumes:
+      - ../../src/frontend/api:/app/src/frontend/api
+      - ../../src/config:/app/src/config
+      - ../frontend-api/entrypoint.sh:/app/entrypoint.sh
+      - ../../src/tests:/app/src/tests
+      - coverage_reports:/app/coverage_reports # Shared volume for coverage reports
+    working_dir: /app
+    entrypoint: >
+      /bin/sh -c "pytest src/tests/frontend/api --cov=src/frontend/api --cov-report=xml:/app/coverage_reports/frontend-coverage.xml --cov-report=term-missing"
+
+  test-runner-backend:
+    build:
+      context: ../../
+      dockerfile: docker/backend-api/Dockerfile.api
+    
+    env_file:
+      - .env.test
+    environment:
+      ENVIRONMENT: test
+      PYTHONPATH: /app/src:/app
+      DB_CONNECTION_STRING: ${DB_TEST_CONNECTION_STRING}
+    volumes:
+      - ../../src/backend/api:/app/src/backend/api
+      - ../../src/processing:/app/src/processing # General Processing Codes
+      - ../../src/backend/db:/app/src/backend/db
+      - ../../src/scripts:/app/src/scripts # complex interactions with the database
+      - ../../src/config/config.py:/app/src/config/config.py
+      - ../backend-api/entrypoint.sh:/app/entrypoint.sh
+      - ../../src/tests:/app/src/tests
+      - coverage_reports:/app/coverage_reports
+    working_dir: /app
+    entrypoint: >
+      /bin/sh -c "pytest src/tests/backend/api --cov=src/backend/api --cov-report=xml:/app/coverage_reports/backend-coverage.xml --cov-report=term-missing"
+
+    depends_on:
+        postgres_app_test:
+          condition: service_healthy
+
+  test-runner-dags:
+    build:
+      context: ../airflow/
+      dockerfile: Dockerfile.airflow
+    
+    env_file:
+      - .env.test
+    environment:
+      ENVIRONMENT: test
+      PYTHONPATH: /opt/airflow/src:/opt/airflow
+      AIRFLOW__LOGGING__LOGGING_LEVEL: "WARNING"
+    volumes:
+      - ../../src/dags:/opt/airflow/src/dags
+      - ../../src/processing:/opt/airflow/src/processing
+      - ../../src/config:/opt/airflow/src/config
+      - ../../src/utils:/opt/airflow/src/utils
+      - ../../src/scripts:/opt/airflow/src/scripts
+      - ../../src/tests:/opt/airflow/src/tests
+      - ../../../docker_artifacts/test_logs:/opt/airflow/logs
+      - ../../../docker_artifacts/test_plugins:/opt/airflow/plugins
+      - ../../src/backend/db:/opt/airflow/src/backend/db
+      - coverage_reports:/opt/airflow/src/coverage_reports
+    user: root
+    working_dir: /opt/airflow
+    entrypoint: >
+      /bin/sh -c "pytest src/tests/dags --cov=src/dags --cov-report=xml:src/coverage_reports/dags-coverage.xml --cov-report=term-missing"
+
+  test-runner-pp:
+    build:
+      context: ../airflow/
+      dockerfile: Dockerfile.airflow
+    
+    env_file:
+      - .env.test
+    environment:
+      ENVIRONMENT: test
+      PYTHONPATH: /opt/airflow/src:/opt/airflow
+      AIRFLOW__LOGGING__LOGGING_LEVEL: "WARNING"
+
+    volumes:
+      - ../../src/processing:/opt/airflow/src/processing
+      - ../../src/config:/opt/airflow/src/config
+      - ../../src/scripts:/opt/airflow/src/scripts
+      - ../../src/tests:/opt/airflow/src/tests
+      - ../../../docker_artifacts/test_logs:/opt/airflow/logs
+      - ../../../docker_artifacts/test_plugins:/opt/airflow/plugins
+      - coverage_reports:/opt/airflow/src/coverage_reports
+    user: root
+    working_dir: /opt/airflow
+    entrypoint: >
+      /bin/sh -c "pytest src/tests/processing --cov=src/processing --cov-report=xml:src/coverage_reports/pp-coverage.xml --cov-report=term-missing"
+    
+  postgres_app_test:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_TEST_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_TEST_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_TEST_DB}
+    ports:
+      - "5435:5432" 
+    volumes:
+      - ../../../docker_artifacts/postgres_data/test:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25' 
+          memory: 256M  
+        reservations:
+          cpus: '0.10'  
+          memory: 128M 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_TEST_USER} -d ${POSTGRES_TEST_DB}"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s

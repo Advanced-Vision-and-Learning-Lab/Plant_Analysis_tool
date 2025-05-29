@@ -1,0 +1,111 @@
+As a user,
+I want to upload a batch of images for plant object detection,
+So that I can process multiple images at once and view the results.
+
+🎯 Acceptance Criteria
+✔ The system accepts a folder of images (valid formats only).
+✔ The system limits the number and size of images per batch.
+✔ The Airflow DAG triggers segmentation for each image.
+✔ The system stores segmented images and metadata in the database.
+✔ The user can view the segmentation results via the frontend.
+
+
+Scenario: User uploads an unsupported image format
+    Given the system is running
+    And the user has a folder with unsupported images
+    When the user uploads the batch of images
+    Then the system should reject the batch with an error message
+
+  Scenario: User uploads a batch exceeding the maximum limit
+    Given the system is running
+    And the user tries to upload more than 50 images
+    When the user uploads the batch
+    Then the system should reject the upload with a limit exceeded error
+
+  Scenario: User tries to upload a large image
+    Given the system is running
+    And the user has an image larger than 10MB
+    When the user uploads the batch
+    Then the system should reject the batch with a file size error
+
+  Scenario: The user checks batch status later
+    Given the user has uploaded a batch successfully
+    When the user requests the batch status
+    Then the system should return the processing status for each image
+
+  Scenario: The frontend updates the user in real-time
+    Given the batch is being processed
+    When the status of an image changes
+    Then the frontend should display the updated status immediately
+
+  Scenario: An image processing task fails
+    Given the system is running
+    And an image fails during processing
+    When the batch DAG runs
+    Then the system should mark the failed image in the database
+    And retry the failed task automatically
+
+# @given("the user has a folder of valid images")
+# def user_has_valid_images():
+#     """Ensure images exist and are in valid formats."""
+#     assert all(img.endswith(SUPPORTED_IMAGE_FORMATS) for img in VALID_IMAGES), "Invalid image format detected!"
+
+# @when("the user uploads a batch of images")
+# def user_uploads_batch():
+#     """Send a request to the backend to upload a batch of images."""
+#     files = [("images", (img, open(f"tests/e2e/sample_images/{img}", "rb"))) for img in VALID_IMAGES]
+#     response = requests.post(f"{BACKEND_API_URL}/api/batch_upload", files=files)
+#     pytest.batch_upload_response = response
+#     assert response.status_code == 200, "Batch upload failed!"
+
+# @then("the system should accept the batch")
+# def system_accepts_batch():
+#     """Check the system's response after batch upload."""
+#     response = pytest.batch_upload_response
+#     assert "batch_id" in response.json(), "No batch ID returned!"
+#     global BATCH_ID
+#     BATCH_ID = response.json()["batch_id"]
+
+# @then("enforce batch size and file size limits")
+# def check_batch_limits():
+#     """Ensure batch and file size limits are enforced."""
+#     too_many_files = [("images", (f"image{i}.jpg", open(f"tests/e2e/sample_images/image{i}.jpg", "rb"))) for i in range(51)]
+#     response = requests.post(f"{BACKEND_API_URL}/api/batch_upload", files=too_many_files)
+#     assert response.status_code == 400, "System should reject excessive batch size!"
+
+#     large_file = [("images", ("large_image.jpg", open("tests/e2e/sample_images/large_image.jpg", "rb")))]
+#     response = requests.post(f"{BACKEND_API_URL}/api/batch_upload", files=large_file)
+#     assert response.status_code == 400, "System should reject large images!"
+
+# @then("trigger the batch object detection DAG for each image")
+# def airflow_dag_triggered():
+#     """Check if Airflow DAG was triggered for each image."""
+#     response = requests.get(f"{AIRFLOW_API_URL}/api/v1/dags/batch_object_detection/dagRuns")
+#     assert response.status_code == 200, "Airflow DAG was not triggered!"
+#     assert len(response.json()["dag_runs"]) >= len(VALID_IMAGES), "Not all images triggered DAG runs!"
+
+# @then("store the detection results in the database")
+# def check_database_entries():
+#     """Verify that detection results are stored."""
+#     response = requests.get(f"{BACKEND_API_URL}/api/batch_results/{BATCH_ID}")
+#     assert response.status_code == 200, "Detection results not found in database!"
+#     assert len(response.json()["results"]) >= len(VALID_IMAGES), "Not all images have results!"
+
+# @then("return a batch ID to the user")
+# def batch_id_returned():
+#     """Ensure a batch ID is provided."""
+#     assert BATCH_ID is not None, "Batch ID is missing from response!"
+
+# @then("the user should be able to check the batch status later")
+# def check_batch_status():
+#     """Allow the user to retrieve batch status."""
+#     response = requests.get(f"{BACKEND_API_URL}/api/batch_status/{BATCH_ID}")
+#     assert response.status_code == 200, "Batch status request failed!"
+#     status = response.json()["status"]
+#     assert status in ["processing", "completed"], "Invalid batch status!"
+
+# @then("the frontend should show real-time status updates for each image")
+# def check_frontend_updates():
+#     """Ensure the frontend updates the user in real-time."""
+#     response = requests.get(f"{FRONTEND_API_URL}/api/batch_results/{BATCH_ID}")
+#     assert response.status_code == 200, "Frontend does not display results!"

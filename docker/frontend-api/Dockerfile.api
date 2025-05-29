@@ -1,0 +1,37 @@
+FROM python:3.12-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install pip-tools for dependency management
+RUN pip install --no-cache-dir pip-tools
+
+# Copy dependency files
+COPY docker/frontend-api/requirements.in requirements.in
+COPY docker/frontend-api/pytest.ini pytest.ini
+# Compile and install dependencies
+RUN pip-compile requirements.in && pip install -r requirements.txt
+
+# Copy package files
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "serve"]
+
+# Install vue-easy-lightbox
+RUN npm install --save vue-easy-lightbox
+
+# Expose API port
+EXPOSE 8000
+

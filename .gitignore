@@ -1,0 +1,8 @@
+__pycache__/
+
+/tmp_codes
+.env
+.env.*
+/images/test_plant
+*.pt
+summary_commands.sh

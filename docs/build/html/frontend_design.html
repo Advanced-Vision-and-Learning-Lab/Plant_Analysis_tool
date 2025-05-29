@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontend Design &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Database Design" href="database_design.html" />
+    <link rel="prev" title="Setting up the Development Environment" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setting up the Development Environment</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Frontend Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#selected-frontend-framework-vue-js"><strong>Selected Frontend Framework: Vue.js</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Frontend Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/frontend_design.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frontend-design">
+<h1>Frontend Design<a class="headerlink" href="#frontend-design" title="Link to this heading"></a></h1>
+<p>When choosing a frontend framework for the app, several options were considered. The comparison table below summarizes the information about the options considered.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Comparison of Frontend Frameworks</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 12.0%" />
+<col style="width: 24.0%" />
+<col style="width: 32.0%" />
+<col style="width: 32.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Framework</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Pros</p></th>
+<th class="head"><p>Cons</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Plain HTML</p></td>
+<td><p>Traditional approach using HTML, CSS, and JavaScript without a framework.</p></td>
+<td><ul class="simple">
+<li><p>Lightweight and fast for small static pages.</p></li>
+<li><p>No additional dependencies or tools required.</p></li>
+<li><p>Easy to integrate with backend rendering.</p></li>
+<li><p>Requires minimal learning for simple designs.</p></li>
+<li><p>Suitable for very simple interfaces.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Lacks scalability for complex or interactive UIs.</p></li>
+<li><p>Poor reusability of components.</p></li>
+<li><p>No built-in state management or dynamic routing.</p></li>
+<li><p>Limited ability to handle modern app requirements without adding complexity (e.g., jQuery or vanilla JS logic).</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Flask</p></td>
+<td><p>Python-based web framework with server-rendered templates.</p></td>
+<td><ul class="simple">
+<li><p>Python-native and integrates seamlessly with Python backends like Airflow.</p></li>
+<li><p>Supports server-side rendering, making it suitable for traditional multi-page applications (MPAs).</p></li>
+<li><p>Minimal setup for creating forms or simple dashboards.</p></li>
+<li><p>Direct integration with backend logic.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Limited support for interactive, modern UIs compared to SPAs.</p></li>
+<li><p>Requires additional effort to support real-time updates or client-side state management.</p></li>
+<li><p>Frontend design is tied closely to backend logic, reducing flexibility.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Gradio</p></td>
+<td><p>Python library for creating simple and interactive UIs, primarily for ML and data science applications.</p></td>
+<td><ul class="simple">
+<li><p>Extremely fast to set up and deploy.</p></li>
+<li><p>Python-native, avoiding the need for separate frontend development expertise.</p></li>
+<li><p>Great for prototyping machine learning workflows and dashboards.</p></li>
+<li><p>Built-in widgets for common inputs and outputs.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Limited design and customization capabilities.</p></li>
+<li><p>Not suited for complex multi-page or dynamic applications.</p></li>
+<li><p>Focused on ML/data applications rather than general-purpose apps.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>React</p></td>
+<td><p>A popular JavaScript library for building interactive UI components.</p></td>
+<td><ul class="simple">
+<li><p>Component-based architecture for reusability and scalability.</p></li>
+<li><p>Virtual DOM for efficient updates and performance.</p></li>
+<li><p>Rich ecosystem with tools like Redux for state management.</p></li>
+<li><p>Strong community support and active development.</p></li>
+<li><p>Suitable for SPAs and large-scale applications.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Steeper learning curve compared to simpler solutions.</p></li>
+<li><p>Requires additional setup for routing and state management.</p></li>
+<li><p>JSX syntax may be unfamiliar to developers used to HTML templating.</p></li>
+<li><p>Can be overkill for small projects or static pages.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Vue.js</p></td>
+<td><p>A modern JavaScript framework for building dynamic, interactive UIs.</p></td>
+<td><ul class="simple">
+<li><p>Provides rich interactivity and dynamic routing, making it ideal for SPAs.</p></li>
+<li><p>Component-based architecture promotes reusability and scalability.</p></li>
+<li><p>Supports both small projects and large-scale applications.</p></li>
+<li><p>Seamlessly integrates with backend APIs for data exchange.</p></li>
+<li><p>Active community and ecosystem, with plugins for routing and state management (Vue Router, Pinia).</p></li>
+<li><p>Enables hot-reloading during development for efficient iteration.</p></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li><p>Requires JavaScript expertise for development.</p></li>
+<li><p>Slightly more setup time compared to simpler solutions like Gradio or Flask.</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<section id="selected-frontend-framework-vue-js">
+<h2><strong>Selected Frontend Framework: Vue.js</strong><a class="headerlink" href="#selected-frontend-framework-vue-js" title="Link to this heading"></a></h2>
+<p>After evaluating the options, <strong>Vue.js</strong> was selected as the frontend framework for the app due to its ability to handle modern, interactive user interfaces while maintaining flexibility and scalability. The app benefits from Vue.js’s rich ecosystem and seamless integration with the Python backend, making it well-suited for the application’s requirements.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="setup.html" class="btn btn-neutral float-left" title="Setting up the Development Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database_design.html" class="btn btn-neutral float-right" title="Database Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

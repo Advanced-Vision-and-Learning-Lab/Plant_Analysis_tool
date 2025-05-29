@@ -1,0 +1,7 @@
+API Reference
+============
+    
+This section provides detailed information about the API endpoints available in the Automated Plant Phenotyping Analysis project.
+    
+.. toctree::
+   :maxdepth: 2

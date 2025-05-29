@@ -1,0 +1,182 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docker Environment &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Setting up the Development Environment" href="setup.html" />
+    <link rel="prev" title="Developer Guide" href="developer_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Docker Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#services-and-their-purpose">Services and Their Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-notes">Key Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setting up the Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Docker Environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/docker_environment.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docker-environment">
+<h1>Docker Environment<a class="headerlink" href="#docker-environment" title="Link to this heading"></a></h1>
+<p>Docker is used to create a consistent and reproducible environment for the plant phenotyping application. It simplifies the deployment process by encapsulating all dependencies and services within containers.</p>
+<p>This setup follows three tier architecture, consisting of the following components:</p>
+<section id="services-and-their-purpose">
+<h2>Services and Their Purpose<a class="headerlink" href="#services-and-their-purpose" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Airflow Services (Scheduler and Webserver):</strong></p>
+<ul class="simple">
+<li><p><strong>Purpose:</strong> These services manage the execution and monitoring of Directed Acyclic Graphs(DAGs) for plant phenotyping tasks.</p></li>
+<li><p><strong>Rationale:</strong> Airflow simplifies the automation of complex workflows and ensures scalability by using its scheduler and web interface.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">start_airflow.sh</span></code> creates a user and initializes the database for the Airflow services.</p>
+<p>The role of the scheduler is to trigger tasks based on defined schedules or dependencies. The webserver provides a user interface to monitor and manage DAGs, tasks, and logs.</p>
+</li>
+<li><p><strong>Backend API:</strong></p>
+<ul class="simple">
+<li><p><strong>Purpose:</strong> This backend service manage the interaction with the storage layer (Both S3 and PostgreSQL components). Both Airflow and Frontend interact with this service to access/update the data.</p></li>
+<li><p><strong>Rationale:</strong> This service is necessary to abstract the data access layer and provide a single entry point for the other services to interact with the storage layer.</p></li>
+</ul>
+</li>
+<li><p><strong>Frontend API:</strong></p>
+<ul class="simple">
+<li><p><strong>Prupose:</strong> Receives requests from the frontend and forwards them to the backend API or the Airflow Webserver.</p></li>
+<li><p><strong>Rationale:</strong> This service is necessary to avoid CORS issues and to provide a single entry point for the frontend to interact with the backend services.</p></li>
+</ul>
+</li>
+<li><p><strong>Frontend (Vue.js):</strong></p>
+<ul class="simple">
+<li><p><strong>Purpose:</strong> Provides a graphical user interface for users to interact with the application.</p></li>
+<li><p><strong>Rationale:</strong> Vue.js is chosen for its simplicity, reactivity, and strong ecosystem, which makes it ideal for building user-friendly Single Page Applications (SPA)).</p></li>
+</ul>
+<p>For more information about the options considered for the frontend, refer to the <a class="reference internal" href="frontend_design.html"><span class="doc">Frontend Design</span></a> chapter.</p>
+</li>
+</ol>
+<ol class="arabic" start="4">
+<li><p><strong>Databases (Dev, Test, Prod):</strong></p>
+<ul class="simple">
+<li><p><strong>Purpose:</strong> Separate PostgreSQL instances for development, testing, and production ensure isolated environments.</p></li>
+<li><p><strong>Rationale:</strong> This separation minimizes the risk of data corruption and allows testing and development without interfering with production.</p></li>
+</ul>
+<p>PostgreSQL is chosen for its robust features, reliability, and compatibility with Airflow and FastAPI.</p>
+</li>
+<li><p><strong>pgAdmin:</strong></p>
+<ul class="simple">
+<li><p><strong>Purpose:</strong> Provides a web-based interface to manage and monitor PostgreSQL databases.</p></li>
+<li><p><strong>Rationale:</strong> Makes it easier to visualize database structures and execute queries during development.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="key-notes">
+<h2>Key Notes<a class="headerlink" href="#key-notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Each service has its own Dockerfile and configuration files to ensure modularity and encapsulation. Also, it only gets access to the parts of the repo that it needs.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">docker/common/docker-compose.yml</span></code> file orchestrates the services, volumes, and networks to create a multi-container environment. This allows for easy setup and teardown of the application stack.</p></li>
+</ul>
+<p>For more details about the Docker environment setup, refer to the <a class="reference internal" href="setup.html"><span class="doc">Setting up the Development Environment</span></a> part of this documentation.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="developer_guide.html" class="btn btn-neutral float-left" title="Developer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="setup.html" class="btn btn-neutral float-right" title="Setting up the Development Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

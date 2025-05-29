@@ -1,0 +1,202 @@
+name: CI - Run Tests with Test Coverage Enforcement
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  frontend-api-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.get-coverage.outputs.coverage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run common setup
+        uses: ./.github/actions/setup-test-env
+        with:
+          POSTGRES_TEST_USER: ${{ secrets.POSTGRES_TEST_USER }}
+          POSTGRES_TEST_PASSWORD: ${{ secrets.POSTGRES_TEST_PASSWORD }}
+          POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+          DB_TEST_CONNECTION_STRING: ${{ secrets.DB_TEST_CONNECTION_STRING }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ROLE: ${{ secrets.ROLE }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      - name: Run Frontend API tests
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml run --rm test-runner-frontend-api 2>&1 | tee frontend-api-output.txt
+          COVERAGE=$(grep "^TOTAL" frontend-api-output.txt | awk '{print $4}' | tr -d '%')
+          echo "Frontend API tests completed with coverage = $COVERAGE%"
+      - name: Extract Frontend Coverage from captured output
+        id: get-coverage
+        shell: bash
+        run: |
+          COVERAGE=$(grep "^TOTAL" frontend-api-output.txt | awk '{print $4}' | tr -d '%')
+          echo "Frontend Coverage: $COVERAGE%"
+          echo "::set-output name=coverage::$COVERAGE"
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml down -v
+
+  backend-api-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.get-coverage.outputs.coverage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run common setup
+        uses: ./.github/actions/setup-test-env
+        with:
+          POSTGRES_TEST_USER: ${{ secrets.POSTGRES_TEST_USER }}
+          POSTGRES_TEST_PASSWORD: ${{ secrets.POSTGRES_TEST_PASSWORD }}
+          POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+          DB_TEST_CONNECTION_STRING: ${{ secrets.DB_TEST_CONNECTION_STRING }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ROLE: ${{ secrets.ROLE }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
+      - name: Run Backend API tests
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml run --rm test-runner-backend 2>&1 | tee backend-api-output.txt
+          COVERAGE=$(grep "^TOTAL" backend-api-output.txt | awk '{print $4}' | tr -d '%')
+          echo "Backend API tests completed with coverage = $COVERAGE%"
+      - name: Extract Backend Coverage from captured output
+        id: get-coverage
+        shell: bash
+        run: |
+            COVERAGE=$(grep "^TOTAL" backend-api-output.txt | awk '{print $4}' | tr -d '%')
+            echo "Backend Coverage: $COVERAGE%"
+            echo "::set-output name=coverage::$COVERAGE"
+      - name: Cleanup
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml down -v
+
+  dags-tests:
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.get-coverage.outputs.coverage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run common setup
+        uses: ./.github/actions/setup-test-env
+        with:
+          POSTGRES_TEST_USER: ${{ secrets.POSTGRES_TEST_USER }}
+          POSTGRES_TEST_PASSWORD: ${{ secrets.POSTGRES_TEST_PASSWORD }}
+          POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+          DB_TEST_CONNECTION_STRING: ${{ secrets.DB_TEST_CONNECTION_STRING }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ROLE: ${{ secrets.ROLE }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
+      - name: Run DAG tests
+        shell: bash
+        run: |
+
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml run --rm test-runner-dags 2>&1 | tee dags-output.txt
+          COVERAGE=$(grep "^TOTAL" dags-output.txt | awk '{print $4}' | tr -d '%')
+          echo "DAG tests completed with coverage = $COVERAGE%"
+      - name: Extract DAGs Coverage
+        id: get-coverage
+        shell: bash
+        run: |
+          COVERAGE=$(grep "^TOTAL" dags-output.txt | awk '{print $4}' | tr -d '%')
+          echo "DAGs Coverage: $COVERAGE%"
+          echo "::set-output name=coverage::$COVERAGE"
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml down -v
+
+  preprocessing_package_tests:
+    runs-on: ubuntu-latest
+    outputs:
+      coverage: ${{ steps.get-coverage.outputs.coverage }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Run common setup
+        uses: ./.github/actions/setup-test-env
+        with:
+          POSTGRES_TEST_USER: ${{ secrets.POSTGRES_TEST_USER }}
+          POSTGRES_TEST_PASSWORD: ${{ secrets.POSTGRES_TEST_PASSWORD }}
+          POSTGRES_TEST_DB: ${{ secrets.POSTGRES_TEST_DB }}
+          DB_TEST_CONNECTION_STRING: ${{ secrets.DB_TEST_CONNECTION_STRING }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ROLE: ${{ secrets.ROLE }}
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+
+      - name: Run Preprocessing Package tests
+        shell: bash
+        run: |
+
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml run --rm test-runner-pp 2>&1 | tee pp-output.txt
+          COVERAGE=$(grep "^TOTAL" pp-output.txt | awk '{print $4}' | tr -d '%')
+          echo "Preprocessing package tests completed with coverage = $COVERAGE%"
+      - name: Extract PP Coverage
+        id: get-coverage
+        shell: bash
+        run: |
+          COVERAGE=$(grep "^TOTAL" pp-output.txt | awk '{print $4}' | tr -d '%')
+          echo "Preprocessing package Coverage: $COVERAGE%"
+          echo "::set-output name=coverage::$COVERAGE"
+
+      - name: Cleanup
+        shell: bash
+        run: |
+          docker compose --env-file docker/common/.env.test \
+            -f docker/common/docker-compose.test.yml down -v
+
+  coverage-check:
+    runs-on: ubuntu-latest
+    needs: 
+      - frontend-api-tests
+      - backend-api-tests
+      - dags-tests
+      - preprocessing_package_tests
+
+    steps:
+      - name: Aggregate and Check Coverage
+        shell: bash
+        run: |
+          FRONTEND=${{ needs.frontend-api-tests.outputs.coverage }}
+          BACKEND=${{ needs.backend-api-tests.outputs.coverage }}
+          DAGS=${{ needs.dags-tests.outputs.coverage }}
+          PP=${{ needs.preprocessing_package_tests.outputs.coverage }}
+          echo "Frontend Coverage: $FRONTEND%"
+          echo "Backend Coverage: $BACKEND%"
+          echo "DAGs Coverage: $DAGS%"
+          echo "Preprocessing Package Coverage: $PP%"
+          TOTAL_COVERAGE=$(( (FRONTEND + BACKEND + DAGS + PP) / 4 ))
+          echo "Total Coverage: $TOTAL_COVERAGE%"
+          if [ "$TOTAL_COVERAGE" -lt 90 ]; then
+            echo "❌ Test coverage is below 90%. Rejecting PR."
+            exit 1
+          fi
+          echo "✅ All tests passed and coverage requirements met!"

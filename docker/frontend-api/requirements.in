@@ -1,0 +1,21 @@
+# FastAPI and related dependencies
+fastapi
+uvicorn[standard]
+
+# Testing
+
+pytest
+pytest-dotenv
+pytest-cov
+faker
+pytest-asyncio
+
+# Database
+sqlalchemy
+alembic
+psycopg2-binary
+
+python-dotenv
+python-multipart
+
+

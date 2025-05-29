@@ -1,0 +1,190 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Design &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Design" href="api_design.html" />
+    <link rel="prev" title="Frontend Design" href="frontend_design.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setting up the Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Database Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-schema">Database Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hashing-to-avoid-data-duplication">Hashing To Avoid Data Duplication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-relationships">Database Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#steps-to-make-any-changes-to-the-database-schema">Steps to make any changes to the database schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helpful-debugging-tips">Helpful debugging tips:</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Database Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/database_design.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="database-design">
+<h1>Database Design<a class="headerlink" href="#database-design" title="Link to this heading"></a></h1>
+<p>The database layer is managed by SQLAlchemy, a Python SQL toolkit and Object-Relational Mapping (ORM) library. SQLAlchemy provides a high-level API for interacting with databases, allowing developers to work with Python objects instead of SQL queries directly.</p>
+<p>To trace the changes happens to the database schema over the time, Alembic is used for database migrations. Alembic is a lightweight database migration tool for SQLAlchemy, which generates migration scripts to apply changes to the database schema.</p>
+<section id="database-schema">
+<h2>Database Schema<a class="headerlink" href="#database-schema" title="Link to this heading"></a></h2>
+<p>The database schema consists of the following tables:</p>
+<ul class="simple">
+<li><p>Plant: Contains information about the plant images and performed analysis</p></li>
+<li><p>RawImage: Manage the meta data of the raw images uploaded by the user</p></li>
+<li><p>ProcessedImage: Store the processed images generated by the analysis</p></li>
+<li><p>Analysis: Contains the results of the analysis performed on the plant images</p></li>
+<li><p>SegmentationModel: Store the segmentation model details used for the analysis</p></li>
+</ul>
+<p>The folder <code class="docutils literal notranslate"><span class="pre">src/db</span> <span class="pre">contains</span></code> the SQLAlchemy models for each table. The models define the structure of the tables and the relationships between them. The models are used to interact with the database and perform CRUD operations.</p>
+<p>Also, it has the Alembic configuration and migration scripts to manage the database schema changes. The migration scripts are generated using the <cite>alembic revision</cite> command and applied using the <cite>alembic upgrade</cite> command.</p>
+</section>
+<section id="hashing-to-avoid-data-duplication">
+<h2>Hashing To Avoid Data Duplication<a class="headerlink" href="#hashing-to-avoid-data-duplication" title="Link to this heading"></a></h2>
+<p>To avoid duplication of data in the database, hashing is used to generate unique identifiers for the images. The hash is generated based on the image content, and it is used to check if the image already exists in the database before storing it. This helps in reducing the storage space and improving the performance of the application.</p>
+</section>
+<section id="database-relationships">
+<h2>Database Relationships<a class="headerlink" href="#database-relationships" title="Link to this heading"></a></h2>
+<p>The database tables have wide variety of relationships for example:</p>
+<ul class="simple">
+<li><p>Plant and RawImage: One-to-Many relationship. A plant can have multiple raw images</p></li>
+<li><p>Plant and ProcessedImage: One-to-Many relationship. A plant can have multiple processed images</p></li>
+<li><p>Plant and Analysis: One-to-Many relationship. A plant can have multiple analysis results</p></li>
+<li><p>Analysis and SegmentationModel: Many-to-One relationship. An analysis result is associated with one segmentation model</p></li>
+<li><p>RawImage and ProcessedImage: One-to-many relationship. A raw image can be processed with different options</p></li>
+<li><p>Analysis and ProcessedImage: One-to-One relationship. An analysis result is associated with one processed image</p></li>
+</ul>
+<p>For the complete database schema and relationships, refer to the SQLAlchemy models in the <code class="docutils literal notranslate"><span class="pre">src/db</span></code> folder.</p>
+</section>
+<section id="steps-to-make-any-changes-to-the-database-schema">
+<h2>Steps to make any changes to the database schema<a class="headerlink" href="#steps-to-make-any-changes-to-the-database-schema" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Make the necessary changes to the SQLAlchemy models in the <code class="docutils literal notranslate"><span class="pre">src/db</span></code> folder.</p></li>
+<li><p>Generate a migration script using the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">revision</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new column to Plant table&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p>Review the generated migration script in the alembic/versions folder. Sometimes, manual changes may be required.</p></li>
+<li><p>Apply the migration script using the <code class="docutils literal notranslate"><span class="pre">alembic</span> <span class="pre">upgrade</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="helpful-debugging-tips">
+<h2>Helpful debugging tips:<a class="headerlink" href="#helpful-debugging-tips" title="Link to this heading"></a></h2>
+<p>You can always log into the database container using:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>common-postgres_app_dev-1<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>&lt;user-name&gt;<span class="w"> </span>-d<span class="w"> </span>&lt;password&gt;
+</pre></div>
+</div>
+<p>Then, you can run the following commands to check the tables and data:</p>
+<div class="highlight-psql notranslate"><div class="highlight"><pre><span></span><span class="kp">\dt</span><span class="w">  </span><span class="ss">--</span><span class="w"> </span><span class="ss">List</span><span class="w"> </span><span class="ss">all</span><span class="w"> </span><span class="ss">tables</span><span class="w"> </span><span class="ss">in</span><span class="w"> </span><span class="ss">the</span><span class="w"> </span><span class="ss">database</span>
+<span class="go">SELECT * FROM &lt;table-name&gt;;  -- Display all rows in a table</span>
+</pre></div>
+</div>
+<p>You can perform any SQL queries to check the data and relationships between tables.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frontend_design.html" class="btn btn-neutral float-left" title="Frontend Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_design.html" class="btn btn-neutral float-right" title="API Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

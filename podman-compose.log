@@ -1,0 +1,2 @@
+nohup: ignoring input
+CRITICAL:podman_compose:no compose.yaml, docker-compose.yml or container-compose.yml file found, pass files with -f

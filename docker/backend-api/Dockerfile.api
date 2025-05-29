@@ -1,0 +1,40 @@
+# Recommended: Add a .dockerignore file to exclude unnecessary files from the build context (e.g., .git, __pycache__, *.pyc, *.pyo, .DS_Store, node_modules, *.log)
+FROM python:3.12-slim AS base
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app:/app/backend:/app/services
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    curl \
+    libgl1 \
+    libglib2.0-0 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Install pip-tools
+RUN pip install --no-cache-dir pip-tools
+
+# Copy requirements files from the 'docker/backend-api' subdirectory of the build context
+COPY docker/backend-api/requirements.in requirements.in
+COPY docker/backend-api/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Generate requirements.txt and install dependencies
+RUN pip-compile requirements.in && pip install -r requirements.txt
+
+# Copy application code from the root of the build context
+COPY . .
+
+# Expose port (if your application listens on a port)
+EXPOSE 8000
+
+# Set entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+`

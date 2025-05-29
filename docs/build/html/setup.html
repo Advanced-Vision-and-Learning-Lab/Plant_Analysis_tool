@@ -1,0 +1,193 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setting up the Development Environment &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frontend Design" href="frontend_design.html" />
+    <link rel="prev" title="Docker Environment" href="docker_environment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up the Development Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-gui-development">For GUI Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#for-backend-development">For Backend Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Setting up the Development Environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/setup.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-the-development-environment">
+<h1>Setting up the Development Environment<a class="headerlink" href="#setting-up-the-development-environment" title="Link to this heading"></a></h1>
+<p>The development environment is flexible to seperate the backend and frontend components. The backend is managed by Airflow and the Backend API, while the frontend is managed by Vue.js and the frontend API.</p>
+<p>It also mount some folders from the host machine to the containers to allow for live code reloading and easy debugging. You can update the frontend code and see the changes reflected in the browser without restarting the containers.</p>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<p>Please make sure to define an <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in the <code class="docutils literal notranslate"><span class="pre">docker/common</span></code> directory with the required environment variables. For detailed information about environment variables and their configuration, please refer to <a class="reference internal" href="environment_files.html"><span class="doc">Environment Files</span></a>.</p>
+</section>
+<section id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Docker</p></li>
+<li><p>Docker Compose</p></li>
+<li><p>[Optional] Node.js (&gt; 22.0). You don’t need to install Node.js if you only want to work on the backend.</p></li>
+</ul>
+</section>
+<section id="for-gui-development">
+<h2>For GUI Development<a class="headerlink" href="#for-gui-development" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Initialize the frontend environment</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>frontend
+npm<span class="w"> </span>install
+</pre></div>
+</div>
+<p>This will recreate the <code class="docutils literal notranslate"><span class="pre">src/frontend/node_modules</span></code> folder with the required dependencies.</p>
+<p>You have the option to continue development using the local machine or within the Docker container. It is highly recommended to use the Docker container to ensure consistency across all environments.</p>
+<p>To start the frontend development server, run the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>-d<span class="w"> </span>up<span class="w"> </span>frontend
+</pre></div>
+</div>
+<p>This will start the frontend service and make it available at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;frontend_port&gt;</span></code>. You can access the frontend at this URL and see the changes reflected in the browser without restarting the container.</p>
+<p>Currently, the frontend definition within the docker compose file has the following:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;3000:8080&quot;</span>
+</pre></div>
+</div>
+<p>This maps port 8080 from the container to port 3000 on the host machine so the frontend can be accessed at <code class="docutils literal notranslate"><span class="pre">http://localhost:3000</span></code>.</p>
+<p>Please note that it might takes sometime for the frontend to be available as the dependencies are being installed and the server is being started.</p>
+<p>Successful start of the frontend service will show the something like below in the docker logs:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>2025-01-24 12:37:39  INFO  Starting development server...
+DONE  Compiled successfully in 44482ms6:38:50 PM
+2025-01-24 12:38:50
+
+2025-01-24 12:38:50   App running at:
+2025-01-24 12:38:50   - Local:   http://localhost:8080/
+2025-01-24 12:38:50
+2025-01-24 12:38:50   It seems you are running Vue CLI inside a container.
+2025-01-24 12:38:50   Access the dev server via http://localhost:&lt;your container&#39;s external mapped port&gt;/
+2025-01-24 12:38:50
+2025-01-24 12:38:50   Note that the development build is not optimized.
+2025-01-24 12:38:50   To create a production build, run npm run build.
+2025-01-24 12:38:50
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="for-backend-development">
+<h2>For Backend Development<a class="headerlink" href="#for-backend-development" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Typically, you will need to spin both airflow containers, backend API, test and development database containers. Current dependencies managed by the docker compose file allow running all of them simply by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>airflow-webserver
+</pre></div>
+</div>
+<p>This will start the Airflow webserver and make it available at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;airflow_port&gt;</span></code>. You can access the Airflow webserver at this URL and see the changes reflected in the browser without restarting the container.</p>
+<p>Also, it will start the backend API and make it available at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;backend_port&gt;</span></code>. You can access the backend API at this URL and see the changes reflected in the browser without restarting the container.</p>
+<p>Besides, it will start the test and development database containers. You can access the pgAdmin at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;pgadmin_port&gt;</span></code> to manage and monitor the PostgreSQL databases.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="docker_environment.html" class="btn btn-neutral float-left" title="Docker Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frontend_design.html" class="btn btn-neutral float-right" title="Frontend Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

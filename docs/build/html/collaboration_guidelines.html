@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Collaboration Guidelines &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Testing" href="testing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html">Setting up the Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Collaboration Guidelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#s-collaboration-checklist">6S Collaboration Checklist</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="developer_guide.html">Developer Guide</a></li>
+      <li class="breadcrumb-item active">Collaboration Guidelines</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/collaboration_guidelines.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="collaboration-guidelines">
+<h1>Collaboration Guidelines<a class="headerlink" href="#collaboration-guidelines" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Follow Git best practices:
+- Use feature branches for development.
+- Open pull requests for code reviews.</p></li>
+<li><p>Write clean, modular, and well-documented code.</p></li>
+<li><p>Use the <cite>tests</cite> folder to write unit and integration tests.</p></li>
+</ol>
+<section id="s-collaboration-checklist">
+<h2>6S Collaboration Checklist<a class="headerlink" href="#s-collaboration-checklist" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>Site</strong></dt><dd><ul>
+<li><p>Ensure the code is in the correct place architecturally. Verify that new code fits within the intended module or class structure.</p></li>
+<li><p>Keep dependencies explicit and use service objects, form objects, or helpers where appropriate.</p></li>
+<li><p>Ensure proper integration with tools like Docker or CI pipelines.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Solid</strong></dt><dd><ul>
+<li><dl class="simple">
+<dt>Follow SOLID principles:</dt><dd><ul>
+<li><p><strong>Single Responsibility:</strong> Each class or function should do one thing well.</p></li>
+<li><p><strong>Open/Closed Principle:</strong> Classes should be open for extension but closed for modification.</p></li>
+<li><p><strong>Liskov Substitution Principle:</strong> Subtypes should be substitutable for their base types.</p></li>
+<li><p><strong>Interface Segregation:</strong> Prefer small, specific interfaces over general ones.</p></li>
+<li><p><strong>Dependency Inversion:</strong> Rely on abstractions, not concrete implementations.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>SOFA</strong></dt><dd><ul>
+<li><dl class="simple">
+<dt>Ensure methods are:</dt><dd><ul>
+<li><p><strong>Short:</strong> Each method should focus on one task.</p></li>
+<li><p><strong>One thing:</strong> Maintain single-level abstraction within a function.</p></li>
+<li><p><strong>Few arguments:</strong> Minimize the number of arguments passed to functions.</p></li>
+<li><p><strong>Abstraction:</strong> Keep the level of abstraction consistent within a class or module.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Smells</strong></dt><dd><ul>
+<li><dl class="simple">
+<dt>Avoid code smells such as:</dt><dd><ul>
+<li><p><strong>Deeply nested conditionals:</strong> Refactor to improve readability.</p></li>
+<li><p><strong>Redundant code:</strong> Use DRY principles to eliminate repetition.</p></li>
+<li><p><strong>Ambiguous naming:</strong> Use descriptive, meaningful names for variables and methods.</p></li>
+<li><p><strong>High complexity:</strong> Simplify by breaking functions into smaller components.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Style</strong></dt><dd><ul>
+<li><p>Follow established coding standards for indentation, spacing, and naming conventions.</p></li>
+<li><p>Use linters and formatters to enforce consistent style throughout the codebase.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>Sign-off</strong></dt><dd><ul>
+<li><p>Perform thorough code reviews before merging into the main branch.</p></li>
+<li><p>Test all changes using automated and manual tests.</p></li>
+<li><p>Obtain team approval with comments like “LGTM” (Looks Good To Me) or equivalent.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testing.html" class="btn btn-neutral float-left" title="Testing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

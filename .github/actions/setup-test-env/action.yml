@@ -1,0 +1,59 @@
+name: 'Setup Test Environment'
+description: 'Checkout, set up Docker, create .env.test, and start Postgres service'
+inputs:
+  POSTGRES_TEST_USER:
+    description: 'Postgres test user'
+    required: true
+  POSTGRES_TEST_PASSWORD:
+    description: 'Postgres test password'
+    required: true
+  POSTGRES_TEST_DB:
+    description: 'Postgres test database'
+    required: true
+  DB_TEST_CONNECTION_STRING:
+    description: 'DB test connection string'
+    required: true
+  AWS_ACCESS_KEY_ID:
+    description: 'AWS access key id'
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: 'AWS secret access key'
+    required: true
+  ROLE:
+    description: 'Role'
+    required: true
+  S3_BUCKET_NAME:
+    description: 'S3 bucket name'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      shell: bash
+      run: |
+        docker version
+        docker compose version
+
+    - name: Create .env.test file dynamically
+      shell: bash
+      run: |
+        echo "ENVIRONMENT=test" > docker/common/.env.test
+        echo "POSTGRES_TEST_USER=${{ inputs.POSTGRES_TEST_USER }}" >> docker/common/.env.test
+        echo "POSTGRES_TEST_PASSWORD=${{ inputs.POSTGRES_TEST_PASSWORD }}" >> docker/common/.env.test
+        echo "POSTGRES_TEST_DB=${{ inputs.POSTGRES_TEST_DB }}" >> docker/common/.env.test
+        echo "DB_TEST_CONNECTION_STRING=${{ inputs.DB_TEST_CONNECTION_STRING }}" >> docker/common/.env.test
+
+        echo "AWS_ACCESS_KEY_ID=${{ inputs.AWS_ACCESS_KEY_ID }}" >> docker/common/.env.test
+        echo "AWS_SECRET_ACCESS_KEY=${{ inputs.AWS_SECRET_ACCESS_KEY }}" >> docker/common/.env.test
+        echo "ROLE= ${{ inputs.ROLE }}" >> docker/common/.env.test
+        echo "S3_BUCKET_NAME=${{ inputs.S3_BUCKET_NAME }}" >> docker/common/.env.test
+
+    - name: Start Postgres service
+      shell: bash
+      run: |
+        docker compose --env-file docker/common/.env.test -f docker/common/docker-compose.test.yml up -d postgres_app_test
+        echo "Waiting for postgres to be ready..."
+        sleep 10

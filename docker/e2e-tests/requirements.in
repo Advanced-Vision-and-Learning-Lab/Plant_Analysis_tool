@@ -1,0 +1,12 @@
+pytest
+pytest-bdd
+requests
+pytest-dotenv
+pytest-cov
+faker
+pytest-asyncio
+freezegun
+# Database
+sqlalchemy
+alembic
+psycopg2-binary

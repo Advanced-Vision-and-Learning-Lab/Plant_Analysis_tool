@@ -1,0 +1,52 @@
+# Core numerical and ML packages
+numpy
+pandas
+scikit-learn
+scipy
+torch
+torchvision
+
+# Image processing
+opencv-python-headless
+Pillow
+scikit-image
+plantcv
+
+# Plotting (optional, if used)
+matplotlib
+seaborn
+
+# FastAPI backend
+fastapi
+uvicorn[standard]
+python-dotenv
+python-multipart
+
+# AWS access
+boto3
+psycopg2-binary
+# YAML config support
+pyyaml
+
+# Transformers (BRIA model)
+transformers
+
+# Database
+sqlalchemy
+alembic
+psycopg2-binary
+
+# Testing
+pytest
+pytest-dotenv
+pytest-cov
+pytest-asyncio
+faker
+freezegun
+#Segmentation
+kornia
+timm
+
+# Celery and Redis
+celery
+redis
