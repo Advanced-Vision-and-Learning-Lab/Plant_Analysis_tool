@@ -57,6 +57,32 @@ cp .env.example .env
   - Any other required tokens or settings
 - **Double-check**: Make sure there are no blank or placeholder values left in `.env`.
 
+### 6a. **Using the Provided env.txt File**
+A template file `env.txt` is provided in `docker/common/`. To set up your environment variables:
+
+1. Copy `env.txt` to `.env` in the same directory:
+   ```bash
+   cp env.txt .env
+   ```
+2. Open `.env` in a text editor and fill in your own values for each variable.
+   - **Do NOT share your `.env` file if it contains sensitive information!**
+   - The `HUGGINGFACE_TOKEN` variable is commented out for security. See below for instructions on generating your own token.
+
+### 6b. **How to Generate a HuggingFace Token**
+Some features may require a HuggingFace API token (for example, if using models from the HuggingFace Hub).
+
+To create your own HuggingFace token:
+1. Go to [https://huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) and log in or create an account.
+2. Click **New token**, give it a name, and select the appropriate scopes (usually "Read").
+3. Copy the generated token.
+4. In your `.env` file, add:
+   ```bash
+   HUGGINGFACE_TOKEN=your_huggingface_token_here
+   ```
+5. **Never share your HuggingFace token publicly!**
+
+Continue with the next steps once your `.env` file is ready.
+
 ### 7. **Verify Docker Permissions**
 Make sure your user can run Docker without `sudo` (optional but recommended):
 ```bash
