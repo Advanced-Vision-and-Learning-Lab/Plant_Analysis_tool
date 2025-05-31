@@ -21,11 +21,16 @@ ls -l /app/backend/db/migrations/versions || echo "No Alembic version files foun
 # Run the sync script before starting the backend
 python /app/scripts/sync_s3_to_db.py
 
-# Start the server
-if [ "$ENVIRONMENT" = "development" ]; then
-    echo "Starting in development mode..."
-    exec uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+# If there are arguments, run them (for celery, etc.)
+if [ $# -gt 0 ]; then
+    exec "$@"
 else
-    echo "Starting in production mode..."
-    exec uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    # Start the server
+    if [ "$ENVIRONMENT" = "development" ]; then
+        echo "Starting in development mode..."
+        exec uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+    else
+        echo "Starting in production mode..."
+        exec uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    fi
 fi

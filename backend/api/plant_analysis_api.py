@@ -10,10 +10,8 @@ logging.basicConfig(
 )
 
 from fastapi import APIRouter, HTTPException, Query
-from services.pipeline_runner import process_plant_image
 from backend.db.session import SessionLocal
 from backend.db.models import ProcessedImage
-import datetime
 from fastapi.responses import JSONResponse
 from backend.tasks import analyze_plant_task
 from backend.celery_worker import celery_app
@@ -43,19 +41,16 @@ def get_task_status(task_id: str):
 
 @router.get("/plant-results/{plant_id}")
 def get_plant_results(plant_id: str, date: str):
-    print("REACHED /plant-results endpoint")
     s3 = boto3.client('s3', region_name='us-east-2')
     bucket = "plant-analysis-data"
     prefix = f"results/{date}/{plant_id}/"
     try:
-        logging.warning(f"Listing S3 prefix: {prefix}")
         paginator = s3.get_paginator('list_objects_v2')
         page_iterator = paginator.paginate(Bucket=bucket, Prefix=prefix)
         files = []
         for page in page_iterator:
             if 'Contents' in page:
                 files.extend([obj['Key'] for obj in page['Contents']])
-        logging.warning(f"Files found: {files}")
         result = {}
         for file in files:
             rel_path = file[len(prefix):] if file.startswith(prefix) else file
@@ -66,7 +61,20 @@ def get_plant_results(plant_id: str, date: str):
                 result[clean_key] = url
             elif file.endswith('.json'):
                 obj = s3.get_object(Bucket=bucket, Key=file)
-                result[clean_key] = json.loads(obj['Body'].read().decode('utf-8'))
+                data = json.loads(obj['Body'].read().decode('utf-8'))
+                result[clean_key] = data
+                # If this is a *_result key, align vegetation_features and texture_features
+                if clean_key.endswith('_result') and isinstance(data, dict):
+                    # Vegetation features
+                    if 'vegetation_indices' in data and isinstance(data['vegetation_indices'], list):
+                        data['vegetation_features'] = data['vegetation_indices']
+                    elif 'vegetation_indices_vegetation_features' in data and isinstance(data['vegetation_indices_vegetation_features'], list):
+                        data['vegetation_features'] = data['vegetation_indices_vegetation_features']
+                    # Texture features
+                    if 'texture_features' in data and isinstance(data['texture_features'], list):
+                        data['texture_features'] = data['texture_features']
+                    elif 'texture_texture_features' in data and isinstance(data['texture_texture_features'], list):
+                        data['texture_features'] = data['texture_texture_features']
         return result
     except Exception as e:
         logging.error(f"Error fetching results: {str(e)}")

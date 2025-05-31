@@ -429,16 +429,9 @@ export default {
     },
     // Table items for vegetation indices
     vegIndexItems() {
-      return Object.entries(this.formattedVegIndices).map(([index, data]) => ({
-        index,
-        mean: data.mean,
-        std: data.std,
-        min: data.min,
-        max: data.max,
-        q25: data.q25,
-        median: data.median,
-        q75: data.q75
-      }));
+      const nested = this.nestedResult;
+      if (!nested || !nested.vegetation_features || !Array.isArray(nested.vegetation_features)) return [];
+      return nested.vegetation_features;
     },
     // Table headers for texture features
     textureHeaders() {
@@ -449,10 +442,15 @@ export default {
     },
     // Table items for texture features
     textureItems() {
-      return Object.entries(this.textureStats).map(([feature, value]) => ({
-        feature,
-        value
-      }));
+      const nested = this.nestedResult;
+      if (!nested || !nested.texture_features || !Array.isArray(nested.texture_features)) return [];
+      // Flatten all features for all bands
+      return nested.texture_features.flatMap(obj =>
+        Object.entries(obj).map(([feature, value]) => ({
+          feature: obj.plant_id ? `${obj.plant_id} - ${feature}` : feature,
+          value
+        }))
+      );
     },
     // Table headers for morphology features
     morphHeaders() {

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend-api:
     build:
@@ -10,7 +8,7 @@ services:
     environment:
       DB_CONNECTION_STRING: ${DB_DEV_CONNECTION_STRING}
       ENVIRONMENT: development
-      PYTHONPATH: /app:/app/backend:/app/services
+      PYTHONPATH: /app:/app/backend:/app/services:/app/src
       MODELS_DIRECTORY: /app/backend/models
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
@@ -19,26 +17,27 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ../../backend:/app/backend        
-      - ../../src:/app/src                 
+      - ../../backend:/app/backend
+      - "../../src:/app/src"
       - ../backend-api/entrypoint.sh:/app/entrypoint.sh
     entrypoint: ./entrypoint.sh
     depends_on:
       postgres_app_dev:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      test: ["CMD", "curl", "-f", "http://localhost:8001"]
       interval: 30s
       timeout: 10s
       retries: 10
+    restart: unless-stopped
 
   postgres_app_dev:
     image: postgres:latest
     environment:
       POSTGRES_USER: ${POSTGRES_DEV_USER}
-      HF_TOKEN: ${HF_TOKEN}
       POSTGRES_PASSWORD: ${POSTGRES_DEV_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DEV_DB}
+      HF_TOKEN: ${HF_TOKEN}
     ports:
       - "5434:5432"
     volumes:
@@ -49,7 +48,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-      
+    restart: unless-stopped
+
   frontend:
     build:
       context: ../../
@@ -58,6 +58,7 @@ services:
       - "8080:80"
     depends_on:
       - backend-api
+    restart: unless-stopped
 
   sync-db:
     build:
@@ -70,13 +71,16 @@ services:
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
       DB_DEV_CONNECTION_STRING: ${DB_DEV_CONNECTION_STRING}
+      HF_TOKEN: ${HF_TOKEN}
     depends_on:
       - backend-api
+    restart: unless-stopped
 
   redis:
     image: redis:alpine
     ports:
       - "6379:6379"
+    restart: unless-stopped
 
   celery-worker:
     build:
@@ -89,23 +93,25 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
-    deploy:
-      replicas: 4
     env_file:
       - ../common/.env
+    deploy:
+      replicas: 4
+    restart: unless-stopped
 
-  pgadmin2:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_LOG_FILE: /tmp/pgadmin4.log
-    ports:
-      - "5050:80"
-    depends_on:
-      - postgres_app_dev
-    volumes:
-      - ./pgadmin-logs:/var/log/pgadmin
+  # pgadmin2:
+  #   image: dpage/pgadmin4
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #     PGADMIN_CONFIG_LOG_FILE: /tmp/pgadmin4.log
+  #   ports:
+  #     - "5050:80"
+  #   depends_on:
+  #     - postgres_app_dev
+  #   volumes:
+  #     - ./pgadmin-logs:/var/log/pgadmin
+  #   restart: unless-stopped
 
 volumes:
   postgres_data_dev:

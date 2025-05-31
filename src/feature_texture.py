@@ -27,7 +27,7 @@ def hog_image(gray, orientations=9, pixels_per_cell=(8,8), cells_per_block=(2,2)
     return exposure.rescale_intensity(vis, out_range=(0,255)).astype(np.uint8)
 
 
-# Cell 7: Lacunarity & EHD
+# Cell 7: Lacunarity & EHD
 
 from src.DBC_Lacunarity import DBC_Lacunarity
 
@@ -174,7 +174,20 @@ def analyze_texture_features(pdata, key=None, s3_bucket=None, s3_prefix=None):
 
         if s3_bucket and s3_prefix:
             bprefix = f"{s3_prefix}/texture/{band}"
-            save_image_to_s3(s3_bucket, f"{bprefix}/01_orig.png", orig_img, cmap='gray')
+            if band == 'color':
+                import matplotlib.pyplot as plt
+                import matplotlib
+                matplotlib.use('Agg')
+                fig, ax = plt.subplots(figsize=(6, 6))
+                ax.imshow(orig_img)
+                ax.axis('off')
+                buf = io.BytesIO()
+                plt.savefig(buf, format='png', dpi=150, bbox_inches='tight')
+                plt.close(fig)
+                buf.seek(0)
+                s3.upload_fileobj(buf, s3_bucket, f"{bprefix}/01_orig.png")
+            else:
+                save_image_to_s3(s3_bucket, f"{bprefix}/01_orig.png", orig_img, cmap='gray')
             save_image_to_s3(s3_bucket, f"{bprefix}/02_gray.png", gray, cmap='gray')
             save_image_to_s3(s3_bucket, f"{bprefix}/03_lbp.png", lbp_map, cmap='gray')
             save_image_to_s3(s3_bucket, f"{bprefix}/04_hog.png", hog_map, cmap='gray')
