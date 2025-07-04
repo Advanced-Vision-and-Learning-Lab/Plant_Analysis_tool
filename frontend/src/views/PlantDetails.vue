@@ -30,34 +30,34 @@
           <div class="parameters-section">
             <h3 class="parameters-title">Analysis Parameters</h3>
 
-            <!-- Plant ID Selection (First) -->
+            <!-- Plant ID Selection -->
             <div class="parameter-group">
               <ConfigurableDropdown
-                v-model="selectedPlantId"
+                v-model="selectedPlantId"                
                 :options="plantIdOptions"
+                :display-text="plantIdDisplayText"
                 label="Plant ID"
                 placeholder="Select Plant ID"
-                variant="default"
                 size="small"
                 :searchable="true"
                 @change="handlePlantIdChange"
-                class = "dropdown"
+                class="dropdown"
               />
             </div>
 
-            <!-- Date Selection (Second, disabled until Plant ID selected) -->
+            <!-- Date Selection -->
             <div class="parameter-group">
               <ConfigurableDropdown
                 v-model="selectedDate"
                 :options="dateOptions"
+                :display-text="dateDisplayText"
                 label="Analysis Date"
                 placeholder="Select Date"
-                variant="default"
                 size="small"
                 :disabled="!selectedPlantId"
                 :searchable="true"
                 @change="handleDateChange"
-                class = "dropdown"
+                class="dropdown"
               />
             </div>
 
@@ -194,29 +194,30 @@ export default {
       analysisProgress: 0,
 
       // Options data
-      plantIdOptions: [
-        { label: 'Plant-001', value: 'plant_001' },
-        { label: 'Plant-002', value: 'plant_002' },
-        { label: 'Plant-003', value: 'plant_003' },
-        { label: 'Plant-004', value: 'plant_004' },
-        { label: 'Plant-005', value: 'plant_005' },
-        { label: 'Plant-006', value: 'plant_006' },
-        { label: 'Plant-007', value: 'plant_007' },
-        { label: 'Plant-008', value: 'plant_008' },
-        { label: 'Plant-009', value: 'plant_009' },
-        { label: 'Plant-010', value: 'plant_010' }
-      ],
-
+      plantIdOptions: Array.from({ length: 48 }, (_, i) => ({
+        label: `Plant ${i + 1}`,
+        value: `plant${i + 1}`
+      })),
+      
       dateOptions: [
-        { label: 'Today', value: new Date().toISOString().split('T')[0] },
-        { label: 'Yesterday', value: new Date(Date.now() - 86400000).toISOString().split('T')[0] },
-        { label: '2024-01-15', value: '2024-01-15' },
-        { label: '2024-01-14', value: '2024-01-14' },
-        { label: '2024-01-13', value: '2024-01-13' },
-        { label: '2024-01-12', value: '2024-01-12' },
-        { label: '2024-01-11', value: '2024-01-11' },
-        { label: '2024-01-10', value: '2024-01-10' }
+        { label: '2024-12-04', value: '2024-12-04' },
+        { label: '2024-12-10', value: '2024-12-10' },
+        { label: '2024-12-16', value: '2024-12-16' },
+        { label: '2025-01-13', value: '2025-01-13' },
+        { label: '2025-01-24', value: '2025-01-24' },
+        { label: '2025-01-31', value: '2025-01-31' },
+        { label: '2025-02-05', value: '2025-02-05' },
+        { label: '2025-02-14', value: '2025-02-14' },
+        { label: '2025-03-03', value: '2025-03-03' },
+        { label: '2025-03-12', value: '2025-03-12' },
+        { label: '2025-03-24', value: '2025-03-24' },
+        { label: '2025-04-01', value: '2025-04-01' },
+        { label: '2025-04-15', value: '2025-04-15' },
+        { label: '2025-04-16', value: '2025-04-16' },
+        { label: '2025-04-17', value: '2025-04-17' },
+        { label: '2025-04-21', value: '2025-04-21' }
       ]
+     
     };
   },
   computed: {
@@ -240,6 +241,28 @@ export default {
 
     canStartAnalysis() {
       return this.selectedPlantId && this.selectedDate;
+    },
+
+    plantIdDisplayText() {
+      if (!this.selectedPlantId) return "Select a Plant ID";
+      
+      // Find the option that matches the selected value
+      const selectedOption = this.plantIdOptions.find(option => 
+        option.value === this.selectedPlantId
+      );
+      
+      return selectedOption ? selectedOption.label : this.selectedPlantId;
+    },
+    
+    dateDisplayText() {
+      if (!this.selectedDate) return "Select a Date";
+      
+      // Find the option that matches the selected value
+      const selectedOption = this.dateOptions.find(option => 
+        option.value === this.selectedDate
+      );
+      
+      return selectedOption ? selectedOption.label : this.selectedDate;
     }
   },
   methods: {
@@ -250,11 +273,15 @@ export default {
 
     handlePlantIdChange(plantId) {
       console.log('Plant ID changed to:', plantId);
+      // Update the selected plant ID
+      this.selectedPlantId = plantId;
       // Clear date selection when plant ID changes
       this.selectedDate = null;
     },
 
     handleDateChange(date) {
+      this.selectedDate = date;
+      
       console.log('Date changed to:', date);
     },
 

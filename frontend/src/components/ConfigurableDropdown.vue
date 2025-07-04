@@ -3,14 +3,12 @@
     <!-- Label -->
     <label v-if="label" class="dropdown-label" :for="dropdownId">
       {{ label }}
-      <span v-if="required" class="required-asterisk">*</span>
     </label>
     
     <!-- Dropdown Button -->
     <div 
       class="dropdown-button"
       :class="dropdownClasses"
-      :style="dropdownStyles"
       @click="toggleDropdown"
       @keydown.enter="toggleDropdown"
       @keydown.space.prevent="toggleDropdown"
@@ -19,14 +17,9 @@
       tabindex="0"
       :id="dropdownId"
     >
-      <div class="dropdown-content">
-        <span v-if="selectedOption" class="selected-text">
-          {{ getDisplayText(selectedOption) }}
-        </span>
-        <span v-else class="placeholder-text">
-          {{ placeholder }}
-        </span>
-      </div>
+      <span class="dropdown-content">
+        {{ displayText }}
+      </span>
       
       <div class="dropdown-arrow" :class="{ 'arrow-up': isOpen }">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
@@ -40,8 +33,6 @@
       <div 
         v-if="isOpen" 
         class="dropdown-menu"
-        :class="menuClasses"
-        :style="menuStyles"
       >
         <div 
           v-if="searchable" 
@@ -106,9 +97,11 @@ export default {
       default: null
     },
     
-    placeholder: {
+    
+    // Display text from parent component
+    displayText: {
       type: String,
-      default: 'Select an option...'
+      default: null
     },
     
     // Option configuration
@@ -123,11 +116,6 @@ export default {
     },
     
     // Validation
-    required: {
-      type: Boolean,
-      default: false
-    },
-    
     error: {
       type: String,
       default: null
@@ -155,12 +143,6 @@ export default {
     },
     
     // Styling
-    variant: {
-      type: String,
-      default: 'default',
-      validator: (value) => ['default', 'outline', 'filled', 'glass'].includes(value)
-    },
-    
     size: {
       type: String,
       default: 'medium',
@@ -208,36 +190,29 @@ export default {
     dropdownClasses() {
       return [
         'dropdown-trigger',
-        `dropdown-${this.variant}`,
         `dropdown-${this.size}`,
         {
           'dropdown-open': this.isOpen,
           'dropdown-disabled': this.disabled,
-          'dropdown-has-value': this.selectedOption
+          'dropdown-has-value': this.modelValue
         }
       ];
-    },
-    
-    dropdownStyles() {
-      return {};
-    },
-    
-    menuClasses() {
-      return [
-        'dropdown-list',
-        `menu-${this.variant}`
-      ];
-    },
-    
-    menuStyles() {
-      return {};
     },
     
     selectedOption() {
       if (this.multiple) {
         return this.modelValue || [];
       }
-      return this.modelValue;
+      
+      if (!this.modelValue) {
+        return null;
+      }
+      
+      const found = this.options.find(option => 
+        this.getOptionValue(option) === this.modelValue
+      );
+      
+      return found || null;
     },
     
     filteredOptions() {
@@ -297,7 +272,9 @@ export default {
           this.$emit('update:modelValue', [...currentValue, option]);
         }
       } else {
-        this.$emit('update:modelValue', option);
+        // Emit the option value, not the entire option object
+        const optionValue = this.getOptionValue(option);
+        this.$emit('update:modelValue', optionValue);
         this.closeDropdown();
       }
       
@@ -318,7 +295,8 @@ export default {
         );
       }
       
-      return this.getOptionValue(this.selectedOption) === this.getOptionValue(option);
+      // Compare directly with modelValue instead of selectedOption
+      return this.getOptionValue(this.modelValue) === this.getOptionValue(option);
     },
     
     getDisplayText(option) {
@@ -332,7 +310,7 @@ export default {
     },
     
     getOptionValue(option) {
-      if (!option) return null;
+      if (!option) return '';
       
       if (typeof option === 'string' || typeof option === 'number') {
         return option;
@@ -354,7 +332,8 @@ export default {
     
     // Click outside handler
     handleClickOutside(event) {
-      if (!this.$el.contains(event.target)) {
+      // Check if the click was outside the dropdown component
+      if (this.$el && !this.$el.contains(event.target)) {
         this.closeDropdown();
       }
     }
@@ -378,8 +357,23 @@ export default {
   display: inline-block;
 }
 
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .dropdown-full-width {
   width: 100%;
+}
+
+.dropdown-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.dropdown-error {
+  border-color: #ef4444 !important;
 }
 
 .dropdown-label {
@@ -390,11 +384,6 @@ export default {
   font-size: 14px;
 }
 
-.required-asterisk {
-  color: #ef4444;
-  margin-left: 2px;
-}
-
 .dropdown-button {
   display: flex;
   align-items: center;
@@ -402,35 +391,27 @@ export default {
   cursor: pointer;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 30px;
+  background: rgba(255, 255, 255, 0.575);
+  color: white;
+  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
   outline: none;
   position: relative;
 }
 
-/* Dropdown Variants */
-.dropdown-default {
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
   background: rgba(255, 255, 255, 0.575);
   color: white;
   backdrop-filter: blur(10px);
-}
-
-.dropdown-outline {
-  background: transparent;
-  color: white;
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.dropdown-filled {
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  border-color: rgba(255, 255, 255, 0.5);
-}
-
-.dropdown-glass {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.664);
-  backdrop-filter: blur(20px);
+  transition: all 0.3s ease;
+  outline: none;
+  position: relative;
 }
 
 /* Dropdown Sizes */
@@ -452,8 +433,31 @@ export default {
   min-height: 52px;
 }
 
+.dropdown-trigger.dropdown-small {
+  padding: 8px 12px;
+  font-size: 14px;
+  min-height: 36px;
+}
+
+.dropdown-trigger.dropdown-medium {
+  padding: 12px 16px;
+  font-size: 16px;
+  min-height: 44px;
+}
+
+.dropdown-trigger.dropdown-large {
+  padding: 16px 20px;
+  font-size: 18px;
+  min-height: 52px;
+}
+
 /* Dropdown States */
 .dropdown-button:hover:not(.dropdown-disabled) {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.dropdown-trigger:hover:not(.dropdown-disabled) {
   border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-1px);
 }
@@ -463,23 +467,32 @@ export default {
   box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
 }
 
+.dropdown-trigger:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+}
+
 .dropdown-open {
   border-color: #ffffff !important;
 }
 
-.dropdown-disabled {
+.dropdown-trigger.dropdown-open {
+  border-color: #ffffff !important;
+}
+
+.dropdown-trigger.dropdown-disabled {
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-.dropdown-error {
-  border-color: #ef4444 !important;
+.dropdown-trigger.dropdown-has-value {
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 /* Dropdown Content */
 .dropdown-content {
-  color: rgba(0, 0, 0, 0.726);
+  color: rgba(0, 0, 0, 0.8);
   flex: 1;
   text-align: center;
   font-size: 18px;

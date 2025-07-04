@@ -13,10 +13,9 @@
       <!-- Pre-analysis state -->
       <div v-if="!hasStartedAnalysis" class="pre-analysis">
         <div class="selection-display">
-          <h4>Current Selection</h4>
-          <p class="plant-selection">
+          <h1 class="plant-selection">
             You have selected: <strong>{{ plantName }}</strong>
-          </p>
+          </h1>
           
           <div v-if="plantId || analysisDate" class="additional-info">
             <div v-if="plantId" class="info-item">
@@ -48,7 +47,7 @@
         </div>
       </div>
 
-      <!-- Analysis complete - show results -->
+      <!-- Analysis complete - show results with tabs -->
       <div v-else class="analysis-complete">
         <!-- Results Summary -->
         <div class="results-summary">
@@ -73,72 +72,78 @@
           </div>
         </div>
 
-        <!-- Results Table -->
-        <div class="results-table-container">
-          <h4>Phenotyping Results</h4>
-          <div class="table-wrapper">
-            <table class="results-table">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Value</th>
-                  <th>Unit</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(result, index) in analysisResults" :key="index" :class="getRowClass(result)">
-                  <td class="parameter-name">{{ result.parameter }}</td>
-                  <td class="parameter-value">{{ result.value }}</td>
-                  <td class="parameter-unit">{{ result.unit }}</td>
-                  <td class="parameter-status">
-                    <span class="status-badge" :class="result.status.toLowerCase()">
-                      {{ result.status }}
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+          <div class="tabs-header">
+            <button
+              v-for="(tab, index) in tabs"
+              :key="index"
+              class="tab-button"
+              :class="{ active: activeTab === index }"
+              @click="activeTab = index"
+            >
+              {{ tab.label }}
+            </button>
           </div>
-        </div>
 
-        <!-- Additional Charts/Visualizations placeholder -->
-        <div v-if="showCharts" class="charts-section">
-          <h4>Visual Analysis</h4>
-          <div class="charts-grid">
-            <div class="chart-placeholder">
-              <p>Growth Rate Chart</p>
-              <div class="chart-mock">📊</div>
+          <!-- Tab Content -->
+          <div class="tab-content">
+            <!-- Images Tab -->
+            <div v-if="activeTab === 0" class="tab-panel">
+              <ImageGrid 
+                :images="mainImages"
+                :columns="4"
+                :image-size="250"
+              />
             </div>
-            <div class="chart-placeholder">
-              <p>Health Index</p>
-              <div class="chart-mock">📈</div>
-            </div>
-          </div>
-        </div>
 
-        <!-- Export Options -->
-        <div class="export-section">
-          <h4>Export Results</h4>
-          <div class="export-buttons">
-            <ConfigurableButton
-              text="Download CSV"
-              variant="outline"
-              size="small"
-              @click="exportCSV"
-            />
-            <ConfigurableButton
-              text="Download PDF"
-              variant="outline"
-              size="small"
-              @click="exportPDF"
-            />
-            <ConfigurableButton
-              text="Share Results"
-              variant="secondary"
-              size="small"
-              @click="shareResults"
-            />
+            <!-- Texture Images Tab -->
+            <div v-else-if="activeTab === 1" class="tab-panel">
+              <ImageGrid 
+                :images="textureImages"
+                :columns="3"
+                :image-size="280"
+              />
+            </div>
+
+            <!-- Vegetation Indices Images Tab -->
+            <div v-else-if="activeTab === 2" class="tab-panel">
+              <ImageGrid 
+                :images="vegetationIndicesImages"
+                :columns="4"
+                :image-size="200"
+              />
+            </div>
+
+            <!-- Vegetation Indices Table Tab -->
+            <div v-else-if="activeTab === 3" class="tab-panel">
+              <SearchableTable
+                :headers="vegetationIndicesHeaders"
+                :items="vegetationIndicesData"
+                search-placeholder="Search vegetation indices..."
+                default-sort="index"
+              />
+            </div>
+
+            <!-- Texture Features Table Tab -->
+            <div v-else-if="activeTab === 4" class="tab-panel">
+              <SearchableTable
+                :headers="textureFeaturesHeaders"
+                :items="textureFeaturesData"
+                search-placeholder="Search texture features..."
+                default-sort="feature"
+              />
+            </div>
+
+            <!-- Morphological Features Table Tab -->
+            <div v-else-if="activeTab === 5" class="tab-panel">
+              <SearchableTable
+                :headers="morphologicalFeaturesHeaders"
+                :items="morphologicalFeaturesData"
+                search-placeholder="Search morphological features..."
+                default-sort="feature"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -147,12 +152,14 @@
 </template>
 
 <script>
-import ConfigurableButton from './ConfigurableButton.vue'
+import ImageGrid from './ImageGrid.vue'
+import SearchableTable from './SearchableTable.vue'
 
 export default {
   name: 'AnalysisResults',
   components: {
-    ConfigurableButton
+    ImageGrid,
+    SearchableTable
   },
   props: {
     // Basic props
@@ -213,49 +220,215 @@ export default {
   data() {
     return {
       processingTime: 2.3,
+      activeTab: 0,
       
-      // Dummy analysis results - Extended dataset
-      defaultResults: [
-        { parameter: 'Plant Height', value: '45.2', unit: 'cm', status: 'Normal' },
-        { parameter: 'Leaf Area', value: '127.8', unit: 'cm²', status: 'Normal' },
-        { parameter: 'Stem Diameter', value: '8.5', unit: 'mm', status: 'Normal' },
-        { parameter: 'Chlorophyll Content', value: '42.1', unit: 'SPAD', status: 'High' },
-        { parameter: 'Disease Index', value: '0.12', unit: 'ratio', status: 'Low' },
-        { parameter: 'Growth Rate', value: '2.8', unit: 'cm/day', status: 'Normal' },
-        { parameter: 'Water Stress', value: '0.05', unit: 'ratio', status: 'Low' },
-        { parameter: 'Biomass Estimate', value: '156.3', unit: 'g', status: 'Normal' },
-        { parameter: 'Root Length', value: '23.7', unit: 'cm', status: 'Normal' },
-        { parameter: 'Leaf Count', value: '12', unit: 'count', status: 'Normal' },
-        { parameter: 'Flowering Stage', value: '3.2', unit: 'scale', status: 'Normal' },
-        { parameter: 'Fruit Count', value: '8', unit: 'count', status: 'High' },
-        { parameter: 'Nitrogen Content', value: '2.8', unit: '%', status: 'Normal' },
-        { parameter: 'Phosphorus Content', value: '0.45', unit: '%', status: 'Low' },
-        { parameter: 'Potassium Content', value: '1.9', unit: '%', status: 'Normal' },
-        { parameter: 'Soil pH', value: '6.8', unit: 'pH', status: 'Normal' },
-        { parameter: 'Temperature Stress', value: '0.08', unit: 'ratio', status: 'Low' },
-        { parameter: 'Light Exposure', value: '85.2', unit: '%', status: 'High' },
-        { parameter: 'Humidity Level', value: '62.5', unit: '%', status: 'Normal' },
-        { parameter: 'Pest Damage', value: '0.03', unit: 'ratio', status: 'Low' },
-        { parameter: 'Leaf Thickness', value: '0.28', unit: 'mm', status: 'Normal' },
-        { parameter: 'Stomatal Density', value: '245', unit: 'count/mm²', status: 'Normal' },
-        { parameter: 'Photosynthesis Rate', value: '18.7', unit: 'μmol/m²/s', status: 'High' },
-        { parameter: 'Transpiration Rate', value: '4.2', unit: 'mmol/m²/s', status: 'Normal' },
-        { parameter: 'Carbon Fixation', value: '12.8', unit: 'mg/g/h', status: 'Normal' },
-        { parameter: 'Antioxidant Activity', value: '78.3', unit: 'μmol TE/g', status: 'High' },
-        { parameter: 'Protein Content', value: '14.2', unit: '%', status: 'Normal' },
-        { parameter: 'Carbohydrate Content', value: '68.5', unit: '%', status: 'Normal' },
-        { parameter: 'Fiber Content', value: '8.9', unit: '%', status: 'Normal' },
-        { parameter: 'Moisture Content', value: '82.1', unit: '%', status: 'Normal' },
-        { parameter: 'Ash Content', value: '1.8', unit: '%', status: 'Low' },
-        { parameter: 'Lipid Content', value: '2.1', unit: '%', status: 'Low' },
-        { parameter: 'Vitamin C', value: '45.6', unit: 'mg/100g', status: 'High' },
-        { parameter: 'Carotenoids', value: '12.4', unit: 'mg/100g', status: 'Normal' },
-        { parameter: 'Flavonoids', value: '8.7', unit: 'mg/100g', status: 'High' },
-        { parameter: 'Phenolic Compounds', value: '156.8', unit: 'mg GAE/100g', status: 'High' },
-        { parameter: 'Seed Viability', value: '94.2', unit: '%', status: 'High' },
-        { parameter: 'Germination Rate', value: '89.5', unit: '%', status: 'Normal' },
-        { parameter: 'Seedling Vigor', value: '7.8', unit: 'index', status: 'Normal' },
-        { parameter: 'Stress Tolerance', value: '6.9', unit: 'index', status: 'Normal' }
+      // Tab definitions
+      tabs: [
+        { label: 'Images', key: 'images' },
+        { label: 'Texture Images', key: 'texture-images' },
+        { label: 'Vegetation Indices Images', key: 'veg-indices-images' },
+        { label: 'Vegetation Indices Table', key: 'veg-indices-table' },
+        { label: 'Texture Features Table', key: 'texture-features-table' },
+        { label: 'Morphological Features Table', key: 'morphological-features-table' }
+      ],
+
+      // Main images data
+      mainImages: [
+        { url: 'https://via.placeholder.com/400x300/4ade80/ffffff?text=Original+Image', label: 'Original Image' },
+        { url: 'https://via.placeholder.com/400x300/60a5fa/ffffff?text=Segmentation+Mask', label: 'Segmentation Mask' },
+        { url: 'https://via.placeholder.com/400x300/fbbf24/ffffff?text=Overlay+Viz', label: 'Overlay Visualization' },
+        { url: 'https://via.placeholder.com/400x300/ef4444/ffffff?text=Segmented+Plant', label: 'Segmented Plant' }
+      ],
+
+      // Texture images data
+      textureImages: [
+        { url: 'https://via.placeholder.com/300x300/4ade80/ffffff?text=Color+Original', label: 'Color Original' },
+        { url: 'https://via.placeholder.com/300x300/6b7280/ffffff?text=Color+Grayscale', label: 'Color Grayscale' },
+        { url: 'https://via.placeholder.com/300x300/8b5cf6/ffffff?text=Color+LBP', label: 'Color LBP' },
+        { url: 'https://via.placeholder.com/300x300/ec4899/ffffff?text=Color+HOG', label: 'Color HOG' },
+        { url: 'https://via.placeholder.com/300x300/f59e0b/ffffff?text=Color+Lac1', label: 'Color Lacunarity 1' },
+        { url: 'https://via.placeholder.com/300x300/10b981/ffffff?text=Color+Lac2', label: 'Color Lacunarity 2' },
+        { url: 'https://via.placeholder.com/300x300/3b82f6/ffffff?text=Color+Lac3', label: 'Color Lacunarity 3' },
+        { url: 'https://via.placeholder.com/300x300/ef4444/ffffff?text=Color+EHD', label: 'Color EHD Map' },
+        { url: 'https://via.placeholder.com/300x300/22c55e/ffffff?text=Green+Original', label: 'Green Original' },
+        { url: 'https://via.placeholder.com/300x300/6b7280/ffffff?text=Green+Grayscale', label: 'Green Grayscale' },
+        { url: 'https://via.placeholder.com/300x300/8b5cf6/ffffff?text=Green+LBP', label: 'Green LBP' },
+        { url: 'https://via.placeholder.com/300x300/ec4899/ffffff?text=Green+HOG', label: 'Green HOG' },
+        { url: 'https://via.placeholder.com/300x300/84cc16/ffffff?text=NIR+Original', label: 'NIR Original' },
+        { url: 'https://via.placeholder.com/300x300/6b7280/ffffff?text=NIR+Grayscale', label: 'NIR Grayscale' },
+        { url: 'https://via.placeholder.com/300x300/8b5cf6/ffffff?text=NIR+LBP', label: 'NIR LBP' },
+        { url: 'https://via.placeholder.com/300x300/ec4899/ffffff?text=NIR+HOG', label: 'NIR HOG' }
+      ],
+
+      // Vegetation indices images data
+      vegetationIndicesImages: [
+        { url: 'https://via.placeholder.com/200x200/22c55e/ffffff?text=NDVI', label: 'NDVI' },
+        { url: 'https://via.placeholder.com/200x200/16a34a/ffffff?text=GNDVI', label: 'GNDVI' },
+        { url: 'https://via.placeholder.com/200x200/15803d/ffffff?text=EVI2', label: 'EVI2' },
+        { url: 'https://via.placeholder.com/200x200/166534/ffffff?text=NDRE', label: 'NDRE' },
+        { url: 'https://via.placeholder.com/200x200/14532d/ffffff?text=NDWI', label: 'NDWI' },
+        { url: 'https://via.placeholder.com/200x200/134e4a/ffffff?text=NGRDI', label: 'NGRDI' },
+        { url: 'https://via.placeholder.com/200x200/0f766e/ffffff?text=ARI', label: 'ARI' },
+        { url: 'https://via.placeholder.com/200x200/115e59/ffffff?text=ARI2', label: 'ARI2' },
+        { url: 'https://via.placeholder.com/200x200/134e4a/ffffff?text=AVI', label: 'AVI' },
+        { url: 'https://via.placeholder.com/200x200/14532d/ffffff?text=CCCI', label: 'CCCI' },
+        { url: 'https://via.placeholder.com/200x200/166534/ffffff?text=CIgreen', label: 'CIgreen' },
+        { url: 'https://via.placeholder.com/200x200/15803d/ffffff?text=CIRE', label: 'CIRE' },
+        { url: 'https://via.placeholder.com/200x200/16a34a/ffffff?text=CVI', label: 'CVI' },
+        { url: 'https://via.placeholder.com/200x200/22c55e/ffffff?text=DSWI4', label: 'DSWI4' },
+        { url: 'https://via.placeholder.com/200x200/4ade80/ffffff?text=DVI', label: 'DVI' },
+        { url: 'https://via.placeholder.com/200x200/65a30d/ffffff?text=ExR', label: 'ExR' },
+        { url: 'https://via.placeholder.com/200x200/84cc16/ffffff?text=GEMI', label: 'GEMI' },
+        { url: 'https://via.placeholder.com/200x200/a3e635/ffffff?text=GOSAVI', label: 'GOSAVI' },
+        { url: 'https://via.placeholder.com/200x200/bef264/ffffff?text=GRNDVI', label: 'GRNDVI' },
+        { url: 'https://via.placeholder.com/200x200/d9f99d/ffffff?text=GRVI', label: 'GRVI' },
+        { url: 'https://via.placeholder.com/200x200/ecfccb/ffffff?text=GSAVI', label: 'GSAVI' },
+        { url: 'https://via.placeholder.com/200x200/f7fee7/ffffff?text=IPVI', label: 'IPVI' },
+        { url: 'https://via.placeholder.com/200x200/22c55e/ffffff?text=LCI', label: 'LCI' },
+        { url: 'https://via.placeholder.com/200x200/16a34a/ffffff?text=MCARI', label: 'MCARI' },
+        { url: 'https://via.placeholder.com/200x200/15803d/ffffff?text=MCARI1', label: 'MCARI1' },
+        { url: 'https://via.placeholder.com/200x200/166534/ffffff?text=MCARI2', label: 'MCARI2' },
+        { url: 'https://via.placeholder.com/200x200/14532d/ffffff?text=MGRVI', label: 'MGRVI' },
+        { url: 'https://via.placeholder.com/200x200/134e4a/ffffff?text=MSAVI', label: 'MSAVI' },
+        { url: 'https://via.placeholder.com/200x200/0f766e/ffffff?text=MSR', label: 'MSR' },
+        { url: 'https://via.placeholder.com/200x200/115e59/ffffff?text=MTVI1', label: 'MTVI1' },
+        { url: 'https://via.placeholder.com/200x200/134e4a/ffffff?text=MTVI2', label: 'MTVI2' },
+        { url: 'https://via.placeholder.com/200x200/14532d/ffffff?text=NLI', label: 'NLI' },
+        { url: 'https://via.placeholder.com/200x200/166534/ffffff?text=OSAVI', label: 'OSAVI' },
+        { url: 'https://via.placeholder.com/200x200/15803d/ffffff?text=PVI', label: 'PVI' },
+        { url: 'https://via.placeholder.com/200x200/16a34a/ffffff?text=RDVI', label: 'RDVI' },
+        { url: 'https://via.placeholder.com/200x200/22c55e/ffffff?text=RI', label: 'RI' },
+        { url: 'https://via.placeholder.com/200x200/4ade80/ffffff?text=RRI1', label: 'RRI1' },
+        { url: 'https://via.placeholder.com/200x200/65a30d/ffffff?text=SIPI2', label: 'SIPI2' },
+        { url: 'https://via.placeholder.com/200x200/84cc16/ffffff?text=SR', label: 'SR' },
+        { url: 'https://via.placeholder.com/200x200/a3e635/ffffff?text=TCARI', label: 'TCARI' },
+        { url: 'https://via.placeholder.com/200x200/bef264/ffffff?text=TCARIOSAVI', label: 'TCARIOSAVI' },
+        { url: 'https://via.placeholder.com/200x200/d9f99d/ffffff?text=TNDVI', label: 'TNDVI' },
+        { url: 'https://via.placeholder.com/200x200/ecfccb/ffffff?text=TSAVI', label: 'TSAVI' },
+        { url: 'https://via.placeholder.com/200x200/f7fee7/ffffff?text=WDVI', label: 'WDVI' }
+      ],
+
+      // Table headers and data
+      vegetationIndicesHeaders: [
+        { text: 'Index', value: 'index', sortable: true },
+        { text: 'Mean', value: 'mean', sortable: true, decimals: 4 },
+        { text: 'Std', value: 'std', sortable: true, decimals: 4 },
+        { text: 'Min', value: 'min', sortable: true, decimals: 4 },
+        { text: 'Max', value: 'max', sortable: true, decimals: 4 },
+        { text: '25%', value: 'q25', sortable: true, decimals: 4 },
+        { text: '50%', value: 'median', sortable: true, decimals: 4 },
+        { text: '75%', value: 'q75', sortable: true, decimals: 4 }
+      ],
+
+      vegetationIndicesData: [
+        { index: 'NDVI', mean: 0.7234, std: 0.0892, min: 0.2341, max: 0.8912, q25: 0.6789, median: 0.7345, q75: 0.7891 },
+        { index: 'GNDVI', mean: 0.6543, std: 0.0765, min: 0.1987, max: 0.8234, q25: 0.6123, median: 0.6678, q75: 0.7123 },
+        { index: 'EVI2', mean: 0.4567, std: 0.0543, min: 0.1234, max: 0.6789, q25: 0.4234, median: 0.4678, q75: 0.5123 },
+        { index: 'NDRE', mean: 0.6789, std: 0.0876, min: 0.2345, max: 0.8567, q25: 0.6345, median: 0.6891, q75: 0.7345 },
+        { index: 'NDWI', mean: 0.3456, std: 0.0432, min: 0.0987, max: 0.5678, q25: 0.3123, median: 0.3567, q75: 0.3987 },
+        { index: 'NGRDI', mean: 0.2345, std: 0.0321, min: 0.0678, max: 0.4567, q25: 0.2123, median: 0.2456, q75: 0.2789 },
+        { index: 'ARI', mean: 0.5678, std: 0.0654, min: 0.1456, max: 0.7891, q25: 0.5345, median: 0.5789, q75: 0.6234 },
+        { index: 'ARI2', mean: 0.4891, std: 0.0543, min: 0.1234, max: 0.6789, q25: 0.4567, median: 0.5012, q75: 0.5456 },
+        { index: 'AVI', mean: 0.6789, std: 0.0765, min: 0.1987, max: 0.8234, q25: 0.6345, median: 0.6891, q75: 0.7345 },
+        { index: 'CCCI', mean: 0.4567, std: 0.0543, min: 0.1234, max: 0.6789, q25: 0.4234, median: 0.4678, q75: 0.5123 },
+        { index: 'CIgreen', mean: 0.3456, std: 0.0432, min: 0.0987, max: 0.5678, q25: 0.3123, median: 0.3567, q75: 0.3987 },
+        { index: 'CIRE', mean: 0.2345, std: 0.0321, min: 0.0678, max: 0.4567, q25: 0.2123, median: 0.2456, q75: 0.2789 },
+        { index: 'CVI', mean: 0.5678, std: 0.0654, min: 0.1456, max: 0.7891, q25: 0.5345, median: 0.5789, q75: 0.6234 },
+        { index: 'DSWI4', mean: 0.4891, std: 0.0543, min: 0.1234, max: 0.6789, q25: 0.4567, median: 0.5012, q75: 0.5456 },
+        { index: 'DVI', mean: 0.6789, std: 0.0765, min: 0.1987, max: 0.8234, q25: 0.6345, median: 0.6891, q75: 0.7345 }
+      ],
+
+      textureFeaturesHeaders: [
+        { text: 'Feature', value: 'feature', sortable: true },
+        { text: 'Band', value: 'band', sortable: true },
+        { text: 'Value', value: 'value', sortable: true, decimals: 4 },
+        { text: 'Type', value: 'type', sortable: true }
+      ],
+
+      textureFeaturesData: [
+        { feature: 'Contrast', band: 'Color', value: 0.2345, type: 'GLCM' },
+        { feature: 'Homogeneity', band: 'Color', value: 0.6789, type: 'GLCM' },
+        { feature: 'Energy', band: 'Color', value: 0.4567, type: 'GLCM' },
+        { feature: 'Correlation', band: 'Color', value: 0.7891, type: 'GLCM' },
+        { feature: 'Entropy', band: 'Color', value: 0.3456, type: 'GLCM' },
+        { feature: 'Variance', band: 'Color', value: 0.5678, type: 'GLCM' },
+        { feature: 'Contrast', band: 'Green', value: 0.2123, type: 'GLCM' },
+        { feature: 'Homogeneity', band: 'Green', value: 0.7123, type: 'GLCM' },
+        { feature: 'Energy', band: 'Green', value: 0.4987, type: 'GLCM' },
+        { feature: 'Correlation', band: 'Green', value: 0.8234, type: 'GLCM' },
+        { feature: 'Entropy', band: 'Green', value: 0.3123, type: 'GLCM' },
+        { feature: 'Variance', band: 'Green', value: 0.5987, type: 'GLCM' },
+        { feature: 'Contrast', band: 'NIR', value: 0.1987, type: 'GLCM' },
+        { feature: 'Homogeneity', band: 'NIR', value: 0.7456, type: 'GLCM' },
+        { feature: 'Energy', band: 'NIR', value: 0.5234, type: 'GLCM' },
+        { feature: 'Correlation', band: 'NIR', value: 0.8567, type: 'GLCM' },
+        { feature: 'Entropy', band: 'NIR', value: 0.2987, type: 'GLCM' },
+        { feature: 'Variance', band: 'NIR', value: 0.6234, type: 'GLCM' },
+        { feature: 'LBP_Uniform', band: 'Color', value: 0.4567, type: 'LBP' },
+        { feature: 'LBP_NonUniform', band: 'Color', value: 0.5432, type: 'LBP' },
+        { feature: 'LBP_Uniform', band: 'Green', value: 0.4987, type: 'LBP' },
+        { feature: 'LBP_NonUniform', band: 'Green', value: 0.5012, type: 'LBP' },
+        { feature: 'LBP_Uniform', band: 'NIR', value: 0.5234, type: 'LBP' },
+        { feature: 'LBP_NonUniform', band: 'NIR', value: 0.4765, type: 'LBP' },
+        { feature: 'HOG_Mean', band: 'Color', value: 0.3456, type: 'HOG' },
+        { feature: 'HOG_Std', band: 'Color', value: 0.1234, type: 'HOG' },
+        { feature: 'HOG_Mean', band: 'Green', value: 0.3678, type: 'HOG' },
+        { feature: 'HOG_Std', band: 'Green', value: 0.1345, type: 'HOG' },
+        { feature: 'HOG_Mean', band: 'NIR', value: 0.3891, type: 'HOG' },
+        { feature: 'HOG_Std', band: 'NIR', value: 0.1456, type: 'HOG' },
+        { feature: 'Lacunarity_1', band: 'Color', value: 0.2345, type: 'Lacunarity' },
+        { feature: 'Lacunarity_2', band: 'Color', value: 0.3456, type: 'Lacunarity' },
+        { feature: 'Lacunarity_3', band: 'Color', value: 0.4567, type: 'Lacunarity' },
+        { feature: 'Lacunarity_1', band: 'Green', value: 0.2123, type: 'Lacunarity' },
+        { feature: 'Lacunarity_2', band: 'Green', value: 0.3234, type: 'Lacunarity' },
+        { feature: 'Lacunarity_3', band: 'Green', value: 0.4345, type: 'Lacunarity' },
+        { feature: 'Lacunarity_1', band: 'NIR', value: 0.1987, type: 'Lacunarity' },
+        { feature: 'Lacunarity_2', band: 'NIR', value: 0.3123, type: 'Lacunarity' },
+        { feature: 'Lacunarity_3', band: 'NIR', value: 0.4234, type: 'Lacunarity' }
+      ],
+
+      morphologicalFeaturesHeaders: [
+        { text: 'Feature', value: 'feature', sortable: true },
+        { text: 'Value', value: 'value', sortable: true, decimals: 2 },
+        { text: 'Unit', value: 'unit', sortable: true },
+        { text: 'Category', value: 'category', sortable: true }
+      ],
+
+      morphologicalFeaturesData: [
+        { feature: 'Plant Height', value: 45.23, unit: 'cm', category: 'Size' },
+        { feature: 'Plant Width', value: 32.45, unit: 'cm', category: 'Size' },
+        { feature: 'Leaf Area', value: 127.89, unit: 'cm²', category: 'Leaf' },
+        { feature: 'Leaf Count', value: 12, unit: 'count', category: 'Leaf' },
+        { feature: 'Stem Diameter', value: 8.56, unit: 'mm', category: 'Stem' },
+        { feature: 'Stem Length', value: 38.91, unit: 'cm', category: 'Stem' },
+        { feature: 'Root Length', value: 23.67, unit: 'cm', category: 'Root' },
+        { feature: 'Root Area', value: 89.34, unit: 'cm²', category: 'Root' },
+        { feature: 'Biomass Estimate', value: 156.78, unit: 'g', category: 'Biomass' },
+        { feature: 'Fresh Weight', value: 234.56, unit: 'g', category: 'Biomass' },
+        { feature: 'Dry Weight', value: 45.67, unit: 'g', category: 'Biomass' },
+        { feature: 'Leaf Area Index', value: 2.34, unit: 'ratio', category: 'Index' },
+        { feature: 'Specific Leaf Area', value: 156.78, unit: 'cm²/g', category: 'Index' },
+        { feature: 'Leaf Mass Ratio', value: 0.45, unit: 'ratio', category: 'Index' },
+        { feature: 'Stem Mass Ratio', value: 0.23, unit: 'ratio', category: 'Index' },
+        { feature: 'Root Mass Ratio', value: 0.32, unit: 'ratio', category: 'Index' },
+        { feature: 'Compactness', value: 0.67, unit: 'ratio', category: 'Shape' },
+        { feature: 'Aspect Ratio', value: 1.39, unit: 'ratio', category: 'Shape' },
+        { feature: 'Circularity', value: 0.78, unit: 'ratio', category: 'Shape' },
+        { feature: 'Solidity', value: 0.89, unit: 'ratio', category: 'Shape' },
+        { feature: 'Convexity', value: 0.92, unit: 'ratio', category: 'Shape' },
+        { feature: 'Extent', value: 0.45, unit: 'ratio', category: 'Shape' },
+        { feature: 'Perimeter', value: 234.56, unit: 'cm', category: 'Boundary' },
+        { feature: 'Convex Perimeter', value: 198.76, unit: 'cm', category: 'Boundary' },
+        { feature: 'Feret Diameter', value: 56.78, unit: 'cm', category: 'Boundary' },
+        { feature: 'Min Feret Diameter', value: 34.56, unit: 'cm', category: 'Boundary' },
+        { feature: 'Max Feret Diameter', value: 67.89, unit: 'cm', category: 'Boundary' },
+        { feature: 'Bounding Box Area', value: 1456.78, unit: 'cm²', category: 'Boundary' },
+        { feature: 'Convex Hull Area', value: 1234.56, unit: 'cm²', category: 'Boundary' },
+        { feature: 'Equivalent Diameter', value: 12.78, unit: 'cm', category: 'Derived' },
+        { feature: 'Major Axis Length', value: 45.67, unit: 'cm', category: 'Derived' },
+        { feature: 'Minor Axis Length', value: 23.45, unit: 'cm', category: 'Derived' },
+        { feature: 'Eccentricity', value: 0.78, unit: 'ratio', category: 'Derived' },
+        { feature: 'Orientation', value: 23.45, unit: 'degrees', category: 'Derived' }
       ]
     };
   },
@@ -271,10 +444,6 @@ export default {
       if (this.isAnalyzing) return 'status-processing';
       if (this.hasStartedAnalysis) return 'status-complete';
       return 'status-ready';
-    },
-    
-    analysisResults() {
-      return this.customResults || this.defaultResults;
     }
   },
   
@@ -287,30 +456,6 @@ export default {
       }
       
       return option.label || option.toString();
-    },
-    
-    getRowClass(result) {
-      return {
-        'row-normal': result.status.toLowerCase() === 'normal',
-        'row-high': result.status.toLowerCase() === 'high',
-        'row-low': result.status.toLowerCase() === 'low',
-        'row-warning': result.status.toLowerCase() === 'warning'
-      };
-    },
-    
-    exportCSV() {
-      console.log('Exporting CSV...');
-      this.$emit('export', { type: 'csv', data: this.analysisResults });
-    },
-    
-    exportPDF() {
-      console.log('Exporting PDF...');
-      this.$emit('export', { type: 'pdf', data: this.analysisResults });
-    },
-    
-    shareResults() {
-      console.log('Sharing results...');
-      this.$emit('share', this.analysisResults);
     }
   },
   
@@ -358,7 +503,6 @@ export default {
 .analysis-results ::-webkit-scrollbar-corner {
   background: transparent;
 }
-
 
 .results-header {
   display: flex;
@@ -427,14 +571,17 @@ export default {
 
 .plant-selection {
   color: white;
-  font-size: 18px;
+  font-size: 40px;
   margin-bottom: 24px;
 }
 
 .additional-info {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+  margin: 0 auto;
+  width: 40%;
   padding: 16px;
+  font-size: 20px;
   margin-bottom: 24px;
 }
 
@@ -442,6 +589,7 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
+  font-weight: bold;
   color: white;
 }
 
@@ -545,93 +693,50 @@ export default {
   font-weight: 500;
 }
 
-/* Results table */
-.table-wrapper {
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.08);
-  margin-bottom: 20px;
-}
-
-.results-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: white;
-}
-
-.results-table th {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 12px;
-  text-align: left;
-  font-weight: 600;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.results-table td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.parameter-name {
-  font-weight: 500;
-}
-
-.parameter-value {
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.status-badge.normal {
-  background: rgba(34, 197, 94, 0.2);
-  color: #4ade80;
-}
-
-.status-badge.high {
-  background: rgba(245, 158, 11, 0.2);
-  color: #fbbf24;
-}
-
-.status-badge.low {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
-}
-
-.status-badge.warning {
-  background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-}
-
-/* Charts section */
-.charts-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-.chart-placeholder {
+/* Tabs Styles */
+.tabs-container {
   background: rgba(255, 255, 255, 0.08);
   border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  color: white;
+  overflow: hidden;
 }
 
-.chart-mock {
-  font-size: 48px;
-  margin-top: 16px;
-}
-
-/* Export section */
-.export-buttons {
+.tabs-header {
   display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto;
+}
+
+.tab-button {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom-color: #4ade80;
+}
+
+.tab-content {
+  padding: 20px;
+}
+
+.tab-panel {
+  min-height: 400px;
 }
 
 /* Responsive design */
@@ -640,21 +745,18 @@ export default {
     grid-template-columns: 1fr;
   }
   
-  .charts-grid {
-    grid-template-columns: 1fr;
+  .tabs-header {
+    flex-wrap: wrap;
   }
   
-  .export-buttons {
-    flex-direction: column;
+  .tab-button {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
   }
   
-  .results-table {
-    font-size: 14px;
-  }
-  
-  .results-table th,
-  .results-table td {
-    padding: 8px;
+  .tab-content {
+    padding: 16px;
   }
 }
 </style>

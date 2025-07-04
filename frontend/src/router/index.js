@@ -48,7 +48,7 @@ export default new Router({
       path: '/analyze',
       name: 'ResultViewer', 
       component: () => import('../views/ResultViewer.vue'), 
-      props: route => ({ type: route.query.type, plant: route.query.plant }) 
+      props: route => ({ type: route.query.type, plant: route.query.plant })
     }
   ]
 });

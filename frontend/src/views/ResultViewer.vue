@@ -11,13 +11,7 @@
           v-model="sidebarSelection"
           @analyze="onAnalyze"
         />
-        <!-- Dark mode switch -->
-        <v-switch
-          v-model="$vuetify.theme.dark"
-          label="Dark mode"
-          class="mt-4"
-          inset
-        />
+        <!-- Dark mode switch removed - Vuetify not available -->
       </v-col>
       <!-- Main content area: results, images, tables -->
       <v-col cols="12" md="9" lg="10" class="main-content-col">

@@ -45,7 +45,7 @@ export default {
   right: 0;
   top: 50px;
   z-index: 4;
-  transform: scale(1.1);
+  transform: scale(1.60);
 }
 
 /* White bars styling */
