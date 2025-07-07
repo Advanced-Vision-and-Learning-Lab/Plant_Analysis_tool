@@ -138,6 +138,7 @@
               :has-started-analysis="hasStartedAnalysis"
               :is-analyzing="isAnalyzing"
               :analysis-progress="analysisProgress"
+              :results="results"
               :show-charts="true"
               title="Phenotyping Analysis Results"
               @export="handleExport"
@@ -158,6 +159,7 @@ import backgroundImage from '@/assets/greenhouse-img2.jpg'
 import ConfigurableButton from '../components/ConfigurableButton.vue'
 import ConfigurableDropdown from '@/components/ConfigurableDropdown.vue';
 import AnalysisResults from '../components/AnalysisResults.vue'
+import { getPlantResults, analyzePlant } from '@/api.js'
 
 export default {
   name: 'PlantDetails',
@@ -192,6 +194,7 @@ export default {
       hasStartedAnalysis: false,
       isAnalyzing: false,
       analysisProgress: 0,
+      results: null,
 
       // Options data
       plantIdOptions: Array.from({ length: 48 }, (_, i) => ({
@@ -251,7 +254,7 @@ export default {
         option.value === this.selectedPlantId
       );
       
-      return selectedOption ? selectedOption.label : this.selectedPlantId;
+      return selectedOption ? selectedOption.label : this.selectedPlantId.value;
     },
     
     dateDisplayText() {
@@ -262,7 +265,7 @@ export default {
         option.value === this.selectedDate
       );
       
-      return selectedOption ? selectedOption.label : this.selectedDate;
+      return selectedOption ? selectedOption.label : this.selectedDate.value;
     }
   },
   methods: {
@@ -297,23 +300,92 @@ export default {
         this.hasStartedAnalysis = true;
         this.isAnalyzing = true;
         this.analysisProgress = 0;
-
-        // Simulate analysis progress
-        this.simulateAnalysisProgress();
+        this.results = null;
+        this.fetchResults(this.selectedPlantId.value, this.selectedDate.value);
       }
     },
 
-    simulateAnalysisProgress() {
-      const progressInterval = setInterval(() => {
-        this.analysisProgress += Math.random() * 15 + 5; // Random progress between 5-20%
-
-        if (this.analysisProgress >= 100) {
-          this.analysisProgress = 100;
+    async fetchResults(plantId, date) {
+      this.isAnalyzing = true;
+      this.analysisProgress = 0;
+      console.log('fetchResults: started for', plantId, date);
+      try {
+        const result = await getPlantResults(plantId, date);
+        if (result && result.error) {
+          console.error('fetchResults: Analysis failed:', result.error);
           this.isAnalyzing = false;
-          clearInterval(progressInterval);
-          console.log('Analysis complete!');
+          this.analysisProgress = 0;
+          alert(result.error);
+          return;
         }
-      }, 500); // Update every 500ms
+        this.results = result;
+        this.analysisProgress = 100;
+        this.isAnalyzing = false;
+        console.log('fetchResults: Analysis succeeded, results fetched from backend.');
+      } catch (e) {
+        if (e.response && e.response.status === 404) {
+          try {
+            console.log('fetchResults: No results found, triggering analysis...');
+            await analyzePlant(plantId, date);
+            this.results = await getPlantResults(plantId, date);
+            this.analysisProgress = 100;
+            this.isAnalyzing = false;
+            console.log('fetchResults: Analysis triggered and results fetched.');
+          } catch (analysisError) {
+            console.error('fetchResults: Analysis failed after triggering:', analysisError);
+            alert('Failed to analyze plant. Please try again later.');
+            this.isAnalyzing = false;
+            this.analysisProgress = 0;
+          }
+        } else {
+          console.error('fetchResults: Failed to load results:', e);
+          alert('Error loading results. Please try again later.');
+          this.isAnalyzing = false;
+          this.analysisProgress = 0;
+        }
+      }
+    },
+
+    pollForResult(plantId, date) {
+      this.analysisProgress = 10;
+      let progress = 10;
+      const poll = setInterval(async () => {
+        try {
+          const result = await getPlantResults(plantId, date);
+          if (result) {
+            this.results = result;
+            progress += Math.random() * 20 + 10;
+            this.analysisProgress = Math.min(progress, 95);
+            if (this.allResultsReady(result)) {
+              this.analysisProgress = 100;
+              this.isAnalyzing = false;
+              clearInterval(poll);
+              console.log('Analysis succeeded: Results are now ready.');
+            }
+          }
+        } catch (e) {
+          // Still processing, keep polling
+        }
+      }, 3000);
+    },
+
+    allResultsReady(result) {
+      // Check for main images
+      const mainImages = ['original', 'mask', 'overlay', 'segmented'];
+      const allMainImages = mainImages.every(k => result && result[k]);
+      // Check for at least one vegetation index image
+      const vegIndexKeys = [
+        'ndvi', 'gndvi', 'evi2', 'ndre', 'ndwi', 'ngrdi', 'ari', 'ari2', 'avi', 'ccci', 
+        'cigreen', 'cire', 'cvi', 'dswi4', 'dvi', 'exr', 'gemi', 'gosavi', 'grndvi', 
+        'grvi', 'gsavi', 'ipvi', 'lci', 'mcari', 'mcari1', 'mcari2', 'mgrvi', 'msavi', 
+        'msr', 'mtvi1', 'mtvi2', 'nli', 'osavi', 'pvi', 'rdvi', 'ri', 'rri1', 'sipi2', 
+        'sr', 'tcari', 'tcariosavi', 'tndvi', 'tsavi', 'wdvi'
+      ];
+      const allVegIndices = vegIndexKeys.some(name => result && result[`vegetation_indices_${name}`]);
+      // Check for morphology features
+      const morph = result && result.morphology_features;
+      const hasMorph = morph && Object.keys(morph).length > 0;
+      return allMainImages && allVegIndices && hasMorph;
     },
 
     resetParameters() {
@@ -322,6 +394,7 @@ export default {
       this.hasStartedAnalysis = false;
       this.isAnalyzing = false;
       this.analysisProgress = 0;
+      this.results = null;
       console.log('Parameters reset');
     },
 
@@ -384,6 +457,7 @@ html {
 </style>
 
 <style scoped>
+
 #plant-details {
   font-family: Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

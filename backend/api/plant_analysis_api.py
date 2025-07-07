@@ -44,6 +44,9 @@ def get_plant_results(plant_id: str, date: str):
     s3 = boto3.client('s3', region_name='us-east-2')
     bucket = "plant-analysis-data"
     prefix = f"results/{date}/{plant_id}/"
+    
+    print(f"🔍 Looking for files in S3: bucket={bucket}, prefix={prefix}")
+    
     try:
         paginator = s3.get_paginator('list_objects_v2')
         page_iterator = paginator.paginate(Bucket=bucket, Prefix=prefix)
@@ -51,18 +54,30 @@ def get_plant_results(plant_id: str, date: str):
         for page in page_iterator:
             if 'Contents' in page:
                 files.extend([obj['Key'] for obj in page['Contents']])
+        
+        print(f"📁 Found {len(files)} files: {files}")
+        
+        if not files:
+            print(f"⚠️ No files found for {plant_id} on {date}")
+            return {"error": "No analysis results found for this plant and date"}
+        
         result = {}
         for file in files:
             rel_path = file[len(prefix):] if file.startswith(prefix) else file
             clean_key = rel_path.replace('/', '_').replace('.png', '').replace('.json', '')
             region = 'us-east-2'
             url = f"https://{bucket}.s3.{region}.amazonaws.com/{file}"
+            
+            print(f"📄 Processing file: {file} -> clean_key: {clean_key}")
+            
             if file.endswith('.png'):
                 result[clean_key] = url
+                print(f"🖼️ Added image: {clean_key} = {url}")
             elif file.endswith('.json'):
                 obj = s3.get_object(Bucket=bucket, Key=file)
                 data = json.loads(obj['Body'].read().decode('utf-8'))
                 result[clean_key] = data
+                print(f"📊 Added JSON data: {clean_key}")
                 # If this is a *_result key, align vegetation_features and texture_features
                 if clean_key.endswith('_result') and isinstance(data, dict):
                     # Vegetation features
@@ -75,7 +90,10 @@ def get_plant_results(plant_id: str, date: str):
                         data['texture_features'] = data['texture_features']
                     elif 'texture_texture_features' in data and isinstance(data['texture_texture_features'], list):
                         data['texture_features'] = data['texture_texture_features']
+        
+        print(f"✅ Returning result with {len(result)} items: {list(result.keys())}")
         return result
     except Exception as e:
+        print(f"❌ Error fetching results: {str(e)}")
         logging.error(f"Error fetching results: {str(e)}")
         raise HTTPException(status_code=404, detail=f"Error fetching results: {str(e)}")

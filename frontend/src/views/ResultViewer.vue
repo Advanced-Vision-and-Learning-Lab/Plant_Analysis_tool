@@ -537,7 +537,15 @@ export default {
     async fetchResults(plantId, date) {
       this.loading = true;
       try {
-        this.result = await getPlantResults(plantId, date);
+        const result = await getPlantResults(plantId, date);
+        if (result && result.error) {
+          console.error('Analysis failed:', result.error);
+          this.isAnalyzing = false;
+          this.analysisProgress = 0;
+          alert(result.error);
+          return;
+        }
+        this.result = result;
       } catch (e) {
         if (e.response?.status === 404) {
           try {

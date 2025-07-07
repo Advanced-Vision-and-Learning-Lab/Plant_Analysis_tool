@@ -36,12 +36,12 @@
       <table class="data-table">
         <thead>
           <tr>
-            <th 
+            <!-- <th 
               v-for="header in headers" 
               :key="header.value"
               @click="sortBy(header.value)"
               :class="{ sortable: header.sortable !== false }"
-            >
+            > -->
               {{ header.text }}
               <span v-if="header.sortable !== false" class="sort-icon">
                 {{ getSortIcon(header.value) }}
@@ -143,7 +143,7 @@ export default {
       searchQuery: '',
       currentPage: 1,
       itemsPerPage: 25,
-      sortBy: this.defaultSort,
+      // sortBy: this.defaultSort,
       sortDirection: this.defaultSortDirection
     };
   },
@@ -164,36 +164,36 @@ export default {
       });
     },
     
-    sortedItems() {
-      if (!this.sortBy) {
-        return this.filteredItems;
-      }
+    // sortedItems() {
+    //   if (!this.sortBy) {
+    //     return this.filteredItems;
+    //   }
       
-      return [...this.filteredItems].sort((a, b) => {
-        const aVal = a[this.sortBy];
-        const bVal = b[this.sortBy];
+    //   return [...this.filteredItems].sort((a, b) => {
+    //     const aVal = a[this.sortBy];
+    //     const bVal = b[this.sortBy];
         
-        // Handle null/undefined values
-        if (aVal == null && bVal == null) return 0;
-        if (aVal == null) return 1;
-        if (bVal == null) return -1;
+    //     // Handle null/undefined values
+    //     if (aVal == null && bVal == null) return 0;
+    //     if (aVal == null) return 1;
+    //     if (bVal == null) return -1;
         
-        // Handle numeric values
-        if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-        }
+    //     // Handle numeric values
+    //     if (typeof aVal === 'number' && typeof bVal === 'number') {
+    //       return this.sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+    //     }
         
-        // Handle string values
-        const aStr = aVal.toString().toLowerCase();
-        const bStr = bVal.toString().toLowerCase();
+    //     // Handle string values
+    //     const aStr = aVal.toString().toLowerCase();
+    //     const bStr = bVal.toString().toLowerCase();
         
-        if (this.sortDirection === 'asc') {
-          return aStr.localeCompare(bStr);
-        } else {
-          return bStr.localeCompare(aStr);
-        }
-      });
-    },
+    //     if (this.sortDirection === 'asc') {
+    //       return aStr.localeCompare(bStr);
+    //     } else {
+    //       return bStr.localeCompare(aStr);
+    //     }
+    //   });
+    // },
     
     totalPages() {
       return Math.ceil(this.sortedItems.length / this.itemsPerPage);
@@ -249,21 +249,21 @@ export default {
   },
   
   methods: {
-    sortBy(column) {
-      if (this.sortBy === column) {
-        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortBy = column;
-        this.sortDirection = 'asc';
-      }
-    },
+    // sortBy(column) {
+    //   if (this.sortBy === column) {
+    //     this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    //   } else {
+    //     // this.sortBy = column;
+    //     this.sortDirection = 'asc';
+    //   }
+    // },
     
-    getSortIcon(column) {
-      if (this.sortBy !== column) {
-        return '↕';
-      }
-      return this.sortDirection === 'asc' ? '↑' : '↓';
-    },
+    // getSortIcon(column) {
+    //   if (this.sortBy !== column) {
+    //     return '↕';
+    //   }
+    //   return this.sortDirection === 'asc' ? '↑' : '↓';
+    // },
     
     formatCellValue(value, header) {
       if (value == null) return '-';
