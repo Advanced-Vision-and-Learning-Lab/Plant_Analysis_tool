@@ -93,6 +93,7 @@
               />
             </div>
 
+
             <!-- Status Display -->
             <div class="status-area">
               <div v-if="!selectedPlantId" class="status-message">
@@ -106,19 +107,46 @@
               </div>
 
               <div v-else class="status-message">
-                <h3>Ready for Analysis</h3>
-                <div class="config-summary">
-                  <div class="config-item">
-                    <strong>Plant Type:</strong> {{ plantName }}
+                <!-- Loading Progress Indicator -->
+                <div v-if="isAnalyzing" class="loading-section">
+                  <h3>Analysis in Progress...</h3>
+                  <div class="progress-container">
+                    <div class="progress-bar">
+                      <div class="progress-fill" :style="{ width: analysisProgress + '%' }"></div>
+                    </div>
+                    <div class="progress-text">{{ Math.round(analysisProgress) }}%</div>
                   </div>
-                  <div class="config-item">
-                    <strong>Plant ID:</strong> {{ getDisplayText(selectedPlantId) }}
-                  </div>
-                  <div class="config-item">
-                    <strong>Date:</strong> {{ getDisplayText(selectedDate) }}
+                  <p>Please wait while we process your data...</p>
+                </div>
+                
+                <!-- Analysis Results Status -->
+                <div v-else>
+                  <h3 v-if="results">Analysis Successful</h3>
+                  <h3 v-else-if="analysisFailed">Analysis Failed, Please try again</h3>
+                  <h3 v-else>Ready for Analysis</h3>
+                  <div class="config-summary">
+                    <div class="config-item">
+                      <strong>Plant Type:</strong> {{ plantName }}
+                    </div>
+                    <div class="config-item">
+                      <strong>Plant ID:</strong> {{ getDisplayText(selectedPlantId) }}
+                    </div>
+                    <div class="config-item">
+                      <strong>Date:</strong> {{ getDisplayText(selectedDate) }}
+                    </div>
                   </div>
                 </div>
               </div>
+              <!-- Go Back Button -->
+            <div class="parameter-group">
+              <ConfigurableButton
+                text="Back"
+                variant="outline"
+                size="medium"
+                @click="goBack"
+                class="back-button"
+              />
+            </div>
             </div>
           </div>
 
@@ -195,6 +223,7 @@ export default {
       isAnalyzing: false,
       analysisProgress: 0,
       results: null,
+      analysisFailed: false,
 
       // Options data
       plantIdOptions: Array.from({ length: 48 }, (_, i) => ({
@@ -254,7 +283,7 @@ export default {
         option.value === this.selectedPlantId
       );
       
-      return selectedOption ? selectedOption.label : this.selectedPlantId.value;
+      return selectedOption ? selectedOption.label : this.selectedPlantId.label;
     },
     
     dateDisplayText() {
@@ -265,7 +294,7 @@ export default {
         option.value === this.selectedDate
       );
       
-      return selectedOption ? selectedOption.label : this.selectedDate.value;
+      return selectedOption ? selectedOption.label : this.selectedDate.label;
     }
   },
   methods: {
@@ -280,12 +309,14 @@ export default {
       this.selectedPlantId = plantId;
       // Clear date selection when plant ID changes
       this.selectedDate = null;
+      this.results = null;
     },
 
     handleDateChange(date) {
       this.selectedDate = date;
-      
+      this.results = null;
       console.log('Date changed to:', date);
+
     },
 
     handleAnalyzeClick() {
@@ -301,6 +332,7 @@ export default {
         this.isAnalyzing = true;
         this.analysisProgress = 0;
         this.results = null;
+        this.analysisFailed = false;
         this.fetchResults(this.selectedPlantId.value, this.selectedDate.value);
       }
     },
@@ -308,6 +340,7 @@ export default {
     async fetchResults(plantId, date) {
       this.isAnalyzing = true;
       this.analysisProgress = 0;
+      this.analysisFailed = false;
       console.log('fetchResults: started for', plantId, date);
       try {
         const result = await getPlantResults(plantId, date);
@@ -315,12 +348,14 @@ export default {
           console.error('fetchResults: Analysis failed:', result.error);
           this.isAnalyzing = false;
           this.analysisProgress = 0;
+          this.analysisFailed = true;
           alert(result.error);
           return;
         }
         this.results = result;
         this.analysisProgress = 100;
         this.isAnalyzing = false;
+        this.analysisFailed = false;
         console.log('fetchResults: Analysis succeeded, results fetched from backend.');
       } catch (e) {
         if (e.response && e.response.status === 404) {
@@ -330,18 +365,21 @@ export default {
             this.results = await getPlantResults(plantId, date);
             this.analysisProgress = 100;
             this.isAnalyzing = false;
+            this.analysisFailed = false;
             console.log('fetchResults: Analysis triggered and results fetched.');
           } catch (analysisError) {
             console.error('fetchResults: Analysis failed after triggering:', analysisError);
-            alert('Failed to analyze plant. Please try again later.');
             this.isAnalyzing = false;
             this.analysisProgress = 0;
+            this.analysisFailed = true;
+            alert('Failed to analyze plant. Please try again later.');
           }
         } else {
           console.error('fetchResults: Failed to load results:', e);
-          alert('Error loading results. Please try again later.');
           this.isAnalyzing = false;
           this.analysisProgress = 0;
+          this.analysisFailed = true;
+          alert('Error loading results. Please try again later.');
         }
       }
     },
@@ -395,6 +433,7 @@ export default {
       this.isAnalyzing = false;
       this.analysisProgress = 0;
       this.results = null;
+      this.analysisFailed = false;
       console.log('Parameters reset');
     },
 
@@ -563,6 +602,7 @@ html {
 .reset-button {
   width: 70%;
   margin-top: 8px;
+  font-weight: bold;
 }
 
 /* Main Content Area - Right Side */
@@ -586,9 +626,6 @@ html {
   margin-bottom: 20px;
 }
 
-.back-button {
-  margin-top: 20px;
-}
 
 /* Status Area */
 .status-area {
@@ -659,14 +696,11 @@ html {
 .back-button {
   background: rgba(255, 255, 255, 0.2);
   color: white;
+  margin-top: 10px;
+  width: 40%;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 12px 24px;
   border-radius: 25px;
   font-size: 18px;
-  cursor: pointer;
-  margin: 20px 0;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
 }
 
 .back-button:hover {
@@ -704,6 +738,56 @@ html {
 .details-content li {
   margin: 8px 0;
   line-height: 1.5;
+}
+
+/* Loading Progress Indicator Styles */
+.loading-section {
+  margin-top: -30px;
+  color: white;
+}
+
+.loading-section h3 {
+  font-size: 28px;
+  margin-bottom: 16px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.progress-container {
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #4ade80, #22c55e);
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+  min-width: 0%;
+}
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 </style>

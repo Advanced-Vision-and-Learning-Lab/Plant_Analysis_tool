@@ -41,7 +41,7 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - postgres_data_dev:/var/lib/postgresql/data
+      - ../../../docker_artifacts/postgres_data/dev:/var/lib/postgresql/data  # Use bind mount like test
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_DEV_USER} -d ${POSTGRES_DEV_DB}"]
       interval: 30s
@@ -113,5 +113,6 @@ services:
   #     - ./pgadmin-logs:/var/log/pgadmin
   #   restart: unless-stopped
 
-volumes:
-  postgres_data_dev:
+# Remove the volumes section since we're using bind mounts
+# volumes:
+#   postgres_data_dev:
