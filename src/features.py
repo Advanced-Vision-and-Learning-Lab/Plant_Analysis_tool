@@ -5,6 +5,49 @@ import cv2
 import boto3
 import io
 import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.colors import Normalize
+
+
+index_cmap_settings = {
+    "NDVI": (cm.RdYlGn, -1, 1),
+    "GNDVI": (cm.RdYlGn, -1, 1),
+    "NDRE": (cm.RdYlGn, -1, 1),
+    "GRNDVI": (cm.RdYlGn, -1, 1),
+    "TNDVI": (cm.RdYlGn, -1, 1),
+    "MGRVI": (cm.RdYlGn, -1, 1),
+    "GRVI": (cm.RdYlGn, -1, 1),
+    "NGRDI": (cm.RdYlGn, -1, 1),
+    "MSAVI": (cm.YlGn, 0, 1),
+    "OSAVI": (cm.YlGn, 0, 1),
+    "TSAVI": (cm.YlGn, 0, 1),
+    "GSAVI": (cm.YlGn, 0, 1),
+    "NDWI": (cm.Blues, -1, 1),
+    "DSWI4": (cm.Blues, -1, 1),
+    "CIRE": (cm.viridis, 0, 10),
+    "LCI": (cm.viridis, 0, 5),
+    "CIgreen": (cm.viridis, 0, 5),
+    "MCARI": (cm.viridis, 0, 1.5),
+    "MCARI1": (cm.viridis, 0, 1.5),
+    "MCARI2": (cm.viridis, 0, 1.5),
+    "CVI": (cm.plasma, 0, 10),
+    "TCARI": (cm.viridis, 0, 1),
+    "TCARIOSAVI": (cm.viridis, 0, 1),
+    "AVI": (cm.magma, 0, 1),
+    "SIPI2": (cm.inferno, 0, 1),
+    "ARI": (cm.magma, 0, 1),
+    "ARI2": (cm.magma, 0, 1),
+    "DVI": (cm.Greens, 0, None),
+    "WDVI": (cm.Greens, 0, None),
+    "SR": (cm.viridis, 0, 10),
+    "MSR": (cm.viridis, 0, 10),
+    "PVI": (cm.cividis, None, None),
+    "GEMI": (cm.cividis, 0, 1),
+    "ExR": (cm.Reds, -1, 1),
+    "RI": (cm.Reds, 0, None),
+    "RRI1": (cm.Reds, 0, 1)
+}
+
 
 
 # Save image to S3 helper
@@ -16,15 +59,32 @@ def save_index_to_s3(bucket, key, image_np):
     if success:
         s3.upload_fileobj(io.BytesIO(encoded_img.tobytes()), bucket, key)
 
-def save_image_to_s3(bucket, key, img_np, cmap='YlGn', title=None):
-    fig, ax = plt.subplots(figsize=(6, 6))
-    im = ax.imshow(img_np, cmap=cmap)
+def save_image_to_s3(bucket, key, img_np, title=None, cmap_name='viridis'):
+    cmap, vmin, vmax = index_cmap_settings.get(title, (cm.viridis, np.nanmin(img_np), np.nanmax(img_np)))
+    
+    # Handle None ranges
+    if vmin is None:
+        vmin = np.nanmin(img_np)
+    if vmax is None:
+        vmax = np.nanmax(img_np)
+
+    # Normalize and apply colormap (set background NaNs to white)
+    norm = Normalize(vmin=vmin, vmax=vmax)
+    colored = cmap(norm(img_np))
+    colored[np.isnan(img_np)] = [1, 1, 1, 1]  # White background for NaNs
+
+    fig, ax = plt.subplots(figsize=(5, 5))
+    ax.imshow(colored)
     ax.axis('off')
-    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    if title:
-        ax.set_title(title, fontsize=16)
+
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+    sm.set_array([])
+    cbar = fig.colorbar(sm, ax=ax, orientation='vertical', fraction=0.046, pad=0.04)
+    cbar.set_label(title)
+
     buf = io.BytesIO()
-    plt.savefig(buf, format='png', dpi=150, bbox_inches='tight')
+    plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+    plt.savefig(buf, format='png', dpi=150, bbox_inches='tight', pad_inches=0)
     plt.close(fig)
     buf.seek(0)
     s3_client.upload_fileobj(buf, bucket, key)
@@ -162,7 +222,7 @@ def compute_veg_indices(plants, s3_bucket=None, s3_prefix=None):
 
             if s3_bucket and s3_prefix:
                 s3_key = f"{s3_prefix}/vegetation_indices/{idx}.png"
-                save_image_to_s3(s3_bucket, s3_key, img8, cmap='YlGn', title=idx)
+                save_image_to_s3(s3_bucket, s3_key, img8, title=idx)
 
         d["vegetation_indices"] = disp
         d["original_index_values"] = raw
