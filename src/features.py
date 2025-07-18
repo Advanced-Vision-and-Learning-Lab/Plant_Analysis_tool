@@ -231,27 +231,34 @@ def compute_veg_indices(plants, s3_bucket=None, s3_prefix=None):
 
 def compute_veg_index_features(plants):
     feature_table = []
+
     for plant_id, data in plants.items():
         mask = data.get("mask")
         indices = data.get("original_index_values")
+
         if mask is None or indices is None:
             continue
+
         mask = (mask == 255)
+        feature_vector = {"plant_id": plant_id}
+
         for idx_name, idx_array in indices.items():
             if idx_array is None:
                 continue
+
             values = idx_array[mask]
             if values.size == 0:
                 continue
-            feature_table.append({
-                "index": idx_name,
-                "mean": float(np.nanmean(values)),
-                "std": float(np.nanstd(values)),
-                "max": float(np.nanmax(values)),
-                "min": float(np.nanmin(values)),
-                "median": float(np.nanmedian(values)),
-                "q25": float(np.nanpercentile(values, 25)),
-                "q75": float(np.nanpercentile(values, 75)),
-                "nan_fraction": float(np.isnan(values).sum() / values.size)
-            })
+
+            feature_vector[f"{idx_name}_mean"] = float(np.nanmean(values))
+            feature_vector[f"{idx_name}_std"] = float(np.nanstd(values))
+            feature_vector[f"{idx_name}_max"] = float(np.nanmax(values))
+            feature_vector[f"{idx_name}_min"] = float(np.nanmin(values))
+            feature_vector[f"{idx_name}_median"] = float(np.nanmedian(values))
+            feature_vector[f"{idx_name}_q25"] = float(np.nanpercentile(values, 25))
+            feature_vector[f"{idx_name}_q75"] = float(np.nanpercentile(values, 75))
+            feature_vector[f"{idx_name}_nan_fraction"] = float(np.isnan(values).sum() / values.size)
+
+        feature_table.append(feature_vector)
+
     return feature_table
