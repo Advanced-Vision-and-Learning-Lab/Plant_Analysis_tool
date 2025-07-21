@@ -56,6 +56,11 @@
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#usage-and-supported-features">Usage and Supported Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-setup">Developer Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contribution-guidelines">Contribution Guidelines</a></li>
 </ul>
 </li>
 </ul>
@@ -90,7 +95,8 @@
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="docker_environment.html">Docker Environment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docker_environment.html#services-and-their-purpose">Services and Their Purpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html#architecture-overview">Architecture Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker_environment.html#service-orchestration">Service Orchestration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docker_environment.html#key-notes">Key Notes</a></li>
 </ul>
 </li>
@@ -114,8 +120,11 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_design.html">API Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html#key-features">Key Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_design.html#backend-api">Backend API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_design.html#frontend-api">Frontend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html#example-endpoints">Example Endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html#how-to-use">How to Use</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html#celery-task-flow">Celery Task Flow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_design.html#helpful-debugging-tips">Helpful debugging tips:</a></li>
 </ul>
 </li>
@@ -133,6 +142,61 @@
 <li class="toctree-l1"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
 </ul>
 </div>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This project is a modular, containerized pipeline for plant image analysis. It uses FastAPI for the backend, Celery for background processing, Vue.js for the frontend, and Docker for orchestration. Airflow is NOT used in this version.</p>
+</section>
+<section id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Frontend:</strong> Vue.js SPA for user interaction</p></li>
+<li><p><strong>Backend:</strong> FastAPI REST API</p></li>
+<li><p><strong>Worker:</strong> Celery for running heavy analysis tasks asynchronously</p></li>
+<li><p><strong>Database:</strong> PostgreSQL for metadata and results</p></li>
+<li><p><strong>Storage:</strong> AWS S3 for images and result files</p></li>
+<li><p><strong>Broker:</strong> Redis for Celery</p></li>
+<li><p><strong>Containerization:</strong> Docker Compose for easy setup</p></li>
+</ul>
+</section>
+<section id="developer-setup">
+<h2>Developer Setup<a class="headerlink" href="#developer-setup" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Clone the Repository</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/Advanced-Vision-and-Learning-Lab/Plant_Analysis_tool.git</span>
+<span class="pre">cd</span> <span class="pre">Plant_Analysis_tool</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>Configure Environment</strong>
+- Copy and edit <cite>.env</cite> in <cite>docker/common/</cite> as needed (see README for details).</p></li>
+<li><p><strong>Build and Start Services</strong>
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">cd</span> <span class="pre">docker/common</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
+<span class="pre">`</span></code></p></li>
+<li><p><strong>Access Services</strong>
+- Frontend: <a class="reference external" href="http://localhost:8080">http://localhost:8080</a>
+- Backend API: <a class="reference external" href="http://localhost:8001">http://localhost:8001</a>
+- pgAdmin: <a class="reference external" href="http://localhost:5050">http://localhost:5050</a></p></li>
+</ol>
+</section>
+<section id="development-workflow">
+<h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Backend:</strong> Edit code in <cite>backend/</cite>, restart the backend container if needed.</p></li>
+<li><p><strong>Frontend:</strong> Edit code in <cite>frontend/</cite>, use hot-reload for rapid development.</p></li>
+<li><p><strong>Celery Worker:</strong> Code in <cite>backend/</cite> (tasks.py, pipeline_runner.py), restart worker if needed.</p></li>
+<li><p><strong>Database:</strong> Use pgAdmin or psql for inspection.</p></li>
+</ul>
+</section>
+<section id="contribution-guidelines">
+<h2>Contribution Guidelines<a class="headerlink" href="#contribution-guidelines" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use feature branches and pull requests.</p></li>
+<li><p>Write clear, modular, and well-documented code.</p></li>
+<li><p>Add or update tests in the <cite>tests/</cite> folder.</p></li>
+<li><p>Follow the collaboration guidelines in this documentation.</p></li>
+</ul>
+</section>
 </section>
 
 
