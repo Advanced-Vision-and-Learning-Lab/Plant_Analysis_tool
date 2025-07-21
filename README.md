@@ -351,7 +351,3 @@ The backend is responsible for all data processing, analysis, and orchestration.
 - **Broker**: Redis
 - **Containerization**: Docker or Podman
 
----
-
-## Contributing
-Refer to the [Developer Guide](https://automatedplantphenotypinganalysisdocs.readthedocs.io/en/latest/collaboration_guidelines.html) for detailed collaboration guidelines.
