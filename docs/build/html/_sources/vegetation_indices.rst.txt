@@ -24,8 +24,8 @@ NDVI quantifies vegetation greenness and health. High NDVI values indicate healt
 - NDVI < 0: Water, snow, or non-vegetated surfaces
 
 **Image:**
-.. image:: _static/ndvi_example.png
-   :alt: NDVI Example
+.. image:: _static/NDVI.png
+   :alt: NDVI
    :width: 300px
 
 ---
@@ -47,8 +47,8 @@ GNDVI is sensitive to chlorophyll concentration and is useful for assessing plan
 - Low GNDVI: Stressed or sparse vegetation
 
 **Image:**
-.. image:: _static/gndvi_example.png
-   :alt: GNDVI Example
+.. image:: _static/GNDVI.png
+   :alt: GNDVI
    :width: 300px
 
 ---
@@ -70,8 +70,8 @@ NDRE is sensitive to chlorophyll content and is useful for detecting plant stres
 - Low NDRE: Stressed or senescent vegetation
 
 **Image:**
-.. image:: _static/ndre_example.png
-   :alt: NDRE Example
+.. image:: _static/NDRE.png
+   :alt: NDRE
    :width: 300px
 
 ---
@@ -93,8 +93,8 @@ GRNDVI combines green and red bands for improved sensitivity to vegetation chang
 - Low GRNDVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/grndvi_example.png
-   :alt: GRNDVI Example
+.. image:: _static/GRNDVI.png
+   :alt: GRNDVI
    :width: 300px
 
 ---
@@ -115,8 +115,8 @@ TNDVI is a transformed version of NDVI, often used to enhance contrast in vegeta
 - Higher TNDVI: More vigorous vegetation
 
 **Image:**
-.. image:: _static/tndvi_example.png
-   :alt: TNDVI Example
+.. image:: _static/TNDVI.png
+   :alt: TNDVI
    :width: 300px
 
 ---
@@ -138,8 +138,8 @@ MGRVI enhances the contrast between green and red reflectance, useful for vegeta
 - Low MGRVI: Stressed or senescent vegetation
 
 **Image:**
-.. image:: _static/mgrvi_example.png
-   :alt: MGRVI Example
+.. image:: _static/MGRVI.png
+   :alt: MGRVI
    :width: 300px
 
 ---
@@ -161,8 +161,8 @@ GRVI is used to assess vegetation vigor using NIR and green bands.
 - Low GRVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/grvi_example.png
-   :alt: GRVI Example
+.. image:: _static/GRVI.png
+   :alt: GRVI
    :width: 300px
 
 ---
@@ -184,8 +184,8 @@ NGRDI is sensitive to vegetation cover and is used for crop monitoring.
 - Low NGRDI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/ngrdi_example.png
-   :alt: NGRDI Example
+.. image:: _static/NGRDI.png
+   :alt: NGRDI
    :width: 300px
 
 ---
@@ -207,8 +207,8 @@ MSAVI reduces the influence of soil brightness in areas with low vegetation cove
 - Low MSAVI: Sparse vegetation or bare soil
 
 **Image:**
-.. image:: _static/msavi_example.png
-   :alt: MSAVI Example
+.. image:: _static/MSAVI.png
+   :alt: MSAVI
    :width: 300px
 
 ---
@@ -230,8 +230,8 @@ OSAVI is similar to SAVI but optimized for better performance in areas with mode
 - Low OSAVI: Sparse vegetation or bare soil
 
 **Image:**
-.. image:: _static/osavi_example.png
-   :alt: OSAVI Example
+.. image:: _static/OSAVI.png
+   :alt: OSAVI
    :width: 300px
 
 ---
@@ -253,8 +253,8 @@ TSAVI further reduces soil background effects, especially in arid regions.
 - Low TSAVI: Sparse vegetation or bare soil
 
 **Image:**
-.. image:: _static/tsavi_example.png
-   :alt: TSAVI Example
+.. image:: _static/TSAVI.png
+   :alt: TSAVI
    :width: 300px
 
 ---
@@ -276,8 +276,8 @@ GSAVI is a soil-adjusted index using the green band, useful for certain crops.
 - Low GSAVI: Sparse vegetation or bare soil
 
 **Image:**
-.. image:: _static/gsavi_example.png
-   :alt: GSAVI Example
+.. image:: _static/GSAVI.png
+   :alt: GSAVI
    :width: 300px
 
 ---
@@ -299,8 +299,8 @@ NDWI is used to monitor changes in water content of leaves and detect water bodi
 - Low NDWI: Dry or non-vegetated areas
 
 **Image:**
-.. image:: _static/ndwi_example.png
-   :alt: NDWI Example
+.. image:: _static/NDWI.png
+   :alt: NDWI
    :width: 300px
 
 ---
@@ -322,8 +322,8 @@ DSWI4 is used for drought stress detection in plants.
 - Low DSWI4: Drought-stressed vegetation
 
 **Image:**
-.. image:: _static/dswi4_example.png
-   :alt: DSWI4 Example
+.. image:: _static/DSWI4.png
+   :alt: DSWI4
    :width: 300px
 
 ---
@@ -345,8 +345,8 @@ CIRE is sensitive to chlorophyll content and is useful for precision agriculture
 - Low CIRE: Stressed or senescent vegetation
 
 **Image:**
-.. image:: _static/cire_example.png
-   :alt: CIRE Example
+.. image:: _static/CIRE.png
+   :alt: CIRE
    :width: 300px
 
 ---
@@ -368,8 +368,8 @@ LCI is used to estimate leaf chlorophyll content.
 - Low LCI: Low chlorophyll content
 
 **Image:**
-.. image:: _static/lci_example.png
-   :alt: LCI Example
+.. image:: _static/LCI.png
+   :alt: LCI
    :width: 300px
 
 ---
@@ -391,8 +391,8 @@ CIgreen is sensitive to chlorophyll content in the green band.
 - Low CIgreen: Low chlorophyll content
 
 **Image:**
-.. image:: _static/cigreen_example.png
-   :alt: CIgreen Example
+.. image:: _static/CIgreen.png
+   :alt: CIgreen
    :width: 300px
 
 ---
@@ -414,8 +414,8 @@ MCARI is used to estimate chlorophyll content and reduce soil background effects
 - Low MCARI: Low chlorophyll content
 
 **Image:**
-.. image:: _static/mcari_example.png
-   :alt: MCARI Example
+.. image:: _static/MCARI.png
+   :alt: MCARI
    :width: 300px
 
 ---
@@ -437,8 +437,8 @@ MCARI1 is a variant of MCARI for improved sensitivity to chlorophyll.
 - Low MCARI1: Low chlorophyll content
 
 **Image:**
-.. image:: _static/mcari1_example.png
-   :alt: MCARI1 Example
+.. image:: _static/MCARI1.png
+   :alt: MCARI1
    :width: 300px
 
 ---
@@ -460,8 +460,8 @@ MCARI2 is another variant of MCARI for improved sensitivity to chlorophyll.
 - Low MCARI2: Low chlorophyll content
 
 **Image:**
-.. image:: _static/mcari2_example.png
-   :alt: MCARI2 Example
+.. image:: _static/MCARI2.png
+   :alt: MCARI2
    :width: 300px
 
 ---
@@ -483,8 +483,8 @@ CVI is used to estimate chlorophyll content and vegetation vigor.
 - Low CVI: Low chlorophyll content
 
 **Image:**
-.. image:: _static/cvi_example.png
-   :alt: CVI Example
+.. image:: _static/CVI.png
+   :alt: CVI
    :width: 300px
 
 ---
@@ -506,8 +506,8 @@ TCARI is used to estimate chlorophyll content and reduce soil background effects
 - Low TCARI: Low chlorophyll content
 
 **Image:**
-.. image:: _static/tcari_example.png
-   :alt: TCARI Example
+.. image:: _static/TCARI.png
+   :alt: TCARI
    :width: 300px
 
 ---
@@ -529,8 +529,8 @@ TCARIOSAVI combines TCARI and OSAVI for improved chlorophyll estimation.
 - Low TCARIOSAVI: Low chlorophyll content
 
 **Image:**
-.. image:: _static/tcariosavi_example.png
-   :alt: TCARIOSAVI Example
+.. image:: _static/TCARIOSAVI.png
+   :alt: TCARIOSAVI
    :width: 300px
 
 ---
@@ -552,8 +552,8 @@ AVI is used to estimate vegetation cover and vigor.
 - Low AVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/avi_example.png
-   :alt: AVI Example
+.. image:: _static/AVI.png
+   :alt: AVI
    :width: 300px
 
 ---
@@ -575,8 +575,8 @@ SIPI2 is used to estimate pigment content, insensitive to structure.
 - Low SIPI2: Low pigment content
 
 **Image:**
-.. image:: _static/sipi2_example.png
-   :alt: SIPI2 Example
+.. image:: _static/SIPI2.png
+   :alt: SIPI2
    :width: 300px
 
 ---
@@ -598,8 +598,8 @@ ARI is used to estimate anthocyanin content in leaves.
 - Low ARI: Low anthocyanin content
 
 **Image:**
-.. image:: _static/ari_example.png
-   :alt: ARI Example
+.. image:: _static/ARI.png
+   :alt: ARI
    :width: 300px
 
 ---
@@ -621,8 +621,8 @@ ARI2 is a variant of ARI for improved anthocyanin estimation.
 - Low ARI2: Low anthocyanin content
 
 **Image:**
-.. image:: _static/ari2_example.png
-   :alt: ARI2 Example
+.. image:: _static/ARI2.png
+   :alt: ARI2
    :width: 300px
 
 ---
@@ -644,8 +644,8 @@ DVI is a simple index for vegetation detection.
 - Low DVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/dvi_example.png
-   :alt: DVI Example
+.. image:: _static/DVI.png
+   :alt: DVI
    :width: 300px
 
 ---
@@ -667,8 +667,8 @@ WDVI is used to minimize soil background effects in vegetation detection.
 - Low WDVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/wdvi_example.png
-   :alt: WDVI Example
+.. image:: _static/WDVI.png
+   :alt: WDVI
    :width: 300px
 
 ---
@@ -690,8 +690,8 @@ SR is a basic ratio for vegetation detection.
 - Low SR: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/sr_example.png
-   :alt: SR Example
+.. image:: _static/SR.png
+   :alt: SR
    :width: 300px
 
 ---
@@ -713,8 +713,8 @@ MSR is a modified ratio for improved vegetation discrimination.
 - Low MSR: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/msr_example.png
-   :alt: MSR Example
+.. image:: _static/MSR.png
+   :alt: MSR
    :width: 300px
 
 ---
@@ -736,8 +736,8 @@ PVI is used to minimize soil background effects in vegetation detection.
 - Low PVI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/pvi_example.png
-   :alt: PVI Example
+.. image:: _static/PVI.png
+   :alt: PVI
    :width: 300px
 
 ---
@@ -759,8 +759,8 @@ GEMI is used for global environmental monitoring and vegetation assessment.
 - Low GEMI: Sparse or stressed vegetation
 
 **Image:**
-.. image:: _static/gemi_example.png
-   :alt: GEMI Example
+.. image:: _static/GEMI.png
+   :alt: GEMI
    :width: 300px
 
 ---
@@ -782,8 +782,8 @@ ExR is used to highlight red features, useful for certain crop and soil analyses
 - Low ExR: Low red reflectance
 
 **Image:**
-.. image:: _static/exr_example.png
-   :alt: ExR Example
+.. image:: _static/ExR.png
+   :alt: ExR
    :width: 300px
 
 ---
@@ -805,8 +805,8 @@ RI is used to assess redness in vegetation or soil.
 - Low RI: Low redness
 
 **Image:**
-.. image:: _static/ri_example.png
-   :alt: RI Example
+.. image:: _static/RI.png
+   :alt: RI
    :width: 300px
 
 ---
@@ -828,8 +828,8 @@ RRI1 is used to assess redness using NIR and red edge bands.
 - Low RRI1: Low NIR to red edge ratio
 
 **Image:**
-.. image:: _static/rri1_example.png
-   :alt: RRI1 Example
+.. image:: _static/RRI1.png
+   :alt: RRI1
    :width: 300px
 
 --- 
