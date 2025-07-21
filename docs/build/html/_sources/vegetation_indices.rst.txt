@@ -1,23 +1,23 @@
 Vegetation Indices
 ==================
 
-.. toctree::
-   :maxdepth: 1
-.. image:: _static/demo.png
-   :alt: Demo of Plant Analysis Tool
-   :width: 800px
-   :align: center
-This page provides detailed explanations for each vegetation index supported by the pipeline, including formulas, descriptions, and interpretation.
+This page provides detailed explanations for each vegetation index supported by the pipeline, including formulas, descriptions, and interpretation guidelines.
+
+.. contents::
+   :local:
+   :depth: 1
 
 NDVI (Normalized Difference Vegetation Index)
 ---------------------------------------------
+
 **Formula:**
 
 .. math::
+
    NDVI = \frac{NIR - Red}{NIR + Red}
 
-**Description:**
-NDVI quantifies vegetation greenness and health. High NDVI values indicate healthy, green vegetation; low values indicate stressed or sparse vegetation.
+**Description:**  
+NDVI quantifies vegetation greenness and health. High values indicate lush, healthy vegetation; low or negative values indicate stressed vegetation, bare soil, or water.
 
 **Typical Range:** -1 to 1
 
@@ -26,13 +26,12 @@ NDVI quantifies vegetation greenness and health. High NDVI values indicate healt
 - NDVI ~ 0: Bare soil or sparse vegetation
 - NDVI < 0: Water, snow, or non-vegetated surfaces
 
-
-
 .. image:: _static/NDVI.png
    :alt: NDVI
    :width: 300px
 
 ---
+
 
 GNDVI (Green Normalized Difference Vegetation Index)
 ----------------------------------------------------
