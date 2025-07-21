@@ -56,7 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#example-endpoints">Example Endpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-use">How to Use</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#celery-task-flow">Celery Task Flow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#helpful-debugging-tips">Helpful debugging tips:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging-tips">Debugging Tips</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
@@ -100,7 +100,7 @@
              
   <section id="api-design">
 <h1>API Design<a class="headerlink" href="#api-design" title="Link to this heading"></a></h1>
-<p>The API layer of the plant phenotyping application is built using FastAPI, a modern Python web framework for building APIs with Python type hints. FastAPI provides high performance, easy integration with frontend frameworks, and automatic interactive API documentation.</p>
+<p>The API layer is built using FastAPI, a modern Python web framework. It provides RESTful endpoints for all analysis and result retrieval operations, and integrates with Celery for background processing.</p>
 <section id="key-features">
 <h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -142,8 +142,8 @@
 <li><p>Task status and results can be queried via the API.</p></li>
 </ul>
 </section>
-<section id="helpful-debugging-tips">
-<h2>Helpful debugging tips:<a class="headerlink" href="#helpful-debugging-tips" title="Link to this heading"></a></h2>
+<section id="debugging-tips">
+<h2>Debugging Tips<a class="headerlink" href="#debugging-tips" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>Use the Swagger UI to test endpoints and inspect responses.</p></li>
 <li><p>Check backend and worker logs for errors.</p></li>

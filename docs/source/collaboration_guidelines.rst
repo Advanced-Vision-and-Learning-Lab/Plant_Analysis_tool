@@ -56,7 +56,7 @@ Usage and Supported Features
 +----------------------+-------------------------------------------------------------+
 | Vegetation Indices   | Computes NDVI, EVI, and other indices from spectral data    |
 +----------------------+-------------------------------------------------------------+
-| Texture Analysis     | Extracts GLCM-based texture features                        |
+| Texture Analysis     | Extracts LBP, HOG, Lacunarity, and EHD texture features     |
 +----------------------+-------------------------------------------------------------+
 | Morphology Analysis  | Calculates area, perimeter, and shape descriptors           |
 +----------------------+-------------------------------------------------------------+

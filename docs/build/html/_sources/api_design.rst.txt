@@ -1,7 +1,7 @@
 API Design
 ==========
 
-The API layer of the plant phenotyping application is built using FastAPI, a modern Python web framework for building APIs with Python type hints. FastAPI provides high performance, easy integration with frontend frameworks, and automatic interactive API documentation.
+The API layer is built using FastAPI, a modern Python web framework. It provides RESTful endpoints for all analysis and result retrieval operations, and integrates with Celery for background processing.
 
 Key Features
 ------------
@@ -34,8 +34,8 @@ Celery Task Flow
 - The Celery worker processes the image, runs the analysis pipeline, and stores results.
 - Task status and results can be queried via the API.
 
-Helpful debugging tips:
------------------------
+Debugging Tips
+--------------
 - Use the Swagger UI to test endpoints and inspect responses.
 - Check backend and worker logs for errors.
 - Use pgAdmin to inspect the database.

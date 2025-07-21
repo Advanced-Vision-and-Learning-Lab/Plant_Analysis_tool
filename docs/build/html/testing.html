@@ -53,13 +53,20 @@
 <li class="toctree-l2"><a class="reference internal" href="api_design.html">API Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#types-of-tests">Types of Tests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#writing-tests">Writing Tests</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-isolation-and-coverage">Test Isolation and Coverage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#usage-and-supported-features">Usage and Supported Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#developer-setup">Developer Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#contribution-guidelines">Contribution Guidelines</a></li>
 </ul>
 </li>
 </ul>
@@ -92,49 +99,51 @@
   <section id="testing">
 <h1>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h1>
 <p>Testing is a crucial part of the development process. It ensures that the code is working as expected and that it is free of bugs.</p>
-<p>Some important concepts about testing are:</p>
+<section id="types-of-tests">
+<h2>Types of Tests<a class="headerlink" href="#types-of-tests" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Unit Testing:</strong> Tests individual components of the code in isolation. It is used to ensure that each part of the code works correctly.</p></li>
-<li><p><strong>Integration Testing:</strong> Tests how different components of the code work together. It is used to ensure that the code works as a whole.</p></li>
-<li><p><strong>Test Coverage:</strong> Measures the percentage of code that is covered by tests. It is used to ensure that all parts of the code are tested.</p></li>
+<li><p><strong>Unit Testing:</strong> Test individual components in isolation.</p></li>
+<li><p><strong>Integration Testing:</strong> Test how different components work together.</p></li>
+<li><p><strong>Test Coverage:</strong> Measure the percentage of code covered by tests.</p></li>
 </ul>
+</section>
 <section id="writing-tests">
 <h2>Writing Tests<a class="headerlink" href="#writing-tests" title="Link to this heading"></a></h2>
-<p>Since this app has many services and components, it is important to write tests for each part of the code. Each service should have its own set of tests to ensure that it works correctly.</p>
-<p>Some important points to consider while writing tests are:</p>
 <ul class="simple">
-<li><p><strong>Test Isolation:</strong> Tests should be independent of each other. They should not rely on the state of other tests.</p></li>
-<li><p><strong>Test Database:</strong> Use a separate database for testing to avoid conflicts with the development database. This is reason for the test database in the docker-compose file.</p></li>
-<li><p><strong>Mocking:</strong> Use mocking to simulate external dependencies like APIs or databases. This ensures that the tests are fast and reliable.</p></li>
-<li><p><strong>Test Coverage:</strong> Aim for high test coverage to ensure that all parts of the code are tested.</p></li>
-<li><p><strong>Fixtures and Factories:</strong> Use fixtures and factories to create test data. This makes it easier to write tests and ensures that the data is consistent.</p></li>
+<li><p>Write tests for each service (backend, frontend, worker).</p></li>
+<li><p>Use a separate test database to avoid conflicts with development data.</p></li>
+<li><p>Use mocking to simulate external dependencies (APIs, S3, etc.).</p></li>
+<li><p>Use fixtures and factories to create test data.</p></li>
+<li><p>Organize tests by service/component (e.g., <cite>src/tests/api/backend</cite>).</p></li>
 </ul>
-<p>Tests should be organized into different folders based on the service or component they are testing. For example, tests for the backend API should be in the <cite>src/tests/api/backend</cite> folder, and tests for the frontend API should be in the <cite>src/tests/api/frontend</cite> folder.</p>
 </section>
 <section id="running-tests">
 <h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h2>
-<p>To run the tests for the plant phenotyping application, follow these steps:</p>
-<ol class="arabic">
-<li><p>Log in to the service container where the tests are located:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>&lt;service-name&gt;<span class="w"> </span>bin/bash
-</pre></div>
-</div>
-</li>
-<li><p>You can run tests for specific folder using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span><span class="w"> </span>pytest<span class="w"> </span>&lt;folder<span class="w"> </span>under<span class="w"> </span>test&gt;<span class="w"> </span>--cov<span class="o">=</span>&lt;folder<span class="w"> </span>to<span class="w"> </span>include<span class="w"> </span><span class="k">in</span><span class="w"> </span>the<span class="w"> </span>coverage<span class="w"> </span>report&gt;<span class="w"> </span>--cov-report<span class="o">=</span>term-missing<span class="w"> </span>--cov-report<span class="o">=</span>html
-</pre></div>
-</div>
-<p>For example, to run tests for the frontend API:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span><span class="w"> </span>pytest<span class="w"> </span>src/tests/api/frontend<span class="w"> </span>--cov<span class="o">=</span>src/api/frontend<span class="w"> </span>--cov-report<span class="o">=</span>term-missing<span class="w"> </span>--cov-report<span class="o">=</span>html
-</pre></div>
-</div>
-</li>
-<li><p>Alternatively, you can run all tests using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./run_tests.sh
-</pre></div>
-</div>
-</li>
+<ol class="arabic simple">
+<li><p>Log in to the service container where the tests are located:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">docker-compose</span> <span class="pre">exec</span> <span class="pre">&lt;service-name&gt;</span> <span class="pre">bash</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Run tests for a specific folder:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">ENVIRONMENT=test</span> <span class="pre">pytest</span> <span class="pre">&lt;folder&gt;</span> <span class="pre">--cov=&lt;folder&gt;</span> <span class="pre">--cov-report=term-missing</span> <span class="pre">--cov-report=html</span>
+<span class="pre">`</span></code>
+Example for backend API:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">ENVIRONMENT=test</span> <span class="pre">pytest</span> <span class="pre">src/tests/api/backend</span> <span class="pre">--cov=src/api/backend</span> <span class="pre">--cov-report=term-missing</span> <span class="pre">--cov-report=html</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Alternatively, run all tests using a script:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">./run_tests.sh</span>
+<span class="pre">`</span></code></p></li>
 </ol>
+</section>
+<section id="test-isolation-and-coverage">
+<h2>Test Isolation and Coverage<a class="headerlink" href="#test-isolation-and-coverage" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Tests should be independent and not rely on the state of other tests.</p></li>
+<li><p>Aim for high test coverage to ensure all code paths are tested.</p></li>
+</ul>
 </section>
 </section>
 

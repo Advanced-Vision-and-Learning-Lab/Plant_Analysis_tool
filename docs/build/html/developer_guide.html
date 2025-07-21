@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Docker Environment" href="docker_environment.html" />
-    <link rel="prev" title="User Guide" href="user_guide.html" /> 
+    <link rel="prev" title="Texture Features" href="texture_features.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -103,20 +103,24 @@
 <li class="toctree-l1"><a class="reference internal" href="setup.html">Setting up the Development Environment</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="setup.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html#pre-requisites">Pre-requisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="setup.html#for-gui-development">For GUI Development</a></li>
-<li class="toctree-l2"><a class="reference internal" href="setup.html#for-backend-development">For Backend Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#frontend-development">Frontend Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#backend-development">Backend Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="setup.html#live-code-reloading">Live Code Reloading</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend_design.html">Frontend Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="frontend_design.html#selected-frontend-framework-vue-js"><strong>Selected Frontend Framework: Vue.js</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html#structure">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html#development">Development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend_design.html#why-vue-js">Why Vue.js?</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="database_design.html">Database Design</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="database_design.html#database-schema">Database Schema</a></li>
-<li class="toctree-l2"><a class="reference internal" href="database_design.html#hashing-to-avoid-data-duplication">Hashing To Avoid Data Duplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html#hashing-to-avoid-data-duplication">Hashing to Avoid Data Duplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="database_design.html#database-relationships">Database Relationships</a></li>
-<li class="toctree-l2"><a class="reference internal" href="database_design.html#steps-to-make-any-changes-to-the-database-schema">Steps to make any changes to the database schema</a></li>
-<li class="toctree-l2"><a class="reference internal" href="database_design.html#helpful-debugging-tips">Helpful debugging tips:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html#schema-changes">Schema Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database_design.html#debugging-tips">Debugging Tips</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_design.html">API Design</a><ul>
@@ -125,13 +129,18 @@
 <li class="toctree-l2"><a class="reference internal" href="api_design.html#example-endpoints">Example Endpoints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_design.html#how-to-use">How to Use</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_design.html#celery-task-flow">Celery Task Flow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_design.html#helpful-debugging-tips">Helpful debugging tips:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_design.html#debugging-tips">Debugging Tips</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment_files.html">Environment Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="environment_files.html#required-variables-by-service">Required Variables by Service</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#types-of-tests">Types of Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html#writing-tests">Writing Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html#running-tests">Running Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#test-isolation-and-coverage">Test Isolation and Coverage</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a><ul>
@@ -144,18 +153,18 @@
 </div>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>This project is a modular, containerized pipeline for plant image analysis. It uses FastAPI for the backend, Celery for background processing, Vue.js for the frontend, and Docker for orchestration. Airflow is NOT used in this version.</p>
+<p>This project is a modular, containerized pipeline for plant image analysis. It uses FastAPI for the backend, Celery for background processing, Vue.js for the frontend, and Docker for orchestration. There is no Airflow or DAG-based orchestration in this version.</p>
 </section>
 <section id="architecture">
 <h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Frontend:</strong> Vue.js SPA for user interaction</p></li>
-<li><p><strong>Backend:</strong> FastAPI REST API</p></li>
-<li><p><strong>Worker:</strong> Celery for running heavy analysis tasks asynchronously</p></li>
+<li><p><strong>Frontend:</strong> Vue.js SPA for user interaction, image upload, and result visualization</p></li>
+<li><p><strong>Backend:</strong> FastAPI REST API for analysis requests, result retrieval, and orchestration</p></li>
+<li><p><strong>Worker:</strong> Celery for running heavy image analysis tasks asynchronously</p></li>
 <li><p><strong>Database:</strong> PostgreSQL for metadata and results</p></li>
 <li><p><strong>Storage:</strong> AWS S3 for images and result files</p></li>
 <li><p><strong>Broker:</strong> Redis for Celery</p></li>
-<li><p><strong>Containerization:</strong> Docker Compose for easy setup</p></li>
+<li><p><strong>Containerization:</strong> Docker Compose for easy setup and reproducibility</p></li>
 </ul>
 </section>
 <section id="developer-setup">
@@ -167,7 +176,7 @@
 <span class="pre">cd</span> <span class="pre">Plant_Analysis_tool</span>
 <span class="pre">`</span></code></p></li>
 <li><p><strong>Configure Environment</strong>
-- Copy and edit <cite>.env</cite> in <cite>docker/common/</cite> as needed (see README for details).</p></li>
+- Copy and edit <cite>.env</cite> in <cite>docker/common/</cite> as needed (see README and environment_files.rst for details).</p></li>
 <li><p><strong>Build and Start Services</strong>
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">cd</span> <span class="pre">docker/common</span>
@@ -186,6 +195,7 @@
 <li><p><strong>Frontend:</strong> Edit code in <cite>frontend/</cite>, use hot-reload for rapid development.</p></li>
 <li><p><strong>Celery Worker:</strong> Code in <cite>backend/</cite> (tasks.py, pipeline_runner.py), restart worker if needed.</p></li>
 <li><p><strong>Database:</strong> Use pgAdmin or psql for inspection.</p></li>
+<li><p><strong>Testing:</strong> See the testing section for how to run and write tests for each component.</p></li>
 </ul>
 </section>
 <section id="contribution-guidelines">
@@ -196,6 +206,16 @@
 <li><p>Add or update tests in the <cite>tests/</cite> folder.</p></li>
 <li><p>Follow the collaboration guidelines in this documentation.</p></li>
 </ul>
+<p>For more details on each component, see the following sections:
+- <a class="reference internal" href="docker_environment.html"><span class="doc">Docker Environment</span></a>
+- <a class="reference internal" href="setup.html"><span class="doc">Setting up the Development Environment</span></a>
+- <a class="reference internal" href="frontend_design.html"><span class="doc">Frontend Design</span></a>
+- <a class="reference internal" href="database_design.html"><span class="doc">Database Design</span></a>
+- <a class="reference internal" href="api_design.html"><span class="doc">API Design</span></a>
+- <a class="reference internal" href="environment_files.html"><span class="doc">Environment Files</span></a>
+- <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a>
+- <a class="reference internal" href="collaboration_guidelines.html"><span class="doc">Collaboration Guidelines</span></a>
+- <a class="reference internal" href="collaboration_guidelines.html"><span class="doc">Collaboration Guidelines</span></a> (Usage and Supported Features, Technical Details)</p>
 </section>
 </section>
 
@@ -203,7 +223,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="user_guide.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="texture_features.html" class="btn btn-neutral float-left" title="Texture Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="docker_environment.html" class="btn btn-neutral float-right" title="Docker Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
