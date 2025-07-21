@@ -45,3 +45,41 @@ Collaboration Guidelines
     - Perform thorough code reviews before merging into the main branch.
     - Test all changes using automated and manual tests.
     - Obtain team approval with comments like "LGTM" (Looks Good To Me) or equivalent.
+
+Usage and Supported Features
+===========================
+
++----------------------+-------------------------------------------------------------+
+| Feature              | Description                                                 |
++======================+=============================================================+
+| Image Segmentation   | Supports RGB and multispectral plant image segmentation     |
++----------------------+-------------------------------------------------------------+
+| Vegetation Indices   | Computes NDVI, EVI, and other indices from spectral data    |
++----------------------+-------------------------------------------------------------+
+| Texture Analysis     | Extracts GLCM-based texture features                        |
++----------------------+-------------------------------------------------------------+
+| Morphology Analysis  | Calculates area, perimeter, and shape descriptors           |
++----------------------+-------------------------------------------------------------+
+| S3 Integration       | Loads/saves data and results directly from/to AWS S3        |
++----------------------+-------------------------------------------------------------+
+| API Access           | Trigger analysis and retrieve results via REST API          |
++----------------------+-------------------------------------------------------------+
+
+For more details, see the :doc:`api_design` and :doc:`database_design` sections.
+
+Technical Details
+=================
+
++---------------------+-------------------------------------------------------------+
+| Component           | Technology/Library                                          |
++=====================+=============================================================+
+| Segmentation Model  | briaai/RMBG-2.0 (HuggingFace Transformers)                  |
++---------------------+-------------------------------------------------------------+
+| Image Processing    | OpenCV, PIL, NumPy                                          |
++---------------------+-------------------------------------------------------------+
+| Feature Extraction  | Custom Python modules (features.py, morphology.py, etc.)    |
++---------------------+-------------------------------------------------------------+
+| Orchestration       | Celery, FastAPI                                             |
++---------------------+-------------------------------------------------------------+
+| Storage             | AWS S3                                                      |
++---------------------+-------------------------------------------------------------+

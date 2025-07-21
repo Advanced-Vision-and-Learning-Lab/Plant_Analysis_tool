@@ -59,7 +59,7 @@ def save_index_to_s3(bucket, key, image_np):
     if success:
         s3.upload_fileobj(io.BytesIO(encoded_img.tobytes()), bucket, key)
 
-def save_image_to_s3(bucket, key, img_np, title=None, cmap_name='viridis'):
+def save_image_to_s3(bucket, key, img_np, cmap_name='viridis', title=None):
     cmap, vmin, vmax = index_cmap_settings.get(title, (cm.viridis, np.nanmin(img_np), np.nanmax(img_np)))
     
     # Handle None ranges
@@ -222,7 +222,7 @@ def compute_veg_indices(plants, s3_bucket=None, s3_prefix=None):
 
             if s3_bucket and s3_prefix:
                 s3_key = f"{s3_prefix}/vegetation_indices/{idx}.png"
-                save_image_to_s3(s3_bucket, s3_key, img8, title=idx)
+                save_image_to_s3(s3_bucket, s3_key, img8, cmap_name=idx, title=idx)
 
         d["vegetation_indices"] = disp
         d["original_index_values"] = raw
@@ -231,34 +231,27 @@ def compute_veg_indices(plants, s3_bucket=None, s3_prefix=None):
 
 def compute_veg_index_features(plants):
     feature_table = []
-
     for plant_id, data in plants.items():
         mask = data.get("mask")
         indices = data.get("original_index_values")
-
         if mask is None or indices is None:
             continue
-
         mask = (mask == 255)
-        feature_vector = {"plant_id": plant_id}
-
         for idx_name, idx_array in indices.items():
             if idx_array is None:
                 continue
-
             values = idx_array[mask]
             if values.size == 0:
                 continue
-
-            feature_vector[f"{idx_name}_mean"] = float(np.nanmean(values))
-            feature_vector[f"{idx_name}_std"] = float(np.nanstd(values))
-            feature_vector[f"{idx_name}_max"] = float(np.nanmax(values))
-            feature_vector[f"{idx_name}_min"] = float(np.nanmin(values))
-            feature_vector[f"{idx_name}_median"] = float(np.nanmedian(values))
-            feature_vector[f"{idx_name}_q25"] = float(np.nanpercentile(values, 25))
-            feature_vector[f"{idx_name}_q75"] = float(np.nanpercentile(values, 75))
-            feature_vector[f"{idx_name}_nan_fraction"] = float(np.isnan(values).sum() / values.size)
-
-        feature_table.append(feature_vector)
-
+            feature_table.append({
+                "index": idx_name,
+                "mean": float(np.nanmean(values)),
+                "std": float(np.nanstd(values)),
+                "max": float(np.nanmax(values)),
+                "min": float(np.nanmin(values)),
+                "median": float(np.nanmedian(values)),
+                "q25": float(np.nanpercentile(values, 25)),
+                "q75": float(np.nanpercentile(values, 75)),
+                "nan_fraction": float(np.isnan(values).sum() / values.size)
+            })
     return feature_table

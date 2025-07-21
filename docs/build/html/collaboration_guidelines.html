@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Collaboration Guidelines &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -56,6 +56,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#s-collaboration-checklist">6S Collaboration Checklist</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-and-supported-features">Usage and Supported Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#technical-details">Technical Details</a></li>
 </ul>
 </li>
 </ul>
@@ -174,6 +176,64 @@
 </li>
 </ul>
 </section>
+</section>
+<section id="usage-and-supported-features">
+<h1>Usage and Supported Features<a class="headerlink" href="#usage-and-supported-features" title="Link to this heading"></a></h1>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Image Segmentation</p></td>
+<td><p>Supports RGB and multispectral plant image segmentation</p></td>
+</tr>
+<tr class="row-odd"><td><p>Vegetation Indices</p></td>
+<td><p>Computes NDVI, EVI, and other indices from spectral data</p></td>
+</tr>
+<tr class="row-even"><td><p>Texture Analysis</p></td>
+<td><p>Extracts GLCM-based texture features</p></td>
+</tr>
+<tr class="row-odd"><td><p>Morphology Analysis</p></td>
+<td><p>Calculates area, perimeter, and shape descriptors</p></td>
+</tr>
+<tr class="row-even"><td><p>S3 Integration</p></td>
+<td><p>Loads/saves data and results directly from/to AWS S3</p></td>
+</tr>
+<tr class="row-odd"><td><p>API Access</p></td>
+<td><p>Trigger analysis and retrieve results via REST API</p></td>
+</tr>
+</tbody>
+</table>
+<p>For more details, see the <a class="reference internal" href="api_design.html"><span class="doc">API Design</span></a> and <a class="reference internal" href="database_design.html"><span class="doc">Database Design</span></a> sections.</p>
+</section>
+<section id="technical-details">
+<h1>Technical Details<a class="headerlink" href="#technical-details" title="Link to this heading"></a></h1>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Technology/Library</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Segmentation Model</p></td>
+<td><p>briaai/RMBG-2.0 (HuggingFace Transformers)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Image Processing</p></td>
+<td><p>OpenCV, PIL, NumPy</p></td>
+</tr>
+<tr class="row-even"><td><p>Feature Extraction</p></td>
+<td><p>Custom Python modules (features.py, morphology.py, etc.)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Orchestration</p></td>
+<td><p>Celery, FastAPI</p></td>
+</tr>
+<tr class="row-even"><td><p>Storage</p></td>
+<td><p>AWS S3</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 

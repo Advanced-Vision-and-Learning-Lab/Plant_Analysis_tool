@@ -1,5 +1,5 @@
 Developer Guide
-==============
+===============
 
 .. toctree::
    :maxdepth: 2
@@ -13,5 +13,10 @@ Developer Guide
    environment_files
    testing
    collaboration_guidelines
+
+New Section Title
+-----------------
+
+Here is the new content you want to add to the developer guide.
 
 
