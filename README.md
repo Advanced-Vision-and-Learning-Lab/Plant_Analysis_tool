@@ -1,5 +1,11 @@
 # Automated Plant Phenotyping Analysis
 
+[![Documentation Status](https://readthedocs.org/projects/plant-analysis-tool/badge/?version=latest)](https://plant-analysis-tool.readthedocs.io/en/latest/)
+
+**Documentation:** [https://plant-analysis-tool.readthedocs.io/en/latest/](https://plant-analysis-tool.readthedocs.io/en/latest/)
+
+**Contributing:** Please see our [Collaboration Guidelines](https://plant-analysis-tool.readthedocs.io/en/latest/collaboration_guidelines.html) for how to contribute, code standards, and review process.
+
 Automated Plant Phenotyping Analysis is a modular pipeline for plant image analysis, leveraging advanced workflows, image segmentation, and statistical insights to simplify phenotyping tasks.
 
 ---
