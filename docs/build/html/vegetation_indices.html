@@ -57,6 +57,40 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Vegetation Indices</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ndvi-normalized-difference-vegetation-index">NDVI (Normalized Difference Vegetation Index)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#gndvi-green-normalized-difference-vegetation-index">GNDVI (Green Normalized Difference Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ndre-normalized-difference-red-edge-index">NDRE (Normalized Difference Red Edge Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grndvi-green-red-normalized-difference-vegetation-index">GRNDVI (Green-Red Normalized Difference Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tndvi-transformed-ndvi">TNDVI (Transformed NDVI)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mgrvi-modified-green-red-vegetation-index">MGRVI (Modified Green Red Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#grvi-green-red-vegetation-index">GRVI (Green Red Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ngrdi-normalized-green-red-difference-index">NGRDI (Normalized Green Red Difference Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#msavi-modified-soil-adjusted-vegetation-index">MSAVI (Modified Soil Adjusted Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#osavi-optimized-soil-adjusted-vegetation-index">OSAVI (Optimized Soil Adjusted Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tsavi-transformed-soil-adjusted-vegetation-index">TSAVI (Transformed Soil Adjusted Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gsavi-green-soil-adjusted-vegetation-index">GSAVI (Green Soil Adjusted Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ndwi-normalized-difference-water-index">NDWI (Normalized Difference Water Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dswi4-drought-stress-water-index-4">DSWI4 (Drought Stress Water Index 4)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cire-chlorophyll-index-red-edge">CIRE (Chlorophyll Index Red Edge)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lci-leaf-chlorophyll-index">LCI (Leaf Chlorophyll Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cigreen-chlorophyll-index-green">CIgreen (Chlorophyll Index Green)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcari-modified-chlorophyll-absorption-ratio-index">MCARI (Modified Chlorophyll Absorption Ratio Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcari1-modified-chlorophyll-absorption-ratio-index-1">MCARI1 (Modified Chlorophyll Absorption Ratio Index 1)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mcari2-modified-chlorophyll-absorption-ratio-index-2">MCARI2 (Modified Chlorophyll Absorption Ratio Index 2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cvi-chlorophyll-vegetation-index">CVI (Chlorophyll Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tcari-transformed-chlorophyll-absorption-ratio-index">TCARI (Transformed Chlorophyll Absorption Ratio Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tcariosavi-tcari-osavi">TCARIOSAVI (TCARI/OSAVI)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#avi-advanced-vegetation-index">AVI (Advanced Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sipi2-structure-insensitive-pigment-index-2">SIPI2 (Structure Insensitive Pigment Index 2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ari-anthocyanin-reflectance-index">ARI (Anthocyanin Reflectance Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ari2-anthocyanin-reflectance-index-2">ARI2 (Anthocyanin Reflectance Index 2)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dvi-difference-vegetation-index">DVI (Difference Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#wdvi-weighted-difference-vegetation-index">WDVI (Weighted Difference Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sr-simple-ratio">SR (Simple Ratio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#msr-modified-simple-ratio">MSR (Modified Simple Ratio)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pvi-perpendicular-vegetation-index">PVI (Perpendicular Vegetation Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gemi-global-environmental-monitoring-index">GEMI (Global Environmental Monitoring Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exr-excess-red">ExR (Excess Red)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ri-redness-index">RI (Redness Index)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rri1-redness-ratio-index-1">RRI1 (Redness Ratio Index 1)</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="morphology_features.html">Morphological Features</a></li>
@@ -97,14 +131,19 @@
 <h1>Vegetation Indices<a class="headerlink" href="#vegetation-indices" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>This page provides detailed explanations for each vegetation index supported by the pipeline, including formulas and interpretation.</p>
+<p>This page provides detailed explanations for each vegetation index supported by the pipeline, including formulas, descriptions, and interpretation.</p>
 <section id="ndvi-normalized-difference-vegetation-index">
 <h2>NDVI (Normalized Difference Vegetation Index)<a class="headerlink" href="#ndvi-normalized-difference-vegetation-index" title="Link to this heading"></a></h2>
 <p><strong>Formula:</strong></p>
 <div class="math notranslate nohighlight">
 \[NDVI = \frac{NIR - Red}{NIR + Red}\]</div>
 <p><strong>Description:</strong>
-NDVI is a widely used index for quantifying vegetation greenness and health. High NDVI values indicate healthy, green vegetation.</p>
+NDVI quantifies vegetation greenness and health. High NDVI values indicate healthy, green vegetation; low values indicate stressed or sparse vegetation.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- NDVI &gt; 0.5: Dense, healthy vegetation
+- NDVI ~ 0: Bare soil or sparse vegetation
+- NDVI &lt; 0: Water, snow, or non-vegetated surfaces</p>
 <p><strong>Image:</strong>
 .. image:: _static/ndvi_example.png</p>
 <blockquote>
@@ -126,6 +165,10 @@ NDVI is a widely used index for quantifying vegetation greenness and health. Hig
 \[GNDVI = \frac{NIR - Green}{NIR + Green}\]</div>
 <p><strong>Description:</strong>
 GNDVI is sensitive to chlorophyll concentration and is useful for assessing plant health and nitrogen status.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High GNDVI: High chlorophyll, healthy vegetation
+- Low GNDVI: Stressed or sparse vegetation</p>
 <p><strong>Image:</strong>
 .. image:: _static/gndvi_example.png</p>
 <blockquote>
@@ -139,7 +182,855 @@ GNDVI is sensitive to chlorophyll concentration and is useful for assessing plan
 </dl>
 </div></blockquote>
 <p>—</p>
-<p># Add similar sections for each index (NDRE, EVI, SAVI, etc.)</p>
+</section>
+<section id="ndre-normalized-difference-red-edge-index">
+<h2>NDRE (Normalized Difference Red Edge Index)<a class="headerlink" href="#ndre-normalized-difference-red-edge-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[NDRE = \frac{NIR - RedEdge}{NIR + RedEdge}\]</div>
+<p><strong>Description:</strong>
+NDRE is sensitive to chlorophyll content and is useful for detecting plant stress before it is visible.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High NDRE: Healthy, high-chlorophyll vegetation
+- Low NDRE: Stressed or senescent vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/ndre_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NDRE Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="grndvi-green-red-normalized-difference-vegetation-index">
+<h2>GRNDVI (Green-Red Normalized Difference Vegetation Index)<a class="headerlink" href="#grndvi-green-red-normalized-difference-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[GRNDVI = \frac{NIR - (Green + Red)}{NIR + Green + Red}\]</div>
+<p><strong>Description:</strong>
+GRNDVI combines green and red bands for improved sensitivity to vegetation changes.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High GRNDVI: Healthy, dense vegetation
+- Low GRNDVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/grndvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GRNDVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="tndvi-transformed-ndvi">
+<h2>TNDVI (Transformed NDVI)<a class="headerlink" href="#tndvi-transformed-ndvi" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[TNDVI = \sqrt{NDVI + 0.5}\]</div>
+<p><strong>Description:</strong>
+TNDVI is a transformed version of NDVI, often used to enhance contrast in vegetation mapping.</p>
+<p><strong>Typical Range:</strong> 0 to 1.5</p>
+<p><strong>Interpretation:</strong>
+- Higher TNDVI: More vigorous vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/tndvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TNDVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="mgrvi-modified-green-red-vegetation-index">
+<h2>MGRVI (Modified Green Red Vegetation Index)<a class="headerlink" href="#mgrvi-modified-green-red-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MGRVI = \frac{Green^2 - Red^2}{Green^2 + Red^2}\]</div>
+<p><strong>Description:</strong>
+MGRVI enhances the contrast between green and red reflectance, useful for vegetation discrimination.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High MGRVI: Healthy, green vegetation
+- Low MGRVI: Stressed or senescent vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/mgrvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MGRVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="grvi-green-red-vegetation-index">
+<h2>GRVI (Green Red Vegetation Index)<a class="headerlink" href="#grvi-green-red-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[GRVI = \frac{NIR}{Green}\]</div>
+<p><strong>Description:</strong>
+GRVI is used to assess vegetation vigor using NIR and green bands.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High GRVI: Vigorous vegetation
+- Low GRVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/grvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GRVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ngrdi-normalized-green-red-difference-index">
+<h2>NGRDI (Normalized Green Red Difference Index)<a class="headerlink" href="#ngrdi-normalized-green-red-difference-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[NGRDI = \frac{Green - Red}{Green + Red}\]</div>
+<p><strong>Description:</strong>
+NGRDI is sensitive to vegetation cover and is used for crop monitoring.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High NGRDI: Dense, healthy vegetation
+- Low NGRDI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/ngrdi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NGRDI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="msavi-modified-soil-adjusted-vegetation-index">
+<h2>MSAVI (Modified Soil Adjusted Vegetation Index)<a class="headerlink" href="#msavi-modified-soil-adjusted-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MSAVI = 0.5 \times \left[2 \times NIR + 1 - \sqrt{(2 \times NIR + 1)^2 - 8 \times (NIR - Red)}\right]\]</div>
+<p><strong>Description:</strong>
+MSAVI reduces the influence of soil brightness in areas with low vegetation cover.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High MSAVI: Dense, healthy vegetation
+- Low MSAVI: Sparse vegetation or bare soil</p>
+<p><strong>Image:</strong>
+.. image:: _static/msavi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MSAVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="osavi-optimized-soil-adjusted-vegetation-index">
+<h2>OSAVI (Optimized Soil Adjusted Vegetation Index)<a class="headerlink" href="#osavi-optimized-soil-adjusted-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[OSAVI = \frac{NIR - Red}{NIR + Red + 0.16}\]</div>
+<p><strong>Description:</strong>
+OSAVI is similar to SAVI but optimized for better performance in areas with moderate vegetation cover.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High OSAVI: Dense, healthy vegetation
+- Low OSAVI: Sparse vegetation or bare soil</p>
+<p><strong>Image:</strong>
+.. image:: _static/osavi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OSAVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="tsavi-transformed-soil-adjusted-vegetation-index">
+<h2>TSAVI (Transformed Soil Adjusted Vegetation Index)<a class="headerlink" href="#tsavi-transformed-soil-adjusted-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[TSAVI = \frac{s (NIR - s \times Red - a)}{a \times NIR + Red - a \times s + X (1 + s^2)}\]</div>
+<p><strong>Description:</strong>
+TSAVI further reduces soil background effects, especially in arid regions.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High TSAVI: Dense, healthy vegetation
+- Low TSAVI: Sparse vegetation or bare soil</p>
+<p><strong>Image:</strong>
+.. image:: _static/tsavi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TSAVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="gsavi-green-soil-adjusted-vegetation-index">
+<h2>GSAVI (Green Soil Adjusted Vegetation Index)<a class="headerlink" href="#gsavi-green-soil-adjusted-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[GSAVI = (1 + l) \times \frac{NIR - Green}{NIR + Green + l}\]</div>
+<p><strong>Description:</strong>
+GSAVI is a soil-adjusted index using the green band, useful for certain crops.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High GSAVI: Dense, healthy vegetation
+- Low GSAVI: Sparse vegetation or bare soil</p>
+<p><strong>Image:</strong>
+.. image:: _static/gsavi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GSAVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ndwi-normalized-difference-water-index">
+<h2>NDWI (Normalized Difference Water Index)<a class="headerlink" href="#ndwi-normalized-difference-water-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[NDWI = \frac{Green - NIR}{Green + NIR}\]</div>
+<p><strong>Description:</strong>
+NDWI is used to monitor changes in water content of leaves and detect water bodies.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High NDWI: Water bodies or high leaf water content
+- Low NDWI: Dry or non-vegetated areas</p>
+<p><strong>Image:</strong>
+.. image:: _static/ndwi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NDWI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="dswi4-drought-stress-water-index-4">
+<h2>DSWI4 (Drought Stress Water Index 4)<a class="headerlink" href="#dswi4-drought-stress-water-index-4" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[DSWI4 = \frac{Green}{Red}\]</div>
+<p><strong>Description:</strong>
+DSWI4 is used for drought stress detection in plants.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High DSWI4: Well-watered vegetation
+- Low DSWI4: Drought-stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/dswi4_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DSWI4 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="cire-chlorophyll-index-red-edge">
+<h2>CIRE (Chlorophyll Index Red Edge)<a class="headerlink" href="#cire-chlorophyll-index-red-edge" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[CIRE = \frac{NIR}{RedEdge} - 1\]</div>
+<p><strong>Description:</strong>
+CIRE is sensitive to chlorophyll content and is useful for precision agriculture.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High CIRE: High chlorophyll, healthy vegetation
+- Low CIRE: Stressed or senescent vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/cire_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CIRE Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="lci-leaf-chlorophyll-index">
+<h2>LCI (Leaf Chlorophyll Index)<a class="headerlink" href="#lci-leaf-chlorophyll-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[LCI = \frac{NIR - RedEdge}{NIR + RedEdge}\]</div>
+<p><strong>Description:</strong>
+LCI is used to estimate leaf chlorophyll content.</p>
+<p><strong>Typical Range:</strong> 0 to 5</p>
+<p><strong>Interpretation:</strong>
+- High LCI: High chlorophyll content
+- Low LCI: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/lci_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LCI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="cigreen-chlorophyll-index-green">
+<h2>CIgreen (Chlorophyll Index Green)<a class="headerlink" href="#cigreen-chlorophyll-index-green" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[CIgreen = \frac{NIR}{Green} - 1\]</div>
+<p><strong>Description:</strong>
+CIgreen is sensitive to chlorophyll content in the green band.</p>
+<p><strong>Typical Range:</strong> 0 to 5</p>
+<p><strong>Interpretation:</strong>
+- High CIgreen: High chlorophyll content
+- Low CIgreen: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/cigreen_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CIgreen Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="mcari-modified-chlorophyll-absorption-ratio-index">
+<h2>MCARI (Modified Chlorophyll Absorption Ratio Index)<a class="headerlink" href="#mcari-modified-chlorophyll-absorption-ratio-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MCARI = [(RedEdge - Red) - 0.2 \times (RedEdge - Green)] \times \frac{RedEdge}{Red}\]</div>
+<p><strong>Description:</strong>
+MCARI is used to estimate chlorophyll content and reduce soil background effects.</p>
+<p><strong>Typical Range:</strong> 0 to 1.5</p>
+<p><strong>Interpretation:</strong>
+- High MCARI: High chlorophyll content
+- Low MCARI: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/mcari_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MCARI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="mcari1-modified-chlorophyll-absorption-ratio-index-1">
+<h2>MCARI1 (Modified Chlorophyll Absorption Ratio Index 1)<a class="headerlink" href="#mcari1-modified-chlorophyll-absorption-ratio-index-1" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MCARI1 = 1.2 \times [2.5 \times (NIR - Red) - 1.3 \times (NIR - Green)]\]</div>
+<p><strong>Description:</strong>
+MCARI1 is a variant of MCARI for improved sensitivity to chlorophyll.</p>
+<p><strong>Typical Range:</strong> 0 to 1.5</p>
+<p><strong>Interpretation:</strong>
+- High MCARI1: High chlorophyll content
+- Low MCARI1: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/mcari1_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MCARI1 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="mcari2-modified-chlorophyll-absorption-ratio-index-2">
+<h2>MCARI2 (Modified Chlorophyll Absorption Ratio Index 2)<a class="headerlink" href="#mcari2-modified-chlorophyll-absorption-ratio-index-2" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MCARI2 = \frac{1.5 \times [2.5 \times (NIR - Red) - 1.3 \times (NIR - Green)]}{\sqrt{(2 \times NIR + 1)^2 - (6 \times NIR - 5 \times \sqrt{Red})}}\]</div>
+<p><strong>Description:</strong>
+MCARI2 is another variant of MCARI for improved sensitivity to chlorophyll.</p>
+<p><strong>Typical Range:</strong> 0 to 1.5</p>
+<p><strong>Interpretation:</strong>
+- High MCARI2: High chlorophyll content
+- Low MCARI2: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/mcari2_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MCARI2 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="cvi-chlorophyll-vegetation-index">
+<h2>CVI (Chlorophyll Vegetation Index)<a class="headerlink" href="#cvi-chlorophyll-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[CVI = \frac{NIR \times Red}{Green^2}\]</div>
+<p><strong>Description:</strong>
+CVI is used to estimate chlorophyll content and vegetation vigor.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High CVI: High chlorophyll content
+- Low CVI: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/cvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="tcari-transformed-chlorophyll-absorption-ratio-index">
+<h2>TCARI (Transformed Chlorophyll Absorption Ratio Index)<a class="headerlink" href="#tcari-transformed-chlorophyll-absorption-ratio-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[TCARI = 3 \times [(RedEdge - Red) - 0.2 \times (RedEdge - Green) \times \frac{RedEdge}{Red}]\]</div>
+<p><strong>Description:</strong>
+TCARI is used to estimate chlorophyll content and reduce soil background effects.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High TCARI: High chlorophyll content
+- Low TCARI: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/tcari_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TCARI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="tcariosavi-tcari-osavi">
+<h2>TCARIOSAVI (TCARI/OSAVI)<a class="headerlink" href="#tcariosavi-tcari-osavi" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[TCARIOSAVI = \frac{TCARI}{OSAVI}\]</div>
+<p><strong>Description:</strong>
+TCARIOSAVI combines TCARI and OSAVI for improved chlorophyll estimation.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High TCARIOSAVI: High chlorophyll content
+- Low TCARIOSAVI: Low chlorophyll content</p>
+<p><strong>Image:</strong>
+.. image:: _static/tcariosavi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>TCARIOSAVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="avi-advanced-vegetation-index">
+<h2>AVI (Advanced Vegetation Index)<a class="headerlink" href="#avi-advanced-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[AVI = \sqrt[3]{NIR \times (1 - Red) \times (NIR - Red)}\]</div>
+<p><strong>Description:</strong>
+AVI is used to estimate vegetation cover and vigor.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High AVI: Dense, healthy vegetation
+- Low AVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/avi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>AVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="sipi2-structure-insensitive-pigment-index-2">
+<h2>SIPI2 (Structure Insensitive Pigment Index 2)<a class="headerlink" href="#sipi2-structure-insensitive-pigment-index-2" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[SIPI2 = \frac{NIR - Green}{NIR - Red}\]</div>
+<p><strong>Description:</strong>
+SIPI2 is used to estimate pigment content, insensitive to structure.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High SIPI2: High pigment content
+- Low SIPI2: Low pigment content</p>
+<p><strong>Image:</strong>
+.. image:: _static/sipi2_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SIPI2 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ari-anthocyanin-reflectance-index">
+<h2>ARI (Anthocyanin Reflectance Index)<a class="headerlink" href="#ari-anthocyanin-reflectance-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[ARI = \frac{1}{Green} - \frac{1}{RedEdge}\]</div>
+<p><strong>Description:</strong>
+ARI is used to estimate anthocyanin content in leaves.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High ARI: High anthocyanin content
+- Low ARI: Low anthocyanin content</p>
+<p><strong>Image:</strong>
+.. image:: _static/ari_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ARI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ari2-anthocyanin-reflectance-index-2">
+<h2>ARI2 (Anthocyanin Reflectance Index 2)<a class="headerlink" href="#ari2-anthocyanin-reflectance-index-2" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[ARI2 = NIR \times \left(\frac{1}{Green} - \frac{1}{RedEdge}\right)\]</div>
+<p><strong>Description:</strong>
+ARI2 is a variant of ARI for improved anthocyanin estimation.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High ARI2: High anthocyanin content
+- Low ARI2: Low anthocyanin content</p>
+<p><strong>Image:</strong>
+.. image:: _static/ari2_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ARI2 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="dvi-difference-vegetation-index">
+<h2>DVI (Difference Vegetation Index)<a class="headerlink" href="#dvi-difference-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[DVI = NIR - Red\]</div>
+<p><strong>Description:</strong>
+DVI is a simple index for vegetation detection.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High DVI: Dense, healthy vegetation
+- Low DVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/dvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="wdvi-weighted-difference-vegetation-index">
+<h2>WDVI (Weighted Difference Vegetation Index)<a class="headerlink" href="#wdvi-weighted-difference-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[WDVI = NIR - a \times Red\]</div>
+<p><strong>Description:</strong>
+WDVI is used to minimize soil background effects in vegetation detection.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High WDVI: Dense, healthy vegetation
+- Low WDVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/wdvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>WDVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="sr-simple-ratio">
+<h2>SR (Simple Ratio)<a class="headerlink" href="#sr-simple-ratio" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[SR = \frac{NIR}{Red}\]</div>
+<p><strong>Description:</strong>
+SR is a basic ratio for vegetation detection.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High SR: Dense, healthy vegetation
+- Low SR: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/sr_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SR Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="msr-modified-simple-ratio">
+<h2>MSR (Modified Simple Ratio)<a class="headerlink" href="#msr-modified-simple-ratio" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[MSR = \frac{NIR/Red - 1}{\sqrt{NIR/Red + 1}}\]</div>
+<p><strong>Description:</strong>
+MSR is a modified ratio for improved vegetation discrimination.</p>
+<p><strong>Typical Range:</strong> 0 to 10</p>
+<p><strong>Interpretation:</strong>
+- High MSR: Dense, healthy vegetation
+- Low MSR: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/msr_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MSR Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="pvi-perpendicular-vegetation-index">
+<h2>PVI (Perpendicular Vegetation Index)<a class="headerlink" href="#pvi-perpendicular-vegetation-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[PVI = \frac{NIR - a \times Red - b}{\sqrt{1 + a^2}}\]</div>
+<p><strong>Description:</strong>
+PVI is used to minimize soil background effects in vegetation detection.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High PVI: Dense, healthy vegetation
+- Low PVI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/pvi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>PVI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="gemi-global-environmental-monitoring-index">
+<h2>GEMI (Global Environmental Monitoring Index)<a class="headerlink" href="#gemi-global-environmental-monitoring-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[GEMI = \left[\frac{2(NIR^2 - Red^2) + 1.5NIR + 0.5Red}{NIR + Red + 0.5}\right] \times \left[1 - 0.25 \left(\frac{2(NIR^2 - Red^2) + 1.5NIR + 0.5Red}{NIR + Red + 0.5}\right)\right] - \frac{Red - 0.125}{1 - Red}\]</div>
+<p><strong>Description:</strong>
+GEMI is used for global environmental monitoring and vegetation assessment.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High GEMI: Dense, healthy vegetation
+- Low GEMI: Sparse or stressed vegetation</p>
+<p><strong>Image:</strong>
+.. image:: _static/gemi_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GEMI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="exr-excess-red">
+<h2>ExR (Excess Red)<a class="headerlink" href="#exr-excess-red" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[ExR = 1.3 \times Red - Green\]</div>
+<p><strong>Description:</strong>
+ExR is used to highlight red features, useful for certain crop and soil analyses.</p>
+<p><strong>Typical Range:</strong> -1 to 1</p>
+<p><strong>Interpretation:</strong>
+- High ExR: High red reflectance
+- Low ExR: Low red reflectance</p>
+<p><strong>Image:</strong>
+.. image:: _static/exr_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ExR Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ri-redness-index">
+<h2>RI (Redness Index)<a class="headerlink" href="#ri-redness-index" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[RI = \frac{Red - Green}{Red + Green}\]</div>
+<p><strong>Description:</strong>
+RI is used to assess redness in vegetation or soil.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High RI: High redness
+- Low RI: Low redness</p>
+<p><strong>Image:</strong>
+.. image:: _static/ri_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RI Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="rri1-redness-ratio-index-1">
+<h2>RRI1 (Redness Ratio Index 1)<a class="headerlink" href="#rri1-redness-ratio-index-1" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[RRI1 = \frac{NIR}{RedEdge}\]</div>
+<p><strong>Description:</strong>
+RRI1 is used to assess redness using NIR and red edge bands.</p>
+<p><strong>Typical Range:</strong> 0 to 1</p>
+<p><strong>Interpretation:</strong>
+- High RRI1: High NIR to red edge ratio
+- Low RRI1: Low NIR to red edge ratio</p>
+<p><strong>Image:</strong>
+.. image:: _static/rri1_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>RRI1 Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
 </section>
 </section>
 

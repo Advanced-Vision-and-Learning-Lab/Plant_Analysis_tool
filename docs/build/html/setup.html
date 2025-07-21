@@ -48,11 +48,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Setting up the Development Environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#frontend-development">Frontend Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend-development">Backend Development</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#live-code-reloading">Live Code Reloading</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontend-development">Frontend Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#live-code-reloading-debugging">Live Code Reloading &amp; Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
@@ -99,11 +101,7 @@
              
   <section id="setting-up-the-development-environment">
 <h1>Setting up the Development Environment<a class="headerlink" href="#setting-up-the-development-environment" title="Link to this heading"></a></h1>
-<p>The development environment is designed to separate the backend and frontend components, and to make development easy and reproducible using Docker Compose. There is no Airflow or DAG-based orchestration in this version.</p>
-<section id="environment-variables">
-<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<p>Define an <cite>.env</cite> file in the <cite>docker/common</cite> directory with the required environment variables. For details, see <a class="reference internal" href="environment_files.html"><span class="doc">Environment Files</span></a>.</p>
-</section>
+<p>This section describes how to set up a development environment for the Plant Analysis Tool pipeline. The stack uses Docker Compose to orchestrate all services, including FastAPI (backend), Celery (worker), Vue.js (frontend), PostgreSQL, Redis, and pgAdmin. There is no Airflow or DAG-based orchestration in this version.</p>
 <section id="pre-requisites">
 <h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Link to this heading"></a></h2>
 <ul class="simple">
@@ -111,6 +109,27 @@
 <li><p>Docker Compose</p></li>
 <li><p>[Optional] Node.js (&gt; 22.0) for local frontend development</p></li>
 </ul>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Copy the provided <cite>.env.example</cite> in <cite>docker/common/</cite> to <cite>.env</cite> and fill in the required values (see <a class="reference internal" href="environment_files.html"><span class="doc">Environment Files</span></a>).</p></li>
+<li><p>This file configures database credentials, AWS keys, API URLs, and other settings for all services.</p></li>
+</ul>
+</section>
+<section id="backend-development">
+<h2>Backend Development<a class="headerlink" href="#backend-development" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Start all backend services (API, worker, database, Redis, pgAdmin) with Docker Compose:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">cd</span> <span class="pre">docker/common</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
+<span class="pre">`</span></code></p></li>
+<li><p>The backend API will be available at <cite>http://localhost:8001</cite>.</p></li>
+<li><p>The Celery worker will run in a separate container and process analysis jobs.</p></li>
+<li><p>Use pgAdmin at <cite>http://localhost:5050</cite> to inspect the database.</p></li>
+<li><p>Source code changes in <cite>backend/</cite> will be reflected automatically (except for dependency changes, which require a container restart).</p></li>
+</ol>
 </section>
 <section id="frontend-development">
 <h2>Frontend Development<a class="headerlink" href="#frontend-development" title="Link to this heading"></a></h2>
@@ -123,31 +142,43 @@
 <li><p>Start the frontend development server (hot-reload):
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">npm</span> <span class="pre">run</span> <span class="pre">serve</span>
-<span class="pre">#</span> <span class="pre">or</span> <span class="pre">use</span> <span class="pre">Docker</span> <span class="pre">Compose</span> <span class="pre">for</span> <span class="pre">a</span> <span class="pre">containerized</span> <span class="pre">dev</span> <span class="pre">server</span>
+<span class="pre">`</span></code>
+or use Docker Compose for a containerized dev server:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">cd</span> <span class="pre">../docker/common</span>
 <span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">frontend</span>
 <span class="pre">`</span></code></p></li>
 <li><p>Access the frontend at <cite>http://localhost:8080</cite> (or mapped port).</p></li>
+<li><p>Source code changes in <cite>frontend/</cite> will be reflected automatically.</p></li>
 </ol>
 </section>
-<section id="backend-development">
-<h2>Backend Development<a class="headerlink" href="#backend-development" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p>Start the backend and all services:
-<code class="docutils literal notranslate"><span class="pre">`bash</span>
-<span class="pre">cd</span> <span class="pre">docker/common</span>
-<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
-<span class="pre">`</span></code></p></li>
-<li><p>The backend API will be available at <cite>http://localhost:8001</cite>.</p></li>
-<li><p>The Celery worker will run in a separate container and process analysis jobs.</p></li>
-<li><p>Use pgAdmin at <cite>http://localhost:5050</cite> to inspect the database.</p></li>
-</ol>
-</section>
-<section id="live-code-reloading">
-<h2>Live Code Reloading<a class="headerlink" href="#live-code-reloading" title="Link to this heading"></a></h2>
+<section id="live-code-reloading-debugging">
+<h2>Live Code Reloading &amp; Debugging<a class="headerlink" href="#live-code-reloading-debugging" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>The Docker Compose setup mounts source code folders for live reloading and easy debugging.</p></li>
 <li><p>Changes to frontend or backend code will be reflected without restarting containers (except for dependency changes).</p></li>
+<li><p>Use browser developer tools and backend logs for troubleshooting.</p></li>
+</ul>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>See the <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a> section for how to write and run tests for each component.</p></li>
+</ul>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ensure all required environment variables are set in <cite>.env</cite>.</p></li>
+<li><p>If a service fails to start, check the logs with:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">docker-compose</span> <span class="pre">logs</span> <span class="pre">&lt;service-name&gt;</span>
+<span class="pre">`</span></code></p></li>
+<li><p>For persistent issues, rebuild containers:
+<code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">docker-compose</span> <span class="pre">down</span> <span class="pre">-v</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
+<span class="pre">`</span></code></p></li>
 </ul>
 </section>
 </section>

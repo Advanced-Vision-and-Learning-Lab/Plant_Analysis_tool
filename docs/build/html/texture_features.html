@@ -60,6 +60,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#hog-histogram-of-oriented-gradients">HOG (Histogram of Oriented Gradients)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lacunarity">Lacunarity</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ehd-edge-histogram-descriptor">EHD (Edge Histogram Descriptor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics-computed">Statistics Computed</a></li>
 </ul>
 </li>
 </ul>
@@ -98,35 +99,119 @@
 <h1>Texture Features<a class="headerlink" href="#texture-features" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>This page provides detailed explanations for each texture feature extracted by the pipeline.</p>
+<p>This page provides detailed explanations for each texture feature extracted by the pipeline, including algorithm, interpretation, and example images.</p>
 <section id="lbp-local-binary-pattern">
 <h2>LBP (Local Binary Pattern)<a class="headerlink" href="#lbp-local-binary-pattern" title="Link to this heading"></a></h2>
 <p><strong>Description:</strong>
-A texture descriptor that encodes the local spatial pattern of pixel intensities.</p>
+A texture descriptor that encodes the local spatial pattern of pixel intensities by thresholding the neighborhood of each pixel and converting the result into a binary number.</p>
+<p><strong>Algorithm:</strong>
+- For each pixel, compare its value to its neighbors (typically 8 neighbors in a 3x3 window).
+- Assign 1 if the neighbor is greater than or equal to the center pixel, 0 otherwise.
+- The resulting 8-bit binary number is the LBP value for that pixel.</p>
 <p><strong>Interpretation:</strong>
-LBP is useful for capturing fine texture details and is robust to illumination changes.</p>
+LBP is robust to illumination changes and captures fine texture details. High LBP values indicate complex textures; low values indicate uniform regions.</p>
+<p><strong>Image:</strong>
+.. image:: _static/lbp_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LBP Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
 </section>
 <section id="hog-histogram-of-oriented-gradients">
 <h2>HOG (Histogram of Oriented Gradients)<a class="headerlink" href="#hog-histogram-of-oriented-gradients" title="Link to this heading"></a></h2>
 <p><strong>Description:</strong>
-A feature descriptor that counts occurrences of gradient orientation in localized portions of an image.</p>
+A feature descriptor that counts occurrences of gradient orientation in localized portions of an image, capturing edge and shape information.</p>
+<p><strong>Algorithm:</strong>
+- Compute gradients (edge directions) for each pixel.
+- Divide the image into small cells and compute a histogram of gradient directions for each cell.
+- Normalize histograms across blocks of cells for illumination invariance.</p>
 <p><strong>Interpretation:</strong>
-HOG is effective for capturing edge and shape information.</p>
+HOG is effective for capturing edge and shape information, useful for distinguishing structural patterns in plant images.</p>
+<p><strong>Image:</strong>
+.. image:: _static/hog_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HOG Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
 </section>
 <section id="lacunarity">
 <h2>Lacunarity<a class="headerlink" href="#lacunarity" title="Link to this heading"></a></h2>
 <p><strong>Description:</strong>
-A measure of texture heterogeneity and gap distribution at different scales.</p>
-<ul class="simple">
-<li><p><strong>Lac1:</strong> Base window size</p></li>
-<li><p><strong>Lac2:</strong> Multi-scale average</p></li>
-<li><p><strong>Lac3:</strong> Deep learning-based lacunarity (DBC)</p></li>
-</ul>
+A measure of texture heterogeneity and gap distribution at different scales. The pipeline computes three variants:
+- <strong>Lac1:</strong> Base window size
+- <strong>Lac2:</strong> Multi-scale average
+- <strong>Lac3:</strong> Deep learning-based lacunarity (DBC)</p>
+<p><strong>Algorithm:</strong>
+- For each window size, compute the mean and variance of pixel intensities.
+- Lacunarity is calculated as the ratio of variance to the square of the mean, plus 1.
+- DBC Lacunarity uses a deep learning model to estimate lacunarity at multiple scales.</p>
+<p><strong>Interpretation:</strong>
+- High lacunarity: More gaps/heterogeneity in texture (e.g., sparse or patchy regions)
+- Low lacunarity: More uniform texture</p>
+<p><strong>Image:</strong>
+.. image:: _static/lacunarity_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lacunarity Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
 </section>
 <section id="ehd-edge-histogram-descriptor">
 <h2>EHD (Edge Histogram Descriptor)<a class="headerlink" href="#ehd-edge-histogram-descriptor" title="Link to this heading"></a></h2>
 <p><strong>Description:</strong>
 Describes the distribution of edge directions in the image, useful for characterizing structure and texture.</p>
+<p><strong>Algorithm:</strong>
+- Apply a set of directional edge filters to the image.
+- For each direction, count the number of edge responses above a threshold.
+- The resulting histogram summarizes the edge orientation distribution.</p>
+<p><strong>Interpretation:</strong>
+- High values in certain bins indicate dominant edge directions (e.g., leaf veins, stem orientation).
+- Uniform histogram: Random or isotropic texture.</p>
+<p><strong>Image:</strong>
+.. image:: _static/ehd_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EHD Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="statistics-computed">
+<h2>Statistics Computed<a class="headerlink" href="#statistics-computed" title="Link to this heading"></a></h2>
+<p>For each feature above (and for each band: color, green, nir, red_edge, red, pca), the following statistics are computed:
+- Mean
+- Standard deviation
+- Max
+- Min
+- Median
+- 25th percentile (q25)
+- 75th percentile (q75)
+- Fraction of NaN values</p>
 </section>
 </section>
 
