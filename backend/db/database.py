@@ -3,7 +3,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
-# Import your Base from models.py
+# Import Base from models.py
 from .models import Base 
 
 # --- Database URL Configuration ---
@@ -14,9 +14,10 @@ from .models import Base
 # Replace placeholders with your actual RDS credentials and endpoint
 # It's BEST PRACTICE to use environment variables for these sensitive details
 SQLALCHEMY_DATABASE_URL = os.environ.get(
-    "DATABASE_URL",
-    "postgresql+psycopg2://user:password@localhost:5432/mydatabase" # Default for local testing
+    "DB_CONNECTION_STRING",
+    "postgresql+psycopg2://postgres:secret@postgres_app_dev:5432/plant_db"
 )
+
 
 # For MySQL (local or RDS):
 # SQLALCHEMY_DATABASE_URL = os.environ.get(

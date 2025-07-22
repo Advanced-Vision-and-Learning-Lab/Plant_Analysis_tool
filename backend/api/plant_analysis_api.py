@@ -10,8 +10,8 @@ logging.basicConfig(
 )
 
 from fastapi import APIRouter, HTTPException, Query
-from backend.db.session import SessionLocal
-from backend.db.models import ProcessedImage
+# from backend.db.session import SessionLocal
+# from backend.db.models import ProcessedImage
 from fastapi.responses import JSONResponse
 from backend.tasks import analyze_plant_task
 from backend.celery_worker import celery_app

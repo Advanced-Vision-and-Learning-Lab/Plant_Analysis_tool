@@ -115,7 +115,7 @@ export default {
     },
     
     openDocumentation() {
-      window.open('https://automatedplantphenotypinganalysisdocs.readthedocs.io/en/latest/developer_guide.html', '_blank');
+      window.open('https://plant-analysis-tool.readthedocs.io/en/latest/index.html', '_blank');
     },
     
     // Helper method to convert hex color to rgba with opacity

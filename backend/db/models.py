@@ -56,6 +56,7 @@ class VegetationIndexEnum(enum.Enum):
     WDVI = "WDVI"
 
 Base = declarative_base()
+metadata = Base.metadata
 
 class Plant(Base):
     __tablename__ = "plants"
@@ -63,7 +64,7 @@ class Plant(Base):
     name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     species: Mapped[Optional[str]] = mapped_column(String(100), nullable=False)
     # Add other metadata as needed (location, planting date, etc.)
-    vegetation_indices = relationship("VegetationIndexTimeSeries", back_populates="plant")
+    vegetation_indices = relationship("VegetationIndexTimeline", back_populates="plant")
     processed_data = relationship("ProcessedData", back_populates="plant")
 
     def __repr__(self) -> str:
@@ -102,6 +103,7 @@ class ProcessedData(Base):
     # It's nullable=False because the capture date is required.
     date_captured: Mapped[date] = mapped_column(Date, nullable=False)
 
+    #CHANGE TO JSONB
     vegetation_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
     morphology_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
     texture_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
@@ -112,8 +114,8 @@ class ProcessedData(Base):
         return f"<ProcessedImage(id={self.id}, plant_id='{self.plant_id}', date_processed={self.date_processed})>"
 
 
-class VegetationIndexTimeSeries(Base):
-    __tablename__ = "vegetation_index_time_series"
+class VegetationIndexTimeline(Base):
+    __tablename__ = "vegetation_index_timeline"
     #Composite Primary Key: plant_id, date_captured, index_type
     plant_id: Mapped[str] = mapped_column(String(50), ForeignKey("plants.id"), primary_key=True)
     date_captured: Mapped[date] = mapped_column(Date, primary_key=True)
@@ -127,6 +129,7 @@ class VegetationIndexTimeSeries(Base):
     max: Mapped[float] = mapped_column(Float, nullable=False)
     index_image_key: Mapped[str] = mapped_column(String(255), nullable=False)
     plant = relationship("Plant", back_populates="vegetation_indices")
+
 
 # Example: Get NDVI time series for plant 'plant1'
 # results = (

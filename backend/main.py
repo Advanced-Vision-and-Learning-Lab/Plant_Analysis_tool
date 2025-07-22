@@ -7,7 +7,7 @@ from backend.api import plant_analysis_api
 
 # 🔧 New imports for DB setup
 from backend.db.models import Base
-from backend.db.session import engine
+from backend.db.database import engine
 
 # Enable debug-level logging
 logging.basicConfig(level=logging.DEBUG)
