@@ -275,7 +275,7 @@ export default {
   name: 'AnalysisResults',
   props: {
     // Basic props
-    plantName: {
+    species: {
       type: String,
       required: true
     },
