@@ -1,28 +1,35 @@
 # database.py
 import os
+import sys
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 
+# Add the current directory to Python path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 # Import Base from models.py
-from .models import Base 
+from models import Base 
 
 # --- Database URL Configuration ---
 # For local development, you might use SQLite:
 # SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 
-# For PostgreSQL (local or RDS):
-# Replace placeholders with your actual RDS credentials and endpoint
+# For MySQL (local or RDS):
+# Replace placeholders with your actual MySQL credentials and endpoint
 # It's BEST PRACTICE to use environment variables for these sensitive details
 SQLALCHEMY_DATABASE_URL = os.environ.get(
-    "DB_CONNECTION_STRING",
-    "postgresql+psycopg2://postgres:secret@postgres_app_dev:5432/plant_db"
+    "DB_DEV_CONNECTION_STRING",
+    "mysql+pymysql://dev_user:dev_password@localhost:3306/plant_dev_db"
 )
 
+# Note: MySQL DateTime columns don't store timezone info
+# If you need timezone-aware datetimes, handle this in your application logic
 
-# For MySQL (local or RDS):
+
+# For PostgreSQL (local or RDS) - KEPT FOR REFERENCE:
 # SQLALCHEMY_DATABASE_URL = os.environ.get(
 #    "DATABASE_URL",
-#    "mysql+pymysql://user:password@localhost:3306/mydatabase" # Default for local testing
+#    "postgresql+psycopg2://user:password@localhost:5432/mydatabase" # Default for local testing
 # )
 
 

@@ -33,8 +33,8 @@ export default {
       if (plant.disabled) return;
 
       // Emit the plant name (handle both string and object formats)
-      const plantName = plant.name || plant;
-      this.$emit('select-plant', plantName);
+      const speciesName = plant.name || plant;
+      this.$emit('select-plant', speciesName);
     }
   }
 }

@@ -34,7 +34,8 @@ transformers
 # Database
 sqlalchemy
 alembic
-psycopg2-binary
+pymysql
+cryptography
 
 # Testing
 pytest

@@ -21,6 +21,9 @@ from transformers import AutoModelForImageSegmentation
 from huggingface_hub import login
 import os
 
+S3_BUCKET = "plant-analysis-data"
+S3_PREFIX = "results/{species}_results/{plant_id}/{date}/"
+
 hf_token = os.getenv("HF_TOKEN")
 if hf_token:
     login(token=hf_token)
@@ -75,7 +78,7 @@ def save_index(idx, func, spec, mask, s3_bucket, s3_prefix):
     finally:
         plt.close(fig)
 
-def process_plant_image(bucket, key):
+def process_plant_image(bucket, key, species):
     # print("▶ Starting pipeline for:", key)
 
     parts = key.split("/")
@@ -89,7 +92,7 @@ def process_plant_image(bucket, key):
     flat_key = f"{date_key}_{plant_id}_{frame_str}"
 
     # Use a consistent prefix for all outputs
-    prefix = f"results/{date}/{plant_id}"
+    prefix = S3_PREFIX.format(species=species, plant_id=plant_id, date=date)
 
     image = load_single_frame_from_s3(bucket, key)
     # if image is None:

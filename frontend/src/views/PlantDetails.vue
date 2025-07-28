@@ -126,7 +126,7 @@
                   <h3 v-else>Ready for Analysis</h3>
                   <div class="config-summary">
                     <div class="config-item">
-                      <strong>Plant Type:</strong> {{ plantName }}
+                      <strong>Plant Species:</strong> {{ species }}
                     </div>
                     <div class="config-item">
                       <strong>Plant ID:</strong> {{ getDisplayText(selectedPlantId) }}
@@ -153,14 +153,14 @@
           <!-- Main Content Area - Right Side -->
           <div class="main-content-area">
             <div class="content-header">
-              <!-- <h1 class="title">{{ plantName }}</h1>
+              <!-- <h1 class="title">{{ species }}</h1>
               <h2 class="subtitle">Plant Analysis Dashboard</h2> -->
               
             </div>
 
             <!-- Analysis Results Component -->
             <AnalysisResults
-              :plant-name="plantName"
+              :plant-name="species"
               :plant-id="selectedPlantId"
               :analysis-date="selectedDate"
               :has-started-analysis="hasStartedAnalysis"
@@ -197,14 +197,9 @@ export default {
     ConfigurableButton,
     AnalysisResults
   },
-  props: {
-    plantName: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
+      species: this.$route.params.speciesName,
       // Background configuration
       backgroundImage: backgroundImage,
       backgroundImageOpacity: 0.9,
@@ -313,7 +308,7 @@ export default {
     },
 
     handleDateChange(date) {
-      this.selectedDate = date;
+      this.selectedDate = date; 
       this.results = null;
       console.log('Date changed to:', date);
 
@@ -322,7 +317,7 @@ export default {
     handleAnalyzeClick() {
       if (this.canStartAnalysis) {
         console.log('Starting analysis for:', {
-          plantType: this.plantName,
+          species: this.species,
           plantId: this.selectedPlantId,
           date: this.selectedDate
         });
@@ -333,17 +328,17 @@ export default {
         this.analysisProgress = 0;
         this.results = null;
         this.analysisFailed = false;
-        this.fetchResults(this.selectedPlantId.value, this.selectedDate.value);
+        this.fetchResults(this.species, this.selectedPlantId.value, this.selectedDate.value);
       }
     },
 
-    async fetchResults(plantId, date) {
+    async fetchResults(species, plantId, date) {
       this.isAnalyzing = true;
       this.analysisProgress = 0;
       this.analysisFailed = false;
-      console.log('fetchResults: started for', plantId, date);
+      console.log('fetchResults: started for', species, plantId, date);
       try {
-        const result = await getPlantResults(plantId, date);
+        const result = await getPlantResults(species, plantId, date);
         if (result && result.error) {
           console.error('fetchResults: Analysis failed:', result.error);
           this.isAnalyzing = false;
@@ -361,8 +356,8 @@ export default {
         if (e.response && e.response.status === 404) {
           try {
             console.log('fetchResults: No results found, triggering analysis...');
-            await analyzePlant(plantId, date);
-            this.results = await getPlantResults(plantId, date);
+            await analyzePlant(species, plantId, date);
+            this.results = await getPlantResults(species, plantId, date);
             this.analysisProgress = 100;
             this.isAnalyzing = false;
             this.analysisFailed = false;
@@ -384,12 +379,12 @@ export default {
       }
     },
 
-    pollForResult(plantId, date) {
+    pollForResult(species, plantId, date) {
       this.analysisProgress = 10;
       let progress = 10;
       const poll = setInterval(async () => {
         try {
-          const result = await getPlantResults(plantId, date);
+          const result = await getPlantResults(species, plantId, date);
           if (result) {
             this.results = result;
             progress += Math.random() * 20 + 10;
@@ -429,6 +424,7 @@ export default {
     resetParameters() {
       this.selectedPlantId = null;
       this.selectedDate = null;
+      this.species = null;
       this.hasStartedAnalysis = false;
       this.isAnalyzing = false;
       this.analysisProgress = 0;

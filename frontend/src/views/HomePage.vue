@@ -25,7 +25,7 @@
       <main class="content">
         <div class="title-container">
           <h1 class="title">Greenhouse Automatic <br> Phenotyping Tool</h1>
-          <div class="documentation-icon" @click="openDocumentation" title="Documentation">
+          <div class="documentation-icon" @click="openDocumentation">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.89 22 5.99 22H18C19.1 22 20 21.1 20 20V8L14 2Z" stroke="white" stroke-width="2" fill="rgba(255,255,255,0.1)"/>
               <path d="M14 2V8H20" stroke="white" stroke-width="2" fill="none"/>
@@ -39,22 +39,52 @@
         <div class="description">
           Analyze your plant images for biotic and abiotic greenhouses with advanced AI-powered tools.
         </div>
-        <h2 class="subtitle">Select Plant</h2>
-        <div class="title-underline"></div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons" v-if="currentView === null">
+          <button 
+            class="action-button" 
+            :class="{ active: currentView === 'select' }"
+            @click="setView('select')"
+          >
+            Select Plant
+          </button>
+          <button 
+            class="action-button" 
+            :class="{ active: currentView === 'upload' }"
+            @click="setView('upload')"
+          >
+            Upload Data
+          </button>
+        </div>
 
-        <div class="selection-container">
-          <PlantSelectionCard
-            title="Biotic"
-            :plants="[{name:'Sorghum', disabled: false}]"
-            @select-plant="handlePlantSelection"
-            :selectedPlant="selectedPlant"
-          />
-          <PlantSelectionCard
-            title="Abiotic"
-            :plants="[{name:'Rice', disabled: true}, {name: 'Corn', disabled: true}]"
-            @select-plant="handlePlantSelection"
-            :selectedPlant="selectedPlant"
-          />
+        <!-- Plant Selection View -->
+        <div v-if="currentView === 'select'" class="plant-selection-view"  >
+          <div class="subtitle-container">
+            <div class="back-arrow" @click="setView(null)" title="Back">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 19L5 12L12 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h2 class="subtitle">Select Plant</h2>
+          </div>
+          <div class="title-underline"></div>
+
+          <div class="selection-container">
+            <PlantSelectionCard
+              title="Biotic"
+              :plants="[{name:'Sorghum', disabled: false}]"
+              @select-plant="handlePlantSelection"
+              :selectedPlant="selectedPlant"
+            />
+            <PlantSelectionCard
+              title="Abiotic"
+              :plants="[{name:'Rice', disabled: true}, {name: 'Corn', disabled: false}]"
+              @select-plant="handlePlantSelection"
+              :selectedPlant="selectedPlant"
+            />
+          </div>
         </div>
       </main>
     </div>
@@ -75,6 +105,7 @@ export default {
   data() {
     return {
       selectedPlant: null,
+      currentView: null, // 'select' or 'upload'
       
       // Background configuration
       backgroundImage: backgroundImage,
@@ -106,11 +137,24 @@ export default {
     }
   },
   methods: {
-    handlePlantSelection(plant) {
+    setView(view) {
+      if (view === 'upload') {
+        // Navigate to upload data page
+        this.$router.push({ name: 'UploadData' });
+      } else if (view === 'select') {
+        // Show plant selection view
+        this.currentView = 'select';
+      } else {
+        // Show main menu
+        this.currentView = null;
+      }
+    },
+    
+    handlePlantSelection(species) {
       // Navigate to plant details page using router
       this.$router.push({
         name: 'PlantDetails',
-        params: { plantName: plant }
+        params: { speciesName: species }
       });
     },
     
@@ -293,22 +337,94 @@ html {
   bottom: -35px;
 }
 
-.subtitle {
-  color: white;
-  font-size: 60px;
-  margin-bottom: 40px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  font-weight: 500;
-}
-
 .description {
   color: white;
   font-size: 20px;
   max-width: 450px;
-  margin: 0 auto -30px auto;
+  margin: 0 auto 40px auto;
   text-shadow: 1px 1px 2px rgb(0, 0, 0);
   line-height: 1.6;
-  opacity: 0.9;
+  opacity: 1.0;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  margin-bottom: 40px;
+}
+
+.action-button {
+  background: #74b596b9;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0);
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: 250px;
+  height: 150px;
+}
+
+.action-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.action-button.active {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Plant Selection View */
+.plant-selection-view {
+  margin-top: -40px;
+  width: 100%;
+}
+
+.subtitle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 40px;
+  margin-top: -80px;
+}
+
+.back-arrow {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  position: fixed;
+  left: 650px;
+  bottom: 425px;
+}
+
+.back-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.2);
+}
+
+.back-arrow svg {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.subtitle {
+  color: white;
+  font-size: 60px;
+  margin-bottom: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  font-weight: 500;
 }
 
 .title-underline {
@@ -342,6 +458,16 @@ html {
   .description {
     font-size: 16px;
     max-width: 350px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .action-button {
+    min-width: 200px;
   }
   
   .selection-container {

@@ -21,13 +21,14 @@ import json
 router = APIRouter()
 
 S3_BUCKET = "plant-analysis-data"  
-S3_IMAGE_PATH_TEMPLATE = "Sorghum_dataset/{date}/{plant_id}/{plant_id}_frame8.tif" 
+S3_IMAGE_PATH_TEMPLATE = "{species}_dataset/{date}/{plant_id}/{plant_id}_frame8.tif" 
+S3_RESULTS_PATH = "results/{species}_results/{plant_id}/{date}/" 
 
-@router.post("/analyze-plant/{plant_id}")
-async def analyze_plant(plant_id: str, date: str):
+@router.post("/analyze-plant/{species}/{plant_id}")
+async def analyze_plant(species: str, plant_id: str, date: str):
     # Construct the S3 key for the plant image
-    key = S3_IMAGE_PATH_TEMPLATE.format(date=date, plant_id=plant_id)
-    task = analyze_plant_task.delay(S3_BUCKET, key)
+    key = S3_IMAGE_PATH_TEMPLATE.format(species=species, date=date, plant_id=plant_id)
+    task = analyze_plant_task.delay(S3_BUCKET, key, species)
     return {"task_id": task.id, "status": "processing started"}
 
 @router.get("/task-status/{task_id}")
@@ -39,11 +40,11 @@ def get_task_status(task_id: str):
         "result": task.result if task.state == 'SUCCESS' else None
     }
 
-@router.get("/plant-results/{plant_id}")
-def get_plant_results(plant_id: str, date: str):
+@router.get("/plant-results/{species}/{plant_id}")
+def get_plant_results(species: str, plant_id: str, date: str):
     s3 = boto3.client('s3', region_name='us-east-2')
     bucket = "plant-analysis-data"
-    prefix = f"results/{date}/{plant_id}/"
+    prefix = S3_RESULTS_PATH.format(species=species, plant_id=plant_id, date=date)
     
     print(f"🔍 Looking for files in S3: bucket={bucket}, prefix={prefix}")
     
@@ -58,7 +59,7 @@ def get_plant_results(plant_id: str, date: str):
         print(f"📁 Found {len(files)} files: {files}")
         
         if not files:
-            print(f"⚠️ No files found for {plant_id} on {date}")
+            print(f"⚠️ No files found for {species}_{plant_id} on {date}")
             return {"error": "No analysis results found for this plant and date"}
         
         result = {}

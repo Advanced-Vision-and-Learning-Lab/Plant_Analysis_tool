@@ -2,58 +2,22 @@
 from typing import Optional, Any
 from datetime import datetime, date # Import datetime for DateTime column type
 
-from sqlalchemy import String, Date, DateTime, UniqueConstraint, ForeignKey, Float, Enum
+from sqlalchemy import String, Date, DateTime, UniqueConstraint, ForeignKey, Float, JSON
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import JSONB # Specific to PostgreSQL
 from sqlalchemy.sql import func # For default values like current date/time
 
-import enum
+# Valid vegetation index strings
+VALID_VEGETATION_INDICES = [
+    "ARI", "ARI2", "AVI", "CCCI", "CIgreen", "CIRE", "CVI", "DSWI4", "DVI", 
+    "EVI2", "ExR", "GEMI", "GNDVI", "GOSAVI", "GRNDVI", "GRVI", "GSAVI", 
+    "IPVI", "LCI", "MCARI", "MCARI1", "MCARI2", "MGRVI", "MSAVI", "MSR", 
+    "MTVI1", "MTVI2", "NDRE", "NDVI", "NDWI", "NGRDI", "NLI", "OSAVI", 
+    "PVI", "RDVI", "RI", "RRI1", "SIPI2", "SR", "TCARI", "TCARIOSAVI", 
+    "TNDVI", "TSAVI", "WDVI"
+]
 
-class VegetationIndexEnum(enum.Enum):
-    ARI = "ARI"
-    ARI2 = "ARI2"
-    AVI = "AVI"
-    CCCI = "CCCI"
-    CIgreen = "CIgreen"
-    CIRE = "CIRE"
-    CVI = "CVI"
-    DSWI4 = "DSWI4"
-    DVI = "DVI"
-    EVI2 = "EVI2"
-    ExR = "ExR"
-    GEMI = "GEMI"
-    GNDVI = "GNDVI"
-    GOSAVI = "GOSAVI"
-    GRNDVI = "GRNDVI"
-    GRVI = "GRVI"
-    GSAVI = "GSAVI"
-    IPVI = "IPVI"
-    LCI = "LCI"
-    MCARI = "MCARI"
-    MCARI1 = "MCARI1"
-    MCARI2 = "MCARI2"
-    MGRVI = "MGRVI"
-    MSAVI = "MSAVI"
-    MSR = "MSR"
-    MTVI1 = "MTVI1"
-    MTVI2 = "MTVI2"
-    NDRE = "NDRE"
-    NDVI = "NDVI"
-    NDWI = "NDWI"
-    NGRDI = "NGRDI"
-    NLI = "NLI"
-    OSAVI = "OSAVI"
-    PVI = "PVI"
-    RDVI = "RDVI"
-    RI = "RI"
-    RRI1 = "RRI1"
-    SIPI2 = "SIPI2"
-    SR = "SR"
-    TCARI = "TCARI"
-    TCARIOSAVI = "TCARIOSAVI"
-    TNDVI = "TNDVI"
-    TSAVI = "TSAVI"
-    WDVI = "WDVI"
+TEXTURE_FEATURES = ["color","green","nir","pca","red_edge","red"]
+
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -65,11 +29,12 @@ class Plant(Base):
     species: Mapped[Optional[str]] = mapped_column(String(100), nullable=False)
     # Add other metadata as needed (location, planting date, etc.)
     vegetation_indices = relationship("VegetationIndexTimeline", back_populates="plant")
+    texture_features = relationship("TextureTimeline", back_populates="plant")
     processed_data = relationship("ProcessedData", back_populates="plant")
 
     def __repr__(self) -> str:
         return f"<Plant(id={self.id}, name='{self.name}', species='{self.species}')>"
-        
+
 
 class ProcessedData(Base):
     __tablename__ = "processed_data"
@@ -86,7 +51,7 @@ class ProcessedData(Base):
 
     # Column for a user-customizable name.
     # It's nullable=True because the user might not provide one.
-    name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    name: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
 
     # Column for the plant identifier.
     # It's nullable=False because the plant identifier is required.
@@ -94,7 +59,7 @@ class ProcessedData(Base):
 
     # Column for the image key.
     # It's nullable=False because the image key is required.
-    image_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    image_key: Mapped[str] = mapped_column(String(255), nullable=True)
     
     # Using DateTime for more precision, with a default to the current UTC time
     date_processed: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=func.now()) 
@@ -104,9 +69,9 @@ class ProcessedData(Base):
     date_captured: Mapped[date] = mapped_column(Date, nullable=False)
 
     #CHANGE TO JSONB
-    vegetation_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
-    morphology_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
-    texture_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB, nullable=True)
+    vegetation_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    morphology_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
+    texture_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
 
     plant = relationship("Plant", back_populates="processed_data")
 
@@ -119,7 +84,7 @@ class VegetationIndexTimeline(Base):
     #Composite Primary Key: plant_id, date_captured, index_type
     plant_id: Mapped[str] = mapped_column(String(50), ForeignKey("plants.id"), primary_key=True)
     date_captured: Mapped[date] = mapped_column(Date, primary_key=True)
-    index_type: Mapped[VegetationIndexEnum] = mapped_column(Enum(VegetationIndexEnum), primary_key=True)
+    index_type: Mapped[str] = mapped_column(String(20), primary_key=True)  
     mean: Mapped[float] = mapped_column(Float, nullable=False)
     median: Mapped[float] = mapped_column(Float, nullable=False)
     std: Mapped[float] = mapped_column(Float, nullable=False)
@@ -130,12 +95,34 @@ class VegetationIndexTimeline(Base):
     index_image_key: Mapped[str] = mapped_column(String(255), nullable=False)
     plant = relationship("Plant", back_populates="vegetation_indices")
 
+    def __repr__(self) -> str:
+        return f"<VegetationIndexTimeline(plant_id='{self.plant_id}', date_captured={self.date_captured}, index_type='{self.index_type}')>"
+
+class TextureTimeline(Base):
+    __tablename__ = "texture_timeline"
+    plant_id: Mapped[str] = mapped_column(String(50), ForeignKey("plants.id"), primary_key=True)
+    date_captured: Mapped[date] = mapped_column(Date, primary_key=True)
+    band_name: Mapped[str] = mapped_column(String(20), primary_key=True)
+    texture_type: Mapped[str] = mapped_column(String(20), primary_key=True)
+    mean: Mapped[float] = mapped_column(Float, nullable=False)
+    median: Mapped[float] = mapped_column(Float, nullable=False)
+    std: Mapped[float] = mapped_column(Float, nullable=False)
+    q25: Mapped[float] = mapped_column(Float, nullable=False)
+    q75: Mapped[float] = mapped_column(Float, nullable=False)
+    min: Mapped[float] = mapped_column(Float, nullable=False)
+    max: Mapped[float] = mapped_column(Float, nullable=False)
+    texture_image_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    plant = relationship("Plant", back_populates="texture_features")
+
+    def __repr__(self) -> str:
+        return f"<TextureTimeline(plant_id='{self.plant_id}', date_captured={self.date_captured}, band_name='{self.band_name}', texture_type='{self.texture_type}')>"
+
 
 # Example: Get NDVI time series for plant 'plant1'
 # results = (
-#     session.query(VegetationIndexTimeSeries)
+#     session.query(VegetationIndexTimeline)
 #     .filter_by(plant_id="plant1", index_type="NDVI")
-#     .order_by(VegetationIndexTimeSeries.date_captured)
+#     .order_by(VegetationIndexTimeline.date_captured)
 #     .all()
 # )
 

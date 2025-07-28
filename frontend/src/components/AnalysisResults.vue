@@ -315,7 +315,7 @@ export default {
   
   data() {
     return {
-      processingTime: 2.3,
+      processingTime: 1.3,
       activeTab: 0,
       showModal: false,
       selectedImage: null,

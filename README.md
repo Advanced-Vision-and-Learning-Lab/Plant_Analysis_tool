@@ -144,6 +144,7 @@ podman-compose down
 - [Service URLs](#service-urls)
 - [Frontend: What Results to Expect](#frontend-what-results-to-expect)
 - [Backend: Processes and Modules](#backend-processes-and-modules)
+- [Database: How to use] (#database)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Contributing](#contributing)
@@ -228,7 +229,7 @@ If you prefer not to use containers, you can set up each component manually. Thi
 - [Redis](https://redis.io/)
 
 ### 2. Database Setup
-- Install and start PostgreSQL.
+- Install and start MySQL.
 - Create a database and user as specified in your backend config.
 
 ### 3. Backend Setup
@@ -328,6 +329,16 @@ The backend is responsible for all data processing, analysis, and orchestration.
   - All sensitive and environment-specific settings are managed via `.env` files.
 
 ---
+
+## Database: How to use
+- **Log In Command**: $ mysql –u dev_user –pdev_password –h 127.0.0.1 -P 3306 
+- **Helpful Commands**
+  - SHOW DATABASES: Lists all available databases
+  - USE plant_dev_db: Selects the database to view
+  - SHOW TABLES: Lists all tables in current database
+  - Select {column} from {table}: View data in a column from the table
+    - Select * from {table}: Shows all data in the table
+
 
 ## Features
 - **Image Processing**: Color image generation, stitching, segmentation, and feature extraction.
