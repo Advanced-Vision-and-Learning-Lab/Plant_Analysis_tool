@@ -185,16 +185,16 @@ def analyze_texture_features(pdata, key=None, s3_bucket=None, s3_prefix=None):
                 plt.savefig(buf, format='png', dpi=150, bbox_inches='tight')
                 plt.close(fig)
                 buf.seek(0)
-                s3.upload_fileobj(buf, s3_bucket, f"{bprefix}/01_orig.png")
+                s3.upload_fileobj(buf, s3_bucket, f"{bprefix}/orig.png")
             else:
-                save_image_to_s3(s3_bucket, f"{bprefix}/01_orig.png", orig_img, cmap='gray')
-            save_image_to_s3(s3_bucket, f"{bprefix}/02_gray.png", gray, cmap='gray')
-            save_image_to_s3(s3_bucket, f"{bprefix}/03_lbp.png", lbp_map, cmap='gray')
-            save_image_to_s3(s3_bucket, f"{bprefix}/04_hog.png", hog_map, cmap='gray')
-            save_image_to_s3(s3_bucket, f"{bprefix}/05_lac1.png", lac1, cmap='plasma')
-            save_image_to_s3(s3_bucket, f"{bprefix}/06_lac2.png", lac2, cmap='plasma')
-            save_image_to_s3(s3_bucket, f"{bprefix}/07_lac3.png", lac3, cmap='plasma')
-            save_image_to_s3(s3_bucket, f"{bprefix}/08_ehd_map.png", ehd_map, cmap='viridis')
+                save_image_to_s3(s3_bucket, f"{bprefix}/orig.png", orig_img, cmap='gray')
+            save_image_to_s3(s3_bucket, f"{bprefix}/gray.png", gray, cmap='gray')
+            save_image_to_s3(s3_bucket, f"{bprefix}/lbp.png", lbp_map, cmap='gray')
+            save_image_to_s3(s3_bucket, f"{bprefix}/hog.png", hog_map, cmap='gray')
+            save_image_to_s3(s3_bucket, f"{bprefix}/lac1.png", lac1, cmap='plasma')
+            save_image_to_s3(s3_bucket, f"{bprefix}/lac2.png", lac2, cmap='plasma')
+            save_image_to_s3(s3_bucket, f"{bprefix}/lac3.png", lac3, cmap='plasma')
+            save_image_to_s3(s3_bucket, f"{bprefix}/ehd_map.png", ehd_map, cmap='viridis')
 
             for i in range(ehd_feats.shape[0]):
                 channel = ehd_feats[i]
@@ -203,7 +203,7 @@ def analyze_texture_features(pdata, key=None, s3_bucket=None, s3_prefix=None):
                     ch8 = np.zeros_like(channel, dtype=np.uint8)
                 else:
                     ch8 = ((channel - np.min(channel)) / rng * 255).astype(np.uint8)
-                save_image_to_s3(s3_bucket, f"{bprefix}//09_ehd_feat_{i}.png", ch8, cmap='magma')
+                save_image_to_s3(s3_bucket, f"{bprefix}//ehd_feat_{i}.png", ch8, cmap='magma')
 
 
     return pdata

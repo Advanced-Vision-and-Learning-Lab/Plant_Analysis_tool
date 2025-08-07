@@ -8,12 +8,17 @@ import sys
 project_root = "/home/grads/n/nazaro/Desktop/Github_repo/Plant_Analysis_tool"
 sys.path.insert(0, project_root)
 
-from backend.db.models import Plant, ProcessedData, VegetationIndexTimeline, TextureTimeline, VALID_VEGETATION_INDICES, TEXTURE_FEATURES
+from backend.db.models import Plant, ProcessedData, VegetationIndexTimeline, TextureTimeline, VEGETATION_INDICES, TEXTURE_FEATURES
 from backend.db.database import SessionLocal
 
 # --- Config ---
 save_folder = "/home/grads/n/nazaro/Desktop/Github_repo/Plant_Analysis_tool/backend/db/resources"
 save_path = os.path.join(save_folder, "Sorghum_veg_texture_combined.csv")
+
+# Add these constants at the top
+S3_BUCKET = "plant-analysis-data"
+S3_REGION = "us-east-2"
+S3_BASE_URL = f"https://{S3_BUCKET}.s3.{S3_REGION}.amazonaws.com"
 
 # Helper to parse the naming convention
 def parse_plant_id(raw_id):
@@ -142,7 +147,7 @@ species_name = os.path.basename(save_path).split("_")[0]
 df = pd.read_csv(save_path)
 
 # Use the vegetation indices from models.py to match columns
-veg_cols = [col for col in df.columns if any(index in col for index in VALID_VEGETATION_INDICES)]
+veg_cols = [col for col in df.columns if any(index in col for index in VEGETATION_INDICES)]
 tex_cols = [col for col in df.columns if any(index in col for index in TEXTURE_FEATURES) and 'CIgreen' not in col]
 
 # Open a DB session
@@ -179,7 +184,7 @@ for idx, row in df.iterrows():
             id=processed_id,
             name=None,
             plant_id=f"{species_name}_{plant_id}",
-            image_key=None, #TODO: change to image_key
+            image_key=f"{S3_BASE_URL}/results/{species_name}_results/{plant_id}/{date_str}",
             date_captured=date_captured,
             vegetation_features=veg_features,  # This will be saved as JSON
             morphology_features=None,
@@ -202,7 +207,7 @@ for idx, row in df.iterrows():
                     q75=float(stats['q75']),
                     min=float(stats['min']),
                     max=float(stats['max']),
-                    index_image_key=f"{processed_id}_{index_name}.png"  # Placeholder image key
+                    index_image_key=f"{S3_BASE_URL}/results/{species_name}_results/{plant_id}/{date_str}/vegetation_indices/{index_name}.png"
                 )
                 session.merge(veg_timeline)
                 added_veg_timeline += 1
@@ -225,7 +230,7 @@ for idx, row in df.iterrows():
                         q75=float(stats['q75']),
                         min=float(stats['min']),
                         max=float(stats['max']),
-                        texture_image_key=f"{processed_id}_{band_name}_{texture_type}.png"  # Placeholder image key
+                        texture_image_key=f"{S3_BASE_URL}/{species_name}_results/{plant_id}/{date_str}/texture/{band_name}/{texture_type}.png"
                     )
                     session.merge(texture_timeline)
                     added_tex_timeline += 1

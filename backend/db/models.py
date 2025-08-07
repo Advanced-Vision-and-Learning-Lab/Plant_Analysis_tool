@@ -7,7 +7,7 @@ from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func # For default values like current date/time
 
 # Valid vegetation index strings
-VALID_VEGETATION_INDICES = [
+VEGETATION_INDICES = [
     "ARI", "ARI2", "AVI", "CCCI", "CIgreen", "CIRE", "CVI", "DSWI4", "DVI", 
     "EVI2", "ExR", "GEMI", "GNDVI", "GOSAVI", "GRNDVI", "GRVI", "GSAVI", 
     "IPVI", "LCI", "MCARI", "MCARI1", "MCARI2", "MGRVI", "MSAVI", "MSR", 
@@ -24,9 +24,11 @@ metadata = Base.metadata
 
 class Plant(Base):
     __tablename__ = "plants"
-    id: Mapped[str] = mapped_column(String(50), primary_key=True, index=True)
+    id: Mapped[str] = mapped_column(String(50), primary_key=True, index=True) # Ex: Sorghum_plant1
     name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     species: Mapped[Optional[str]] = mapped_column(String(100), nullable=False)
+    # add column for dates captured
+    dates_captured: Mapped[list[date]] = mapped_column(JSON, nullable=False)
     # Add other metadata as needed (location, planting date, etc.)
     vegetation_indices = relationship("VegetationIndexTimeline", back_populates="plant")
     texture_features = relationship("TextureTimeline", back_populates="plant")
@@ -68,7 +70,7 @@ class ProcessedData(Base):
     # It's nullable=False because the capture date is required.
     date_captured: Mapped[date] = mapped_column(Date, nullable=False)
 
-    #CHANGE TO JSONB
+    
     vegetation_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
     morphology_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)
     texture_features: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON, nullable=True)

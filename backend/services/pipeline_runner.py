@@ -79,11 +79,8 @@ def save_index(idx, func, spec, mask, s3_bucket, s3_prefix):
         plt.close(fig)
 
 def process_plant_image(bucket, key, species):
-    # print("▶ Starting pipeline for:", key)
 
     parts = key.split("/")
-    # if len(parts) < 4:
-    #     raise ValueError("Invalid S3 key format. Expected format: Sorghum_dataset/date/plant_id/file.tif")
 
     date = parts[1]
     plant_id = parts[2]

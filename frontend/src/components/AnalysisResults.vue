@@ -34,13 +34,13 @@
             <div v-if="activeTab === 0" class="tab-panel">
               <div class="tab-header">
                 <h3>Main Images</h3>
-                <button v-if="mainImages.length" @click="downloadAllImages()" class="download-all-btn">
+                <button v-if="mainImages_DB.length" @click="downloadAllImages()" class="download-all-btn">
                   Download All Images
                 </button>
               </div>
-              <div v-if="mainImages.length">
+              <div v-if="mainImages_DB.length">
                 <div class="image-grid">
-                  <div v-for="img in mainImages" :key="img.label" class="image-item">
+                  <div v-for="img in mainImages_DB" :key="img.label" class="image-item">
                     <h4 class="image-title">{{ img.label }} Image</h4>
                     <img 
                       :src="img.url" 
@@ -62,7 +62,7 @@
             <div v-else-if="activeTab === 1" class="tab-panel">
               <div class="tab-header">
                 <h3>Texture Images</h3>
-                <button v-if="textureImages.length" @click="downloadAllImages()" class="download-all-btn">
+                <button v-if="textureImages_DB.length" @click="downloadAllImages()" class="download-all-btn">
                   Download All Images
                 </button>
               </div>
@@ -89,24 +89,20 @@
             <div v-else-if="activeTab === 2" class="tab-panel">
               <div class="tab-header">
                 <h3>Vegetation Indices Images</h3>
-                <button v-if="availableVegIndexImages.length" @click="downloadAllImages()" class="download-all-btn">
+                <button v-if="vegetationIndicesImages_DB.length" @click="downloadAllImages()" class="download-all-btn">
                   Download All Images
                 </button>
               </div>
-              <div v-if="vegIndexList.length">
+              <div v-if="vegetationIndicesImages_DB.length">
                 <div class="image-grid">
-                  <div v-for="(name) in vegIndexList" :key="name" class="image-item">
-                    <h4 class="image-title">{{ name }}</h4>
+                  <div v-for="img in vegetationIndicesImages_DB" :key="img.label" class="image-item">
+                    <h4 class="image-title">{{ img.label }}</h4>
                     <img 
-                      v-if="getVegIndexUrl(name)" 
-                      :src="getVegIndexUrl(name)" 
-                      :alt="name" 
+                      :src="img.url" 
+                      :alt="img.label" 
                       class="result-image clickable" 
-                      @click="openImageModal({ label: name, url: getVegIndexUrl(name) })"
+                      @click="openImageModal(img)"
                     />
-                    <div v-else class="no-image-placeholder">
-                      <p>No image available for {{ name }}</p>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -133,7 +129,7 @@
                 />
                 
               </div>
-              <div v-if="vegIndexItems.length" class="table-container">
+              <div v-if="vegIndexItems_DB.length" class="table-container">
                 <table class="data-table">
                   <thead>
                     <tr>
@@ -176,7 +172,7 @@
                   class="search-input"
                 />
               </div>
-              <div v-if="textureItems.length" class="table-container">
+              <div v-if="textureItems_DB.length" class="table-container">
                 <table class="data-table">
                   <thead>
                     <tr>
@@ -189,7 +185,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in filteredTextureItems" :key="item.feature">
+                    <tr v-for="item in filteredTextureItems" :key="item.feature"> 
                       <td v-for="header in textureHeaders" :key="header.value">
                         {{ formatValue(item[header.value]) }}
                       </td>
@@ -245,6 +241,70 @@
                 <p>No morphological features data was found in the analysis results.</p>
               </div>
             </div>
+
+            <!-- Plant Timeline Tab -->
+            <div v-else-if="activeTab === 6" class="tab-panel">
+              <div class="tab-header">
+                <h3>Plant Timeline Configuration</h3>
+              </div>
+              
+              <div class="timeline-config">
+                <!-- Feature Type Selection -->
+                <div class="config-section">
+                  <label class="config-label">Feature Type:</label>
+                  <select v-model="timelineConfig.featureType" @change="onFeatureTypeChange" class="config-select">
+                    <option value="">Select Feature Type</option>
+                    <option value="vegetation">Vegetation Index</option>
+                    <option value="texture">Texture Feature</option>
+                    <option value="morphology">Morphology Feature</option>
+                  </select>
+                </div>
+
+                <!-- Specific Feature Selection -->
+                <div class="config-section">
+                  <label class="config-label">Specific Feature:</label>
+                  <select v-model="timelineConfig.specificFeature" :disabled="!timelineConfig.featureType" class="config-select">
+                    <option value="">Select Specific Feature</option>
+                    <option v-for="feature in availableFeatures" :key="feature" :value="feature">
+                      {{ feature }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Display Options -->
+                <div class="config-section">
+                  <label class="config-label">Display Options:</label>
+                  <div class="display-options">
+                    <label class="checkbox-label">
+                      <input type="checkbox" v-model="timelineConfig.displayImages" />
+                      Display Images
+                    </label>
+                    <div class="number-input-group">
+                      <label>Number of Images:</label>
+                      <input 
+                        type="number" 
+                        v-model="timelineConfig.numImages" 
+                        min="1" 
+                        max="10" 
+                        class="number-input"
+                        :disabled="!timelineConfig.displayImages"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Generate Chart Button -->
+                <div class="config-section">
+                  <button 
+                    @click="generateTimelineChart" 
+                    :disabled="!canGenerateChart"
+                    class="generate-chart-btn"
+                  >
+                    Generate Timeline Chart
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -267,12 +327,33 @@
         <h3 class="modal-title">{{ selectedImage.label }}</h3>
       </div>
     </div>
+
+    <!-- Timeline Modal -->
+    <div v-if="showTimelineModal" class="timeline-modal" @click="showTimelineModal = false">
+      <div class="timeline-modal-content" @click.stop>
+        <div class="timeline-modal-header">
+          <h2>Plant Timeline</h2>
+          <button class="modal-close" @click="showTimelineModal = false" title="Close">×</button>
+        </div>
+        <PlantTimeline 
+          v-if="timelineData"
+          :timeline-data="timelineData"
+          :config="timelineConfig"
+          @close="showTimelineModal = false"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import PlantTimeline from './PlantTimeline.vue';
+
 export default {
   name: 'AnalysisResults',
+  components: {
+    PlantTimeline
+  },
   props: {
     // Basic props
     species: {
@@ -327,6 +408,18 @@ export default {
       sortColumn: '',
       sortDirection: 'asc',
       
+      // Timeline configuration
+      timelineConfig: {
+        featureType: '',
+        specificFeature: '',
+        displayImages: false,
+        numImages: 5
+      },
+      
+      // Timeline data
+      timelineData: null,
+      showTimelineModal: false,
+      
       // Vegetation indices list (same as ResultViewer.vue)
       vegIndexList: [
         'ARI','ARI2','AVI','CCCI','CIgreen','CIRE','CVI','DSWI4','DVI',
@@ -344,11 +437,30 @@ export default {
         { label: 'Vegetation Indices Images', key: 'veg-indices-images' },
         { label: 'Vegetation Indices Table', key: 'veg-indices-table' },
         { label: 'Texture Features Table', key: 'texture-features-table' },
-        { label: 'Morphological Features Table', key: 'morphological-features-table' }
-      ]
+        { label: 'Morphological Features Table', key: 'morphological-features-table' },
+        { label: 'Plant Timeline', key: 'plant-timeline' }
+      ],
+
+      // Add database data properties
+      dbData: {
+        mainImages: null,
+        textureImages: null,
+        vegetationIndicesImages: null,
+        vegetationIndicesTable: null,
+        textureFeaturesTable: null
+      },
+      
+      // Loading states
+      isLoading: false,
     };
   },
   
+  // Add lifecycle hook to load database data
+  async mounted() {
+    await this.loadDatabaseData(); // Load database data on mount
+  },
+  
+  // Watch for changes in results to reload database data
   watch: {
     // Reset to first tab when new results are loaded
     results: {
@@ -380,7 +492,11 @@ export default {
         return [];
       }
       const keys = ['original', 'mask', 'overlay', 'segmented'];
-      const images = keys.filter(k => this.results[k]).map(k => ({ label: this.capitalize(k), key: k, url: this.results[k] }));
+      const images = keys.filter(k => this.results[k]).map(k => ({ 
+        label: this.capitalize(k), 
+        key: k, 
+        url: this.results[k] 
+      }));
       console.log('mainImages computed - results:', this.results);
       if (images.length > 0) {
         console.log(`mainImages: found ${images.length} images`);
@@ -388,6 +504,14 @@ export default {
         console.log('mainImages: no images found');
       }
       return images;
+    },
+
+    mainImages_DB() {
+      const dbImages = this.getMainImagesFromDB();
+      if (dbImages.length > 0) {
+        console.log('Using database images:', dbImages.length);
+        return dbImages;
+      }
     },
     
     textureImages() {
@@ -398,7 +522,7 @@ export default {
       // Find all keys that match texture_{band}_{suffix} and group by band
       const bands = ['color','green','nir','pca','red','red_edge'];
       const suffixes = [
-        '01_orig','02_gray','03_lbp','04_hog','05_lac1','06_lac2','07_lac3','08_ehd_map'
+        'orig','gray','lbp','hog','lac1','lac2','lac3','ehd_map'
       ];
       let images = [];
       console.log('textureImages computed - result:', this.results);
@@ -422,6 +546,14 @@ export default {
         console.log('textureImages: no texture images found');
       }
       return images;
+    },
+
+    textureImages_DB() {
+      const dbImages = this.getTextureImagesFromDB();
+      if (dbImages.length > 0) {
+        console.log('Using database texture images:', dbImages.length);
+        return dbImages;
+      }
     },
     
     vegetationIndicesImages() {
@@ -448,6 +580,14 @@ export default {
       }
       return images;
     },
+
+    vegetationIndicesImages_DB() {
+      const dbImages = this.getVegetationIndicesImagesFromDB();
+      if (dbImages.length > 0) {
+        console.log('Using database vegetation indices images:', dbImages.length);
+        return dbImages;
+      }
+    },
     
     // Table headers for vegetation indices
     vegIndexHeaders() {
@@ -469,10 +609,18 @@ export default {
       if (!nested || !nested.vegetation_features || !Array.isArray(nested.vegetation_features)) return [];
       return nested.vegetation_features;
     },
+
+    vegIndexItems_DB() {
+      const dbTable = this.getVegetationIndicesTableFromDB();
+      if (dbTable.length > 0) {
+        console.log('Using database vegetation indices table:', dbTable.length);
+        return dbTable;
+      }
+    },
     
     // Filtered and sorted vegetation indices
     filteredVegIndexItems() {
-      let items = this.vegIndexItems;
+      let items = this.vegIndexItems_DB;
       
       // Apply search filter
       if (this.vegIndexSearch) {
@@ -519,10 +667,18 @@ export default {
         }))
       );
     },
+
+    textureItems_DB() {
+      const dbTable = this.getTextureFeaturesTableFromDB();
+      if (dbTable.length > 0) {
+        console.log('Using database texture features table:', dbTable.length);
+        return dbTable;
+      }
+    },
     
     // Filtered and sorted texture features
     filteredTextureItems() {
-      let items = this.textureItems;
+      let items = this.textureItems_DB;
       
       // Apply search filter
       if (this.textureSearch) {
@@ -594,14 +750,24 @@ export default {
       return items;
     },
     
-    // Available vegetation index images for download
-    availableVegIndexImages() {
-      return this.vegIndexList
-        .filter(name => this.getVegIndexUrl(name))
-        .map(name => ({
-          label: name,
-          url: this.getVegIndexUrl(name)
-        }));
+    
+    // Available features for timeline
+    availableFeatures() {
+      if (!this.timelineConfig.featureType) return [];
+      
+      if (this.timelineConfig.featureType === 'vegetation') {
+        return this.vegIndexList;
+      } else if (this.timelineConfig.featureType === 'texture') {
+        return ['color', 'green', 'nir', 'pca', 'red_edge', 'red'];
+      } else if (this.timelineConfig.featureType === 'morphology') {
+        return ['area', 'perimeter', 'circularity', 'aspect_ratio', 'compactness'];
+      }
+      return [];
+    },
+    
+    // Check if chart can be generated
+    canGenerateChart() {
+      return this.timelineConfig.featureType && this.timelineConfig.specificFeature;
     }
   },
   
@@ -672,11 +838,6 @@ export default {
       window.URL.revokeObjectURL(url);
     },
     
-    // Get vegetation index image URL by name (same as ResultViewer.vue)
-    getVegIndexUrl(name) {
-      const key = `vegetation_indices_${name}`;
-      return this.results && this.results[key] ? this.results[key] : null;
-    },
 
     // Download all images for a specific type
     downloadAllImages() {
@@ -735,7 +896,138 @@ export default {
         a.click();
         document.body.removeChild(a);
       }
-    }
+    },
+    
+    // Timeline methods
+    onFeatureTypeChange() {
+      this.timelineConfig.specificFeature = '';
+    },
+    
+    async generateTimelineChart() {
+      try {
+        const plantId = this.getDisplayText(this.plantId);
+        const species = this.species;
+        
+        // Import the API function
+        const { getPlantTimeline } = await import('../api.js');
+        
+        // Get timeline data from API
+        const timelineData = await getPlantTimeline(species, plantId);
+        
+        // Show timeline modal
+        this.timelineData = timelineData;
+        this.showTimelineModal = true;
+        
+      } catch (error) {
+        console.error('Error generating timeline chart:', error);
+        alert('Error generating timeline chart. Please try again.');
+      }
+    },
+
+    // Database integration methods
+    async loadDatabaseData() {
+      if (!this.species || !this.plantId || !this.analysisDate) {
+        console.log('Missing required data for database query');
+        return;
+      }
+      
+      this.isLoading = true;
+      try {
+        const plantId = this.getDisplayText(this.plantId);
+        const date = this.getDisplayText(this.analysisDate);
+        
+        // Import the API function
+        const { getDatabaseData } = await import('../api.js');
+        
+        // Get all tab data from the database
+        const tabData = await getDatabaseData(this.species, plantId, date);
+        
+        // Update the database data
+        this.dbData = {
+          mainImages: tabData.images || {},
+          textureImages: tabData.texture_images || {},
+          vegetationIndicesImages: tabData.vegetation_indices_images || {},
+          vegetationIndicesTable: tabData.vegetation_indices_table || [],
+          textureFeaturesTable: tabData.texture_features_table || []
+        };
+        
+        console.log('Database data loaded:', this.dbData);
+        
+      } catch (error) {
+        console.error('Error loading database data:', error);
+        // Fall back to existing results if database fails
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    
+    // Method to get main images from database
+    getMainImagesFromDB() {
+      if (!this.dbData.mainImages) return [];
+      
+      const keys = ['original', 'mask', 'overlay', 'segmented'];
+      return keys
+        .filter(key => this.dbData.mainImages[key])
+        .map(key => ({
+          label: this.capitalize(key),
+          key: key,
+          url: this.dbData.mainImages[key]
+        }));
+    },
+    
+    // Method to get texture images from database
+    getTextureImagesFromDB() {
+      if (!this.dbData.textureImages) return [];
+      
+      return Object.entries(this.dbData.textureImages).map(([label, url]) => ({
+        label: label.replace(/_/g, ' ').replace(/\b\w/g, l => l.toLowerCase()), //ex: color_orig -> color orig
+        url: url 
+      }));
+    },
+    
+    // Method to get vegetation indices images from database
+    getVegetationIndicesImagesFromDB() {
+      if (!this.dbData.vegetationIndicesImages) return [];
+      
+      return Object.entries(this.dbData.vegetationIndicesImages).map(([index, url]) => ({
+        label: index, //ex: NDVI 
+        url: url
+      }));
+    },
+    
+    // Method to get vegetation indices table from database
+    getVegetationIndicesTableFromDB() {
+      if (!this.dbData.vegetationIndicesTable) return [];
+      
+      return this.dbData.vegetationIndicesTable.map(item => ({
+        index: item.index,
+        mean: item.mean,
+        std: item.std,
+        min: item.min,
+        max: item.max,
+        q25: item.q25,
+        median: item.median,
+        q75: item.q75
+      }));
+    },
+    
+    // Method to get texture features table from database
+    getTextureFeaturesTableFromDB() {
+      if (!this.dbData.textureFeaturesTable) return [];
+      
+      return this.dbData.textureFeaturesTable.map(item => ({
+        feature: item.feature,
+        band: item.band,
+        texture_type: item.texture_type,
+        mean: item.mean,
+        std: item.std,
+        min: item.min,
+        max: item.max,
+        q25: item.q25,
+        median: item.median,
+        q75: item.q75
+      }));
+    },
   },
   
   emits: ['export', 'share']
@@ -1268,5 +1560,182 @@ export default {
   font-weight: 600;
 }
 
+/* Timeline Configuration Styles */
+.timeline-config {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.config-section {
+  margin-bottom: 24px;
+}
+
+.config-section:last-child {
+  margin-bottom: 0;
+}
+
+.config-label {
+  display: block;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.config-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.config-select:focus {
+  outline: none;
+  border-color: #4ade80;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.config-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.config-select option {
+  background: #333;
+  color: white;
+}
+
+.display-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #4ade80;
+}
+
+.number-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.number-input-group label {
+  color: white;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.number-input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+.number-input:focus {
+  outline: none;
+  border-color: #4ade80;
+}
+
+.number-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.generate-chart-btn {
+  width: 100%;
+  padding: 16px;
+  background: #4ade80;
+  color: #000000;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-shadow: none;
+}
+
+.generate-chart-btn:hover:not(:disabled) {
+  background: #22c55e;
+  transform: translateY(-1px);
+}
+
+.generate-chart-btn:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Timeline Modal Styles */
+.timeline-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(10px);
+}
+
+.timeline-modal-content {
+  position: relative;
+  width: 95%;
+  height: 95%;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-modal-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #000000;
+  color: white;
+  z-index: 10;
+}
+
+.timeline-modal-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+}
 
 </style>

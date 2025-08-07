@@ -13,7 +13,8 @@ pytest-asyncio
 # Database
 sqlalchemy
 alembic
-psycopg2-binary
+pymysql
+cryptography
 
 python-dotenv
 python-multipart

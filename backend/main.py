@@ -3,7 +3,7 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api import plant_analysis_api
+from backend.api import plant_analysis_api, upload_api
 
 # 🔧 New imports for DB setup
 from backend.db.models import Base
@@ -29,3 +29,4 @@ Base.metadata.create_all(bind=engine)
 
 # Register routes
 app.include_router(plant_analysis_api.router, prefix="/api")
+app.include_router(upload_api.router, prefix="/api")
