@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Docker Environment &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -47,7 +47,8 @@
 <li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="developer_guide.html">Developer Guide</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Docker Environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#services-and-their-purpose">Services and Their Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#architecture-overview">Architecture Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#service-orchestration">Service Orchestration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#key-notes">Key Notes</a></li>
 </ul>
 </li>
@@ -58,6 +59,13 @@
 <li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#usage-and-supported-features">Usage and Supported Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#developer-setup">Developer Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#contribution-guidelines">Contribution Guidelines</a></li>
 </ul>
 </li>
 </ul>
@@ -90,61 +98,54 @@
   <section id="docker-environment">
 <h1>Docker Environment<a class="headerlink" href="#docker-environment" title="Link to this heading"></a></h1>
 <p>Docker is used to create a consistent and reproducible environment for the plant phenotyping application. It simplifies the deployment process by encapsulating all dependencies and services within containers.</p>
-<p>This setup follows three tier architecture, consisting of the following components:</p>
-<section id="services-and-their-purpose">
-<h2>Services and Their Purpose<a class="headerlink" href="#services-and-their-purpose" title="Link to this heading"></a></h2>
-<ol class="arabic">
-<li><p><strong>Airflow Services (Scheduler and Webserver):</strong></p>
-<ul class="simple">
-<li><p><strong>Purpose:</strong> These services manage the execution and monitoring of Directed Acyclic Graphs(DAGs) for plant phenotyping tasks.</p></li>
-<li><p><strong>Rationale:</strong> Airflow simplifies the automation of complex workflows and ensures scalability by using its scheduler and web interface.</p></li>
-</ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">start_airflow.sh</span></code> creates a user and initializes the database for the Airflow services.</p>
-<p>The role of the scheduler is to trigger tasks based on defined schedules or dependencies. The webserver provides a user interface to monitor and manage DAGs, tasks, and logs.</p>
-</li>
-<li><p><strong>Backend API:</strong></p>
-<ul class="simple">
-<li><p><strong>Purpose:</strong> This backend service manage the interaction with the storage layer (Both S3 and PostgreSQL components). Both Airflow and Frontend interact with this service to access/update the data.</p></li>
-<li><p><strong>Rationale:</strong> This service is necessary to abstract the data access layer and provide a single entry point for the other services to interact with the storage layer.</p></li>
-</ul>
-</li>
-<li><p><strong>Frontend API:</strong></p>
-<ul class="simple">
-<li><p><strong>Prupose:</strong> Receives requests from the frontend and forwards them to the backend API or the Airflow Webserver.</p></li>
-<li><p><strong>Rationale:</strong> This service is necessary to avoid CORS issues and to provide a single entry point for the frontend to interact with the backend services.</p></li>
-</ul>
-</li>
-<li><p><strong>Frontend (Vue.js):</strong></p>
-<ul class="simple">
-<li><p><strong>Purpose:</strong> Provides a graphical user interface for users to interact with the application.</p></li>
-<li><p><strong>Rationale:</strong> Vue.js is chosen for its simplicity, reactivity, and strong ecosystem, which makes it ideal for building user-friendly Single Page Applications (SPA)).</p></li>
-</ul>
-<p>For more information about the options considered for the frontend, refer to the <a class="reference internal" href="frontend_design.html"><span class="doc">Frontend Design</span></a> chapter.</p>
-</li>
+<section id="architecture-overview">
+<h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading"></a></h2>
+<p>This project uses a multi-container architecture managed by Docker Compose. The main services are:</p>
+<ol class="arabic simple">
+<li><p><strong>Backend API (FastAPI):</strong>
+- Handles all API requests from the frontend and manages communication with the database and S3.
+- Exposes endpoints for image analysis, result retrieval, and task management.</p></li>
+<li><p><strong>Celery Worker:</strong>
+- Processes heavy image analysis tasks asynchronously in the background.
+- Communicates with the backend API and uses Redis as a message broker.</p></li>
+<li><p><strong>Frontend (Vue.js):</strong>
+- Provides a modern, user-friendly web interface for uploading images, starting analysis, and viewing results.</p></li>
+<li><p><strong>PostgreSQL Database:</strong>
+- Stores metadata and analysis results.</p></li>
+<li><p><strong>Redis:</strong>
+- Serves as the message broker for Celery task queues.</p></li>
+<li><p><strong>pgAdmin:</strong>
+- Web-based interface for managing and inspecting the PostgreSQL database.</p></li>
+<li><p><strong>AWS S3 (external):</strong>
+- Used for storing raw and processed images and result files.</p></li>
 </ol>
-<ol class="arabic" start="4">
-<li><p><strong>Databases (Dev, Test, Prod):</strong></p>
-<ul class="simple">
-<li><p><strong>Purpose:</strong> Separate PostgreSQL instances for development, testing, and production ensure isolated environments.</p></li>
-<li><p><strong>Rationale:</strong> This separation minimizes the risk of data corruption and allows testing and development without interfering with production.</p></li>
-</ul>
-<p>PostgreSQL is chosen for its robust features, reliability, and compatibility with Airflow and FastAPI.</p>
+</section>
+<section id="service-orchestration">
+<h2>Service Orchestration<a class="headerlink" href="#service-orchestration" title="Link to this heading"></a></h2>
+<ul>
+<li><p>All services are defined in <cite>docker/common/docker-compose.yml</cite>.</p></li>
+<li><p>Each service has its own Dockerfile and configuration files for modularity and encapsulation.</p></li>
+<li><p>The stack can be started or stopped with a single command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">docker-compose</span> <span class="pre">up</span> <span class="pre">--build</span>
+<span class="pre">#</span> <span class="pre">To</span> <span class="pre">stop:</span>
+<span class="pre">docker-compose</span> <span class="pre">down</span>
+<span class="pre">`</span></code></p>
 </li>
-<li><p><strong>pgAdmin:</strong></p>
-<ul class="simple">
-<li><p><strong>Purpose:</strong> Provides a web-based interface to manage and monitor PostgreSQL databases.</p></li>
-<li><p><strong>Rationale:</strong> Makes it easier to visualize database structures and execute queries during development.</p></li>
+<li><p>Environment variables (DB credentials, AWS keys, etc.) are managed via <cite>.env</cite> in <cite>docker/common/</cite>.</p></li>
 </ul>
-</li>
-</ol>
 </section>
 <section id="key-notes">
 <h2>Key Notes<a class="headerlink" href="#key-notes" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Each service has its own Dockerfile and configuration files to ensure modularity and encapsulation. Also, it only gets access to the parts of the repo that it needs.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">docker/common/docker-compose.yml</span></code> file orchestrates the services, volumes, and networks to create a multi-container environment. This allows for easy setup and teardown of the application stack.</p></li>
+<li><p>The default ports are:
+- Frontend: 8080
+- Backend API: 8001
+- pgAdmin: 5050
+- Redis: 6379</p></li>
+<li><p>Make sure to configure your <cite>.env</cite> file before starting the stack.</p></li>
+<li><p>For more details about the Docker environment setup, refer to the <a class="reference internal" href="setup.html"><span class="doc">Setting up the Development Environment</span></a> part of this documentation.</p></li>
 </ul>
-<p>For more details about the Docker environment setup, refer to the <a class="reference internal" href="setup.html"><span class="doc">Setting up the Development Environment</span></a> part of this documentation.</p>
 </section>
 </section>
 

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API Design &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -51,14 +51,24 @@
 <li class="toctree-l2"><a class="reference internal" href="frontend_design.html">Frontend Design</a></li>
 <li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">API Design</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#backend-api">Backend API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#frontend-api">Frontend API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#helpful-debugging-tips">Helpful debugging tips:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-endpoints">Example Endpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-use">How to Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-task-flow">Celery Task Flow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#debugging-tips">Debugging Tips</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#usage-and-supported-features">Usage and Supported Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#developer-setup">Developer Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#contribution-guidelines">Contribution Guidelines</a></li>
 </ul>
 </li>
 </ul>
@@ -90,48 +100,54 @@
              
   <section id="api-design">
 <h1>API Design<a class="headerlink" href="#api-design" title="Link to this heading"></a></h1>
-<p>The API layer of the plant phenotyping application is built using FastAPI, a modern Python web framework for building APIs with Python 3.12 based on standard Python type hints. FastAPI provides high performance, easy integration with frontend frameworks, and automatic interactive API documentation.</p>
-<p>FAST API provides a simple way to define API endpoints, request and response models, and input validation. It also supports asynchronous operations, making it suitable for handling I/O-bound tasks efficiently.</p>
-<p>It provides a Swagger UI interface for interactive documentation and testing of the API endpoints. To access the Swagger UI, navigate to <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;port&gt;/docs</span></code> after starting the API service.</p>
+<p>The API layer is built using FastAPI, a modern Python web framework. It provides RESTful endpoints for all analysis and result retrieval operations, and integrates with Celery for background processing.</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>RESTful endpoints for image upload, analysis, and result retrieval</p></li>
+<li><p>Asynchronous background processing using Celery</p></li>
+<li><p>Integration with AWS S3 for image storage</p></li>
+<li><p>Automatic API docs via Swagger UI (<cite>/docs</cite>)</p></li>
+</ul>
+</section>
 <section id="backend-api">
 <h2>Backend API<a class="headerlink" href="#backend-api" title="Link to this heading"></a></h2>
-<p>Responsible for handling requests from the frontend and Airflow services, the backend API interacts with the storage layer to access and update data. It abstracts the data access layer and provides a single entry point for other services to interact with the storage layer.</p>
-<p>The backend API is built using FastAPI and follows RESTful principles for defining endpoints and handling requests. It provides endpoints for CRUD operations on plant images, analysis results, and segmentation models.</p>
-<p>This API service comes with Pytest to allow running unit tests and integration tests for the API endpoints. The tests are located in the <code class="docutils literal notranslate"><span class="pre">tests</span></code> folder and can be run using the <code class="docutils literal notranslate"><span class="pre">pytest</span></code> command.</p>
-<p>The backend API service is deployed as a Docker container and can be accessed at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;backend_port&gt;/api/v1</span></code> after starting the Docker environment.</p>
-<p>From other docker containers, the backend API can be accessed using the service name defined in the <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> file. For example, the frontend API service can access the backend API using the URL <code class="docutils literal notranslate"><span class="pre">http://backend-api:8000/api/v1</span></code>.</p>
-<p>The folder <code class="docutils literal notranslate"><span class="pre">src/api/backend</span></code> contains the FastAPI application, routers, and models for the backend API. The <code class="docutils literal notranslate"><span class="pre">main.py</span></code> file defines the FastAPI application and includes the routers for different endpoints.</p>
-<p>For list of available routes and their descriptions, refer to the Swagger UI documentation at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;backend_port&gt;/docs</span></code>.</p>
+<ul class="simple">
+<li><p>Handles requests from the frontend for image analysis and result retrieval</p></li>
+<li><p>Triggers Celery tasks for heavy processing</p></li>
+<li><p>Stores and retrieves results from PostgreSQL and S3</p></li>
+</ul>
 </section>
-<section id="frontend-api">
-<h2>Frontend API<a class="headerlink" href="#frontend-api" title="Link to this heading"></a></h2>
-<p>The frontend API service acts as a proxy between the frontend and backend services to avoid CORS issues and provide a single entry point for the frontend to interact with the backend services. It receives requests from the frontend and forwards them to the backend API or the Airflow webserver.</p>
-<p>The frontend API is built using FastAPI and provides endpoints for handling requests from the frontend. It includes routes for uploading plant images, fetching analysis results, and triggering plant phenotyping tasks.</p>
-<p>The frontend API service is deployed as a Docker container and can be accessed at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;frontend_port&gt;/api/v1</span></code> after starting the Docker environment.</p>
-<p>From other docker containers, the frontend API can be accessed using the service name defined in the <code class="docutils literal notranslate"><span class="pre">docker-compose.yml</span></code> file. For example, the frontend service can access the frontend API using the URL <code class="docutils literal notranslate"><span class="pre">http://frontend-api:8000/api/v1</span></code>.</p>
-<p>Pay attention to the fact that when testing on the host machine, the frontend API should be accessed using the URL <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;frontend_port&gt;/api/v1</span></code>.</p>
-<p>The folder <code class="docutils literal notranslate"><span class="pre">src/api/frontend</span></code> contains the FastAPI application, routers, and models for the frontend API. The <code class="docutils literal notranslate"><span class="pre">main.py</span></code> file defines the FastAPI application and includes the routers for different endpoints.</p>
-<p>For list of available routes and their descriptions, refer to the Swagger UI documentation at <code class="docutils literal notranslate"><span class="pre">http://localhost:&lt;frontend_port&gt;/docs</span></code>.</p>
+<section id="example-endpoints">
+<h2>Example Endpoints<a class="headerlink" href="#example-endpoints" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><cite>POST /api/analyze-plant/{plant_id}</cite>: Start analysis for a plant image</p></li>
+<li><p><cite>GET /api/task-status/{task_id}</cite>: Check the status of an analysis task</p></li>
+<li><p><cite>GET /api/plant-results/{plant_id}</cite>: Retrieve analysis results for a plant</p></li>
+</ul>
 </section>
-<section id="helpful-debugging-tips">
-<h2>Helpful debugging tips:<a class="headerlink" href="#helpful-debugging-tips" title="Link to this heading"></a></h2>
-<ul>
-<li><p>You can use curl or Postman to test the API endpoints and verify the responses.</p></li>
-<li><p>You can log into the backend API container using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>&lt;container-name&gt;<span class="w"> </span>bash
-</pre></div>
-</div>
-</li>
-<li><p>You can check the logs of the backend API service using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>logs<span class="w"> </span>&lt;container-name&gt;
-</pre></div>
-</div>
-</li>
-<li><p>You can run the tests for the backend API using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">ENVIRONMENT</span><span class="o">=</span><span class="nb">test</span><span class="w"> </span>pytest<span class="w"> </span>src/tests/api/backend<span class="w"> </span>--cov<span class="o">=</span>src/api/backend<span class="w"> </span>--cov-report<span class="o">=</span>term-missing<span class="w"> </span>--cov-report<span class="o">=</span>html
-</pre></div>
-</div>
-</li>
+<section id="how-to-use">
+<h2>How to Use<a class="headerlink" href="#how-to-use" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Access the API docs at <cite>http://localhost:8001/docs</cite> for interactive testing and endpoint details.</p></li>
+<li><p>The frontend interacts with the backend API for all analysis and result retrieval operations.</p></li>
+<li><p>Developers can use tools like curl, Postman, or the Swagger UI to test endpoints.</p></li>
+</ul>
+</section>
+<section id="celery-task-flow">
+<h2>Celery Task Flow<a class="headerlink" href="#celery-task-flow" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>When an analysis is triggered, the backend enqueues a Celery task.</p></li>
+<li><p>The Celery worker processes the image, runs the analysis pipeline, and stores results.</p></li>
+<li><p>Task status and results can be queried via the API.</p></li>
+</ul>
+</section>
+<section id="debugging-tips">
+<h2>Debugging Tips<a class="headerlink" href="#debugging-tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use the Swagger UI to test endpoints and inspect responses.</p></li>
+<li><p>Check backend and worker logs for errors.</p></li>
+<li><p>Use pgAdmin to inspect the database.</p></li>
 </ul>
 </section>
 </section>

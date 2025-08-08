@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Frontend Design &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -49,7 +49,10 @@
 <li class="toctree-l2"><a class="reference internal" href="docker_environment.html">Docker Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="setup.html">Setting up the Development Environment</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Frontend Design</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#selected-frontend-framework-vue-js"><strong>Selected Frontend Framework: Vue.js</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-features">Key Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure">Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development">Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#why-vue-js">Why Vue.js?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="database_design.html">Database Design</a></li>
@@ -57,6 +60,13 @@
 <li class="toctree-l2"><a class="reference internal" href="environment_files.html">Environment Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html">Collaboration Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#usage-and-supported-features">Usage and Supported Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="collaboration_guidelines.html#technical-details">Technical Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#architecture">Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#developer-setup">Developer Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#contribution-guidelines">Contribution Guidelines</a></li>
 </ul>
 </li>
 </ul>
@@ -88,113 +98,38 @@
              
   <section id="frontend-design">
 <h1>Frontend Design<a class="headerlink" href="#frontend-design" title="Link to this heading"></a></h1>
-<p>When choosing a frontend framework for the app, several options were considered. The comparison table below summarizes the information about the options considered.</p>
-<table class="docutils align-default" id="id1">
-<caption><span class="caption-text">Comparison of Frontend Frameworks</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
-<colgroup>
-<col style="width: 12.0%" />
-<col style="width: 24.0%" />
-<col style="width: 32.0%" />
-<col style="width: 32.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Framework</p></th>
-<th class="head"><p>Description</p></th>
-<th class="head"><p>Pros</p></th>
-<th class="head"><p>Cons</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Plain HTML</p></td>
-<td><p>Traditional approach using HTML, CSS, and JavaScript without a framework.</p></td>
-<td><ul class="simple">
-<li><p>Lightweight and fast for small static pages.</p></li>
-<li><p>No additional dependencies or tools required.</p></li>
-<li><p>Easy to integrate with backend rendering.</p></li>
-<li><p>Requires minimal learning for simple designs.</p></li>
-<li><p>Suitable for very simple interfaces.</p></li>
+<p>The frontend of the Plant Analysis Tool is built using <strong>Vue.js</strong>, a modern JavaScript framework for building dynamic, interactive single-page applications (SPAs).</p>
+<section id="key-features">
+<h2>Key Features<a class="headerlink" href="#key-features" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>User-friendly interface for uploading plant images, starting analysis, and viewing results</p></li>
+<li><p>Responsive design for desktop and mobile</p></li>
+<li><p>Tabbed result viewer for images, vegetation indices, texture, and morphology features</p></li>
+<li><p>Integration with the backend API for triggering analysis and retrieving results</p></li>
+<li><p>Downloadable results (images, JSON, CSV)</p></li>
 </ul>
-</td>
-<td><ul class="simple">
-<li><p>Lacks scalability for complex or interactive UIs.</p></li>
-<li><p>Poor reusability of components.</p></li>
-<li><p>No built-in state management or dynamic routing.</p></li>
-<li><p>Limited ability to handle modern app requirements without adding complexity (e.g., jQuery or vanilla JS logic).</p></li>
+</section>
+<section id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The main app is in <cite>frontend/src/App.vue</cite>.</p></li>
+<li><p>Views and components are organized in <cite>frontend/src/views/</cite> and <cite>frontend/src/components/</cite>.</p></li>
+<li><p>API calls are managed in <cite>frontend/src/api.js</cite>.</p></li>
+<li><p>Routing is handled by Vue Router (<cite>frontend/src/router/index.js</cite>).</p></li>
+<li><p>State management is handled locally in components (no global store required for current features).</p></li>
 </ul>
-</td>
-</tr>
-<tr class="row-odd"><td><p>Flask</p></td>
-<td><p>Python-based web framework with server-rendered templates.</p></td>
-<td><ul class="simple">
-<li><p>Python-native and integrates seamlessly with Python backends like Airflow.</p></li>
-<li><p>Supports server-side rendering, making it suitable for traditional multi-page applications (MPAs).</p></li>
-<li><p>Minimal setup for creating forms or simple dashboards.</p></li>
-<li><p>Direct integration with backend logic.</p></li>
+</section>
+<section id="development">
+<h2>Development<a class="headerlink" href="#development" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Use <cite>npm run serve</cite> for hot-reload development.</p></li>
+<li><p>The frontend communicates with the backend API at <cite>http://localhost:8001</cite> (configurable in <cite>.env</cite>).</p></li>
+<li><p>All analysis and result retrieval is done via REST API calls.</p></li>
 </ul>
-</td>
-<td><ul class="simple">
-<li><p>Limited support for interactive, modern UIs compared to SPAs.</p></li>
-<li><p>Requires additional effort to support real-time updates or client-side state management.</p></li>
-<li><p>Frontend design is tied closely to backend logic, reducing flexibility.</p></li>
-</ul>
-</td>
-</tr>
-<tr class="row-even"><td><p>Gradio</p></td>
-<td><p>Python library for creating simple and interactive UIs, primarily for ML and data science applications.</p></td>
-<td><ul class="simple">
-<li><p>Extremely fast to set up and deploy.</p></li>
-<li><p>Python-native, avoiding the need for separate frontend development expertise.</p></li>
-<li><p>Great for prototyping machine learning workflows and dashboards.</p></li>
-<li><p>Built-in widgets for common inputs and outputs.</p></li>
-</ul>
-</td>
-<td><ul class="simple">
-<li><p>Limited design and customization capabilities.</p></li>
-<li><p>Not suited for complex multi-page or dynamic applications.</p></li>
-<li><p>Focused on ML/data applications rather than general-purpose apps.</p></li>
-</ul>
-</td>
-</tr>
-<tr class="row-odd"><td><p>React</p></td>
-<td><p>A popular JavaScript library for building interactive UI components.</p></td>
-<td><ul class="simple">
-<li><p>Component-based architecture for reusability and scalability.</p></li>
-<li><p>Virtual DOM for efficient updates and performance.</p></li>
-<li><p>Rich ecosystem with tools like Redux for state management.</p></li>
-<li><p>Strong community support and active development.</p></li>
-<li><p>Suitable for SPAs and large-scale applications.</p></li>
-</ul>
-</td>
-<td><ul class="simple">
-<li><p>Steeper learning curve compared to simpler solutions.</p></li>
-<li><p>Requires additional setup for routing and state management.</p></li>
-<li><p>JSX syntax may be unfamiliar to developers used to HTML templating.</p></li>
-<li><p>Can be overkill for small projects or static pages.</p></li>
-</ul>
-</td>
-</tr>
-<tr class="row-even"><td><p>Vue.js</p></td>
-<td><p>A modern JavaScript framework for building dynamic, interactive UIs.</p></td>
-<td><ul class="simple">
-<li><p>Provides rich interactivity and dynamic routing, making it ideal for SPAs.</p></li>
-<li><p>Component-based architecture promotes reusability and scalability.</p></li>
-<li><p>Supports both small projects and large-scale applications.</p></li>
-<li><p>Seamlessly integrates with backend APIs for data exchange.</p></li>
-<li><p>Active community and ecosystem, with plugins for routing and state management (Vue Router, Pinia).</p></li>
-<li><p>Enables hot-reloading during development for efficient iteration.</p></li>
-</ul>
-</td>
-<td><ul class="simple">
-<li><p>Requires JavaScript expertise for development.</p></li>
-<li><p>Slightly more setup time compared to simpler solutions like Gradio or Flask.</p></li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<section id="selected-frontend-framework-vue-js">
-<h2><strong>Selected Frontend Framework: Vue.js</strong><a class="headerlink" href="#selected-frontend-framework-vue-js" title="Link to this heading"></a></h2>
-<p>After evaluating the options, <strong>Vue.js</strong> was selected as the frontend framework for the app due to its ability to handle modern, interactive user interfaces while maintaining flexibility and scalability. The app benefits from Vue.js’s rich ecosystem and seamless integration with the Python backend, making it well-suited for the application’s requirements.</p>
+</section>
+<section id="why-vue-js">
+<h2>Why Vue.js?<a class="headerlink" href="#why-vue-js" title="Link to this heading"></a></h2>
+<p>Vue.js was selected for its balance of simplicity, flexibility, and power. It enables rapid development of interactive UIs and integrates seamlessly with the Python backend.</p>
 </section>
 </section>
 

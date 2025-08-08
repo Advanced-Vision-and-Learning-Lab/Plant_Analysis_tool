@@ -1,0 +1,404 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Morphological Features &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Texture Features" href="texture_features.html" />
+    <link rel="prev" title="Vegetation Indices" href="vegetation_indices.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="user_guide.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#analysis-outputs">Analysis Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#step-by-step-usage-guide">Step-by-Step Usage Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#example-workflow">Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#advanced-usage-api-access">Advanced Usage &amp; API Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#faq">FAQ</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="user_guide.html#troubleshooting-help">Troubleshooting &amp; Help</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="vegetation_indices.html">Vegetation Indices</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Morphological Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#area">Area</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#perimeter">Perimeter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#width-height">Width &amp; Height</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hull-area">Hull Area</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solidity">Solidity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extent">Extent</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aspect-ratio">Aspect Ratio</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#eccentricity">Eccentricity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#major-minor-axis-length">Major/Minor Axis Length</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#circularity">Circularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#center-of-mass">Center of Mass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bounding-box-properties">Bounding Box Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="texture_features.html">Texture Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="user_guide.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Morphological Features</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/morphology_features.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="morphological-features">
+<h1>Morphological Features<a class="headerlink" href="#morphological-features" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>This page provides detailed explanations for each morphological feature extracted by the pipeline, including description, formula (if applicable), interpretation, and example images.</p>
+<section id="area">
+<h2>Area<a class="headerlink" href="#area" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Total area of the plant region in pixels.</p>
+<p><strong>Interpretation:</strong>
+- Larger area: Bigger plant or leaf
+- Smaller area: Smaller plant or leaf</p>
+<p><strong>Image:</strong>
+.. image:: _static/area_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Area Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="perimeter">
+<h2>Perimeter<a class="headerlink" href="#perimeter" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Length of the boundary of the plant region.</p>
+<p><strong>Interpretation:</strong>
+- Larger perimeter: More complex or larger shape
+- Smaller perimeter: Simpler or smaller shape</p>
+<p><strong>Image:</strong>
+.. image:: _static/perimeter_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Perimeter Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="width-height">
+<h2>Width &amp; Height<a class="headerlink" href="#width-height" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Width and height of the bounding box around the plant region.</p>
+<p><strong>Interpretation:</strong>
+- Indicates the spread of the plant in horizontal and vertical directions</p>
+<p><strong>Image:</strong>
+.. image:: _static/width_height_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Width and Height Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="hull-area">
+<h2>Hull Area<a class="headerlink" href="#hull-area" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Area of the convex hull enclosing the plant region.</p>
+<p><strong>Interpretation:</strong>
+- Used to assess compactness and shape regularity</p>
+<p><strong>Image:</strong>
+.. image:: _static/hull_area_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Hull Area Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="solidity">
+<h2>Solidity<a class="headerlink" href="#solidity" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[Solidity = \frac{Area}{Hull\ Area}\]</div>
+<p><strong>Description:</strong>
+Ratio of the area of the plant region to the area of its convex hull.</p>
+<p><strong>Interpretation:</strong>
+- Solidity close to 1: Compact, solid shape
+- Lower solidity: More holes or irregularities</p>
+<p><strong>Image:</strong>
+.. image:: _static/solidity_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Solidity Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="extent">
+<h2>Extent<a class="headerlink" href="#extent" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[Extent = \frac{Area}{Bounding\ Box\ Area}\]</div>
+<p><strong>Description:</strong>
+Ratio of the region area to the bounding box area.</p>
+<p><strong>Interpretation:</strong>
+- High extent: Region fills most of the bounding box
+- Low extent: Region is small relative to bounding box</p>
+<p><strong>Image:</strong>
+.. image:: _static/extent_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Extent Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="aspect-ratio">
+<h2>Aspect Ratio<a class="headerlink" href="#aspect-ratio" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[Aspect\ Ratio = \frac{Major\ Axis\ Length}{Minor\ Axis\ Length}\]</div>
+<p><strong>Description:</strong>
+Ratio of the major axis length to the minor axis length.</p>
+<p><strong>Interpretation:</strong>
+- High aspect ratio: Elongated shape
+- Low aspect ratio: More circular shape</p>
+<p><strong>Image:</strong>
+.. image:: _static/aspect_ratio_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Aspect Ratio Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="eccentricity">
+<h2>Eccentricity<a class="headerlink" href="#eccentricity" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Eccentricity of the plant shape (0 = circle, 1 = line).</p>
+<p><strong>Interpretation:</strong>
+- High eccentricity: Elongated or irregular shape
+- Low eccentricity: More circular shape</p>
+<p><strong>Image:</strong>
+.. image:: _static/eccentricity_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Eccentricity Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="major-minor-axis-length">
+<h2>Major/Minor Axis Length<a class="headerlink" href="#major-minor-axis-length" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Lengths of the major and minor axes of the best-fit ellipse.</p>
+<p><strong>Interpretation:</strong>
+- Major axis: Longest dimension
+- Minor axis: Shortest dimension</p>
+<p><strong>Image:</strong>
+.. image:: _static/axis_length_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Axis Length Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="circularity">
+<h2>Circularity<a class="headerlink" href="#circularity" title="Link to this heading"></a></h2>
+<p><strong>Formula:</strong></p>
+<div class="math notranslate nohighlight">
+\[Circularity = \frac{4\pi \times Area}{Perimeter^2}\]</div>
+<p><strong>Description:</strong>
+A measure of how close the shape is to a perfect circle.</p>
+<p><strong>Interpretation:</strong>
+- Circularity close to 1: Nearly circular
+- Lower circularity: More elongated or irregular</p>
+<p><strong>Image:</strong>
+.. image:: _static/circularity_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Circularity Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="center-of-mass">
+<h2>Center of Mass<a class="headerlink" href="#center-of-mass" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+X and Y coordinates of the center of mass of the plant region.</p>
+<p><strong>Interpretation:</strong>
+- Indicates the geometric center of the region</p>
+<p><strong>Image:</strong>
+.. image:: _static/center_of_mass_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Center of Mass Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="bounding-box-properties">
+<h2>Bounding Box Properties<a class="headerlink" href="#bounding-box-properties" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+X, Y, width, and height of the bounding box enclosing the plant region.</p>
+<p><strong>Interpretation:</strong>
+- Useful for locating and cropping the region of interest</p>
+<p><strong>Image:</strong>
+.. image:: _static/bounding_box_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bounding Box Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vegetation_indices.html" class="btn btn-neutral float-left" title="Vegetation Indices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="texture_features.html" class="btn btn-neutral float-right" title="Texture Features" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

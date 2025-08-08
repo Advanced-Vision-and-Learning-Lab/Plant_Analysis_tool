@@ -3,60 +3,53 @@ Docker Environment
 
 Docker is used to create a consistent and reproducible environment for the plant phenotyping application. It simplifies the deployment process by encapsulating all dependencies and services within containers.
 
-This setup follows three tier architecture, consisting of the following components:
+Architecture Overview
+---------------------
+This project uses a multi-container architecture managed by Docker Compose. The main services are:
 
-Services and Their Purpose
----------------------------
+1. **Backend API (FastAPI):**
+   - Handles all API requests from the frontend and manages communication with the database and S3.
+   - Exposes endpoints for image analysis, result retrieval, and task management.
 
-1. **Airflow Services (Scheduler and Webserver):**
+2. **Celery Worker:**
+   - Processes heavy image analysis tasks asynchronously in the background.
+   - Communicates with the backend API and uses Redis as a message broker.
 
-   - **Purpose:** These services manage the execution and monitoring of Directed Acyclic Graphs(DAGs) for plant phenotyping tasks.
+3. **Frontend (Vue.js):**
+   - Provides a modern, user-friendly web interface for uploading images, starting analysis, and viewing results.
 
-   - **Rationale:** Airflow simplifies the automation of complex workflows and ensures scalability by using its scheduler and web interface.
+4. **PostgreSQL Database:**
+   - Stores metadata and analysis results.
 
-   The ``start_airflow.sh`` creates a user and initializes the database for the Airflow services.
+5. **Redis:**
+   - Serves as the message broker for Celery task queues.
 
-   The role of the scheduler is to trigger tasks based on defined schedules or dependencies. The webserver provides a user interface to monitor and manage DAGs, tasks, and logs.
+6. **pgAdmin:**
+   - Web-based interface for managing and inspecting the PostgreSQL database.
 
-2. **Backend API:**
-   
-   - **Purpose:** This backend service manage the interaction with the storage layer (Both S3 and PostgreSQL components). Both Airflow and Frontend interact with this service to access/update the data.
-   
-   - **Rationale:** This service is necessary to abstract the data access layer and provide a single entry point for the other services to interact with the storage layer.
+7. **AWS S3 (external):**
+   - Used for storing raw and processed images and result files.
 
-3. **Frontend API:**
-   
-   - **Prupose:** Receives requests from the frontend and forwards them to the backend API or the Airflow Webserver.
-   - **Rationale:** This service is necessary to avoid CORS issues and to provide a single entry point for the frontend to interact with the backend services.
-  
-4. **Frontend (Vue.js):**
-   
-   - **Purpose:** Provides a graphical user interface for users to interact with the application.
-   
-   - **Rationale:** Vue.js is chosen for its simplicity, reactivity, and strong ecosystem, which makes it ideal for building user-friendly Single Page Applications (SPA)).
+Service Orchestration
+---------------------
+- All services are defined in `docker/common/docker-compose.yml`.
+- Each service has its own Dockerfile and configuration files for modularity and encapsulation.
+- The stack can be started or stopped with a single command:
 
-   For more information about the options considered for the frontend, refer to the :doc:`frontend_design` chapter.
+  ```bash
+  docker-compose up --build
+  # To stop:
+  docker-compose down
+  ```
 
-
-4. **Databases (Dev, Test, Prod):**
-   
-   - **Purpose:** Separate PostgreSQL instances for development, testing, and production ensure isolated environments.
-   
-   - **Rationale:** This separation minimizes the risk of data corruption and allows testing and development without interfering with production.
-
-   PostgreSQL is chosen for its robust features, reliability, and compatibility with Airflow and FastAPI.
-
-5. **pgAdmin:**
-   
-   - **Purpose:** Provides a web-based interface to manage and monitor PostgreSQL databases.
-   
-   - **Rationale:** Makes it easier to visualize database structures and execute queries during development.
+- Environment variables (DB credentials, AWS keys, etc.) are managed via `.env` in `docker/common/`.
 
 Key Notes
------------------------------
-
-- Each service has its own Dockerfile and configuration files to ensure modularity and encapsulation. Also, it only gets access to the parts of the repo that it needs.
-
-- The ``docker/common/docker-compose.yml`` file orchestrates the services, volumes, and networks to create a multi-container environment. This allows for easy setup and teardown of the application stack.
-
-For more details about the Docker environment setup, refer to the :doc:`setup` part of this documentation.
+---------
+- The default ports are:
+  - Frontend: 8080
+  - Backend API: 8001
+  - pgAdmin: 5050
+  - Redis: 6379
+- Make sure to configure your `.env` file before starting the stack.
+- For more details about the Docker environment setup, refer to the :doc:`setup` part of this documentation.

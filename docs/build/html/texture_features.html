@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Texture Features &mdash; Automated Plant Phenotyping Analysis 0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=2709fde1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Guide" href="developer_guide.html" />
+    <link rel="prev" title="Morphological Features" href="morphology_features.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Automated Plant Phenotyping Analysis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="user_guide.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#key-features">Key Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#analysis-outputs">Analysis Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#step-by-step-usage-guide">Step-by-Step Usage Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#example-workflow">Example Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#advanced-usage-api-access">Advanced Usage &amp; API Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide.html#faq">FAQ</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="user_guide.html#troubleshooting-help">Troubleshooting &amp; Help</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="vegetation_indices.html">Vegetation Indices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="morphology_features.html">Morphological Features</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Texture Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lbp-local-binary-pattern">LBP (Local Binary Pattern)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hog-histogram-of-oriented-gradients">HOG (Histogram of Oriented Gradients)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lacunarity">Lacunarity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ehd-edge-histogram-descriptor">EHD (Edge Histogram Descriptor)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#statistics-computed">Statistics Computed</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Automated Plant Phenotyping Analysis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="user_guide.html">User Guide</a></li>
+      <li class="breadcrumb-item active">Texture Features</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/texture_features.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="texture-features">
+<h1>Texture Features<a class="headerlink" href="#texture-features" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>This page provides detailed explanations for each texture feature extracted by the pipeline, including algorithm, interpretation, and example images.</p>
+<section id="lbp-local-binary-pattern">
+<h2>LBP (Local Binary Pattern)<a class="headerlink" href="#lbp-local-binary-pattern" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+A texture descriptor that encodes the local spatial pattern of pixel intensities by thresholding the neighborhood of each pixel and converting the result into a binary number.</p>
+<p><strong>Algorithm:</strong>
+- For each pixel, compare its value to its neighbors (typically 8 neighbors in a 3x3 window).
+- Assign 1 if the neighbor is greater than or equal to the center pixel, 0 otherwise.
+- The resulting 8-bit binary number is the LBP value for that pixel.</p>
+<p><strong>Interpretation:</strong>
+LBP is robust to illumination changes and captures fine texture details. High LBP values indicate complex textures; low values indicate uniform regions.</p>
+<p><strong>Image:</strong>
+.. image:: _static/lbp_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>LBP Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="hog-histogram-of-oriented-gradients">
+<h2>HOG (Histogram of Oriented Gradients)<a class="headerlink" href="#hog-histogram-of-oriented-gradients" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+A feature descriptor that counts occurrences of gradient orientation in localized portions of an image, capturing edge and shape information.</p>
+<p><strong>Algorithm:</strong>
+- Compute gradients (edge directions) for each pixel.
+- Divide the image into small cells and compute a histogram of gradient directions for each cell.
+- Normalize histograms across blocks of cells for illumination invariance.</p>
+<p><strong>Interpretation:</strong>
+HOG is effective for capturing edge and shape information, useful for distinguishing structural patterns in plant images.</p>
+<p><strong>Image:</strong>
+.. image:: _static/hog_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>HOG Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="lacunarity">
+<h2>Lacunarity<a class="headerlink" href="#lacunarity" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+A measure of texture heterogeneity and gap distribution at different scales. The pipeline computes three variants:
+- <strong>Lac1:</strong> Base window size
+- <strong>Lac2:</strong> Multi-scale average
+- <strong>Lac3:</strong> Deep learning-based lacunarity (DBC)</p>
+<p><strong>Algorithm:</strong>
+- For each window size, compute the mean and variance of pixel intensities.
+- Lacunarity is calculated as the ratio of variance to the square of the mean, plus 1.
+- DBC Lacunarity uses a deep learning model to estimate lacunarity at multiple scales.</p>
+<p><strong>Interpretation:</strong>
+- High lacunarity: More gaps/heterogeneity in texture (e.g., sparse or patchy regions)
+- Low lacunarity: More uniform texture</p>
+<p><strong>Image:</strong>
+.. image:: _static/lacunarity_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lacunarity Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="ehd-edge-histogram-descriptor">
+<h2>EHD (Edge Histogram Descriptor)<a class="headerlink" href="#ehd-edge-histogram-descriptor" title="Link to this heading"></a></h2>
+<p><strong>Description:</strong>
+Describes the distribution of edge directions in the image, useful for characterizing structure and texture.</p>
+<p><strong>Algorithm:</strong>
+- Apply a set of directional edge filters to the image.
+- For each direction, count the number of edge responses above a threshold.
+- The resulting histogram summarizes the edge orientation distribution.</p>
+<p><strong>Interpretation:</strong>
+- High values in certain bins indicate dominant edge directions (e.g., leaf veins, stem orientation).
+- Uniform histogram: Random or isotropic texture.</p>
+<p><strong>Image:</strong>
+.. image:: _static/ehd_example.png</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">alt<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EHD Example</p>
+</dd>
+<dt class="field-even">width<span class="colon">:</span></dt>
+<dd class="field-even"><p>300px</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>—</p>
+</section>
+<section id="statistics-computed">
+<h2>Statistics Computed<a class="headerlink" href="#statistics-computed" title="Link to this heading"></a></h2>
+<p>For each feature above (and for each band: color, green, nir, red_edge, red, pca), the following statistics are computed:
+- Mean
+- Standard deviation
+- Max
+- Min
+- Median
+- 25th percentile (q25)
+- 75th percentile (q75)
+- Fraction of NaN values</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="morphology_features.html" class="btn btn-neutral float-left" title="Morphological Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, AVLL.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
