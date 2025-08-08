@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "Plant_Analysis_tool",
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

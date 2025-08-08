@@ -1,9 +1,9 @@
 <template>
   <div class="welcome-container">
     <div class="welcome-card">
-      <h1>Welcome to Plant Phenotyping Analysis</h1>
+      <h1>Welcome to the Automated Phenotyping Greenhouse Tool</h1>
       <p>
-        Analyze your plant images for biotic and abiotic stress with advanced AI-powered tools.
+        Explore advanced sensor and robotics technology for precision plant research in Abiotic and Biotic Greenhouses.
       </p>
       <img src="@/assets/imaging.png" alt="Plant Imaging Process" class="imaging" />
       <div class="button-group">

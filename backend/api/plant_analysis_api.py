@@ -75,6 +75,14 @@ def get_plant_results(plant_id: str, date: str):
                         data['texture_features'] = data['texture_features']
                     elif 'texture_texture_features' in data and isinstance(data['texture_texture_features'], list):
                         data['texture_features'] = data['texture_texture_features']
+                # Expose morphology traits as a flat dict for frontend compatibility
+                if ('/morphology/' in file and file.endswith('_traits.json') and isinstance(data, dict)):
+                    size_traits = data.get('size_traits', {}) if isinstance(data.get('size_traits', {}), dict) else {}
+                    morph_traits = data.get('morphology_traits', {}) if isinstance(data.get('morphology_traits', {}), dict) else {}
+                    merged = {}
+                    merged.update(size_traits)
+                    merged.update(morph_traits)
+                    result['morphology_features'] = merged
         return result
     except Exception as e:
         logging.error(f"Error fetching results: {str(e)}")

@@ -93,6 +93,32 @@
                   @hide="showViewer = false"
                 />
               </v-tab-item>
+              <!-- Morphology Images Tab -->
+              <v-tab-item>
+                <v-row>
+                  <v-col v-for="img in morphImageList" :key="img.key" cols="12" md="6" lg="3">
+                    <div class="image-item">
+                      <h4>{{ img.label }}
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn icon small v-bind="attrs" v-on="on" @click="downloadImage(img.url)">
+                              <v-icon>mdi-download</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Download image</span>
+                        </v-tooltip>
+                      </h4>
+                      <img v-if="img.url" :src="img.url" @click="openGallery(morphImageList.map(i=>i.url), morphImageList.findIndex(i=>i.key===img.key))" class="clickable-img desktop-img" :style="{ maxWidth: imageSize + 'px', maxHeight: imageSize + 'px' }" />
+                    </div>
+                  </v-col>
+                </v-row>
+                <vue-easy-lightbox
+                  :visible="showViewer"
+                  :imgs="galleryImgs"
+                  :index="galleryIndex"
+                  @hide="showViewer = false"
+                />
+              </v-tab-item>
               <!-- Texture Images Tab -->
               <v-tab-item>
                 <v-row>
@@ -287,6 +313,7 @@ export default {
       currentTab: 0, // Active tab index
       tabs: [
         'Images',
+        'Morphology Images',
         'Texture Images',
         'Vegetation Indices Images',
         'Vegetation Indices Table',
@@ -389,6 +416,18 @@ export default {
       if (!this.result) return [];
       const keys = ['original', 'mask', 'overlay', 'segmented'];
       return keys.filter(k => this.result[k]).map(k => ({ label: this.capitalize(k), key: k, url: this.result[k] }));
+    },
+    // Morphology images to display
+    morphImageList() {
+      if (!this.result) return [];
+      const prefix = 'morphology_images_';
+      return Object.keys(this.result)
+        .filter(k => k.startsWith(prefix))
+        .map(k => ({
+          label: this.capitalize(k.replace(prefix, '').replace(/_/g, ' ')),
+          key: k,
+          url: this.result[k]
+        }));
     },
     // List of texture images to display
     textureImageList() {
@@ -578,13 +617,11 @@ export default {
       // Check for main images
       const mainImages = ['original', 'mask', 'overlay', 'segmented'];
       const allMainImages = mainImages.every(k => result && result[k]);
-      // Check for vegetation index images
-      const allVegIndices = this.vegIndexList.every(name => result && result[`vegetation_indices_${name}`]);
-      // Check for feature tables
+      // Feature tables presence
       // Morphology
       const morph = result && result.morphology_features;
       const hasMorph = morph && Object.keys(morph).length > 0;
-      // Texture
+      // Texture and vegetation features (from nested _result)
       let nested = null;
       for (const key in result) {
         if (key.endsWith('_result') && typeof result[key] === 'object') {
@@ -594,7 +631,7 @@ export default {
       }
       const hasTexture = nested && nested.texture_features && Array.isArray(nested.texture_features) && nested.texture_features.length > 0;
       const hasVegFeatures = nested && nested.vegetation_features && Array.isArray(nested.vegetation_features) && nested.vegetation_features.length > 0;
-      return allMainImages && allVegIndices && hasMorph && hasTexture && hasVegFeatures;
+      return allMainImages && hasMorph && hasTexture && hasVegFeatures;
     },
     // Poll for results every 3 seconds until all are ready
     async pollForResult(plantId, date) {
@@ -758,79 +795,22 @@ export default {
 }
 .clickable-img {
   max-width: 200px;
-  border: 1px solid #ccc;
-  cursor: zoom-in;
-  transition: box-shadow 0.2s;
-}
-.clickable-img:hover {
-  box-shadow: 0 4px 16px rgba(67,160,71,0.18);
-}
-.fab-btn {
-  position: fixed;
-  bottom: 32px;
-  right: 32px;
-  z-index: 10;
 }
 .desktop-img {
-  max-width: 500px;
-  max-height: 500px;
-  width: 100%;
-  height: auto;
-  margin: 0 auto 16px auto;
-  display: block;
-}
-@media (max-width: 1264px) {
-  .desktop-img {
-    max-width: 350px;
-    max-height: 350px;
-  }
-}
-@media (max-width: 960px) {
-  .desktop-img {
-    max-width: 220px;
-    max-height: 220px;
-  }
+  cursor: zoom-in;
 }
 .result-footer {
-  width: 100vw;
-  background: #f5f5f5;
-  border-top: 1.5px solid #e0e0e0;
-  padding: 32px 0 16px 0;
-  text-align: center;
-  font-family: 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  font-size: 1.08rem;
-  color: #333;
-  margin-top: 48px;
+  border-top: 1px solid #eee;
+  padding: 16px;
+  margin-top: 24px;
 }
 .footer-content {
-  max-width: 900px;
-  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  gap: 16px;
 }
 .footer-about {
-  margin-bottom: 8px;
-}
-.footer-actions {
-  margin-top: 8px;
-}
-.center-instruction {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 70vh;
-  font-size: 1.6rem;
-  color: #888;
-  font-weight: 600;
-  text-align: center;
-}
-.v-data-table {
-  font-size: 1.25rem !important;
-}
-.v-data-table-header th,
-.v-data-table td {
-  font-size: 1.25rem !important;
+  font-size: 0.9rem;
+  color: #555;
 }
 </style>
