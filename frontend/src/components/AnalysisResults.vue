@@ -508,10 +508,7 @@ export default {
 
     mainImages_DB() {
       const dbImages = this.getMainImagesFromDB();
-      if (dbImages.length > 0) {
-        console.log('Using database images:', dbImages.length);
-        return dbImages;
-      }
+      return dbImages;
     },
     
     textureImages() {
@@ -550,10 +547,7 @@ export default {
 
     textureImages_DB() {
       const dbImages = this.getTextureImagesFromDB();
-      if (dbImages.length > 0) {
-        console.log('Using database texture images:', dbImages.length);
-        return dbImages;
-      }
+      return dbImages;
     },
     
     vegetationIndicesImages() {
@@ -583,10 +577,7 @@ export default {
 
     vegetationIndicesImages_DB() {
       const dbImages = this.getVegetationIndicesImagesFromDB();
-      if (dbImages.length > 0) {
-        console.log('Using database vegetation indices images:', dbImages.length);
-        return dbImages;
-      }
+      return dbImages;
     },
     
     // Table headers for vegetation indices
@@ -612,10 +603,7 @@ export default {
 
     vegIndexItems_DB() {
       const dbTable = this.getVegetationIndicesTableFromDB();
-      if (dbTable.length > 0) {
-        console.log('Using database vegetation indices table:', dbTable.length);
-        return dbTable;
-      }
+      return dbTable;
     },
     
     // Filtered and sorted vegetation indices
@@ -670,10 +658,7 @@ export default {
 
     textureItems_DB() {
       const dbTable = this.getTextureFeaturesTableFromDB();
-      if (dbTable.length > 0) {
-        console.log('Using database texture features table:', dbTable.length);
-        return dbTable;
-      }
+      return dbTable;
     },
     
     // Filtered and sorted texture features

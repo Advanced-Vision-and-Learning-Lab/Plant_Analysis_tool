@@ -187,7 +187,7 @@ import backgroundImage from '@/assets/greenhouse-img2.jpg'
 import ConfigurableButton from '../components/ConfigurableButton.vue'
 import ConfigurableDropdown from '@/components/ConfigurableDropdown.vue';
 import AnalysisResults from '../components/AnalysisResults.vue'
-import { getPlantResults, analyzePlant } from '@/api.js'
+import { getPlantResults, analyzePlant, getDatabaseData } from '@/api.js'
 
 export default {
   name: 'PlantDetails',
@@ -328,8 +328,15 @@ export default {
         this.analysisProgress = 0;
         this.results = null;
         this.analysisFailed = false;
-        this.fetchResults(this.species, this.selectedPlantId.value, this.selectedDate.value);
+        this.fetchDatabaseData(this.species, this.selectedPlantId.value, this.selectedDate.value);
+        // this.fetchResults(this.species, this.selectedPlantId.value, this.selectedDate.value); //USE THIS TO GET DATA FROM AWS
       }
+    },
+
+    async fetchDatabaseData(species, plantId, date) {
+      const result = await getDatabaseData(species, plantId, date);
+      console.log('fetchDatabaseData: results fetched from backend.', result);
+      return result;
     },
 
     async fetchResults(species, plantId, date) {

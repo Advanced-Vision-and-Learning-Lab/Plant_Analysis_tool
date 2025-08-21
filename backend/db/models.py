@@ -2,7 +2,7 @@
 from typing import Optional, Any
 from datetime import datetime, date # Import datetime for DateTime column type
 
-from sqlalchemy import String, Date, DateTime, UniqueConstraint, ForeignKey, Float, JSON
+from sqlalchemy import String, Date, DateTime, UniqueConstraint, ForeignKey, Float, JSON, Integer
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func # For default values like current date/time
 
@@ -28,10 +28,11 @@ class Plant(Base):
     name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     species: Mapped[Optional[str]] = mapped_column(String(100), nullable=False)
     # add column for dates captured
-    dates_captured: Mapped[list[date]] = mapped_column(JSON, nullable=False)
+    dates_captured: Mapped[list[date]] = mapped_column(JSON, nullable=True)
     # Add other metadata as needed (location, planting date, etc.)
     vegetation_indices = relationship("VegetationIndexTimeline", back_populates="plant")
     texture_features = relationship("TextureTimeline", back_populates="plant")
+    morphology_features = relationship("MorphologyTimeline", back_populates="plant")
     processed_data = relationship("ProcessedData", back_populates="plant")
 
     def __repr__(self) -> str:
@@ -118,6 +119,47 @@ class TextureTimeline(Base):
 
     def __repr__(self) -> str:
         return f"<TextureTimeline(plant_id='{self.plant_id}', date_captured={self.date_captured}, band_name='{self.band_name}', texture_type='{self.texture_type}')>"
+
+class MorphologyTimeline(Base):
+    __tablename__ = "morphology_timeline"
+    plant_id: Mapped[str] = mapped_column(String(50), ForeignKey("plants.id"), primary_key=True)
+    date_captured: Mapped[date] = mapped_column(Date, primary_key=True)
+    
+    # Size-related features
+    size_area: Mapped[float] = mapped_column(Float, nullable=False)
+    size_convex_hull_area: Mapped[float] = mapped_column(Float, nullable=False)
+    size_solidity: Mapped[float] = mapped_column(Float, nullable=False)
+    size_perimeter: Mapped[float] = mapped_column(Float, nullable=False)
+    size_width: Mapped[float] = mapped_column(Float, nullable=False)
+    size_height: Mapped[float] = mapped_column(Float, nullable=False)
+    size_longest_path: Mapped[float] = mapped_column(Float, nullable=False)
+    size_center_of_mass: Mapped[dict[str, float]] = mapped_column(JSON, nullable=False)  # Store as {"x": float, "y": float}
+    size_convex_hull_vertices: Mapped[list[dict[str, float]]] = mapped_column(JSON, nullable=False)  # Store as [{"x": float, "y": float}, ...]
+    size_ellipse_center: Mapped[dict[str, float]] = mapped_column(JSON, nullable=False)  # Store as {"x": float, "y": float}
+    size_ellipse_major_axis: Mapped[float] = mapped_column(Float, nullable=False)
+    size_ellipse_minor_axis: Mapped[float] = mapped_column(Float, nullable=False)
+    size_ellipse_angle: Mapped[float] = mapped_column(Float, nullable=False)
+    size_ellipse_eccentricity: Mapped[float] = mapped_column(Float, nullable=False)
+    size_num_leaves: Mapped[int] = mapped_column(Integer, nullable=False)
+    size_num_branches: Mapped[int] = mapped_column(Integer, nullable=False)
+    
+    # Morphology-related features
+    morph_branch_pts: Mapped[list[dict[str, float]]] = mapped_column(JSON, nullable=False)  # Store as [{"x": float, "y": float}, ...]
+    morph_tips: Mapped[list[dict[str, float]]] = mapped_column(JSON, nullable=False)  # Store as [{"x": float, "y": float}, ...]
+    morph_segment_path_length: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    morph_segment_eu_length: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    morph_segment_curvature: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    morph_segment_angle: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    morph_segment_tangent_angle: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    morph_segment_insertion_angle: Mapped[list[float]] = mapped_column(JSON, nullable=False)  # Store as [float, float, ...]
+    
+    # Image key for reference
+    morphology_image_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    
+    plant = relationship("Plant", back_populates="morphology_features")
+
+    def __repr__(self) -> str:
+        return f"<MorphologyTimeline(plant_id='{self.plant_id}', date_captured={self.date_captured})>"
 
 
 # Example: Get NDVI time series for plant 'plant1'
